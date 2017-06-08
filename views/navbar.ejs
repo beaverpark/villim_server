@@ -1,0 +1,26 @@
+<div class="navbar-fixed">
+  <nav class="nav_bg_color">
+    <div class="nav-wrapper">
+      <a href="/" class="brand-logo left" style="color: black">
+        <img class="nav_logo" src="/images/icons/logo_horizontal_red.png">
+      </a>
+      <ul id="side_content" class="nav_text right">
+        <% if(typeof inDashboard === 'undefined') { %>
+        <li><a href="/register" class="btn waves-effect waves-light white nav_btn"> 방 등록하기 </a></li>
+        <% } %>
+        <% if(user) { %>
+          <li><a href="/dashboard" class="waves-effect"> <%- user.username -%> 님</a></li>
+          <li><i class="material-icons prefix">account_circle</i></li>
+        <% } else { %>
+          <li><a href="/signup" class="waves-effect"> 회원가입 </a></li>
+          <li><a href="/login" class="waves-effect"> 로그인 </a></li>
+        <% } %>
+        
+      </ul>
+    </div>
+  </nav>
+</div>
+
+
+
+

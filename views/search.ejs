@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <%- include('header') -%>
+  <body>
+    <!-- navbar -->
+    <%- include('navbar') -%>
+
+
+    <div class="row">
+      <form action="/search" method="post">
+        <div class="input-field col s6">
+          <input placeholder="어디로 가세요?" name="location" type="text" class="validate" value="<%= location %>" required>
+        </div>
+        <div class="input-field col s2">
+          <input placeholder="시작일" name="from_date" type="text" class="validate" value="<%= from_date %>" required>
+        </div>
+        <div class="input-field col s2">
+          <input placeholder="종료일" name="to_date" type="text" class="validate" value="<%= to_date %>" required>
+        </div>
+        <div class="col s2" style="position: relative; margin-top: 1.5rem"> 
+          <button class="btn waves-effect waves-light red accent-2" type="submit" name="action">검색</button>
+        </div>
+      </form>
+    </div>
+
+
+
+
+    <!-- footer -->
+    <%- include('footer') -%>
+  </body>
+</html>

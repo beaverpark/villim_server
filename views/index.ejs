@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <!-- head -->
+  <%- include('header') -%>
+
+  <body>
+    <!-- navbar -->
+    <%- include('navbar') -%>
+
+    <!-- search section -->
+    <section id="search">
+      <div class="container">
+        <div class="row no_vertical_margin">
+          <div class="col s8">
+            <h4 class="text_thick"> 전세계의 집이 나의 집!</h4>
+          </div>
+        </div>
+        <div class="row"> 
+          <div class="col s8">
+            <h5 class="text_thick no_vertical_margin">언제 어디서나 쉽고 빠르게 방을 빌리세요</h5>
+          </div>
+        </div>
+        <div class="row">
+          <form action="/search" method="post">
+            <div class="input-field col s6">
+              <input placeholder="어디로 가세요?" name="location" type="text" class="validate" required>
+            </div>
+            <div class="input-field col s2">
+              <input placeholder="시작일" name="from_date" type="text" class="validate" required>
+            </div>
+            <div class="input-field col s2">
+              <input placeholder="종료일" name="to_date" type="text" class="validate" required>
+            </div>
+            <div class="col s2" style="position: relative; margin-top: 1.5rem"> 
+              <button class="btn waves-effect waves-light red accent-2" type="submit" name="action">검색</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>    
+
+    <!-- be_host section -->
+    <section id="be_host">
+      <div class="card grey lighten-5">
+        <div class="card-content" style="padding: 50px 30px 30px">
+          <span class="card-title text_thick"> 당신의 집을 공유하세요 </span>
+          <p class="card-text">빌림에서 방을 공유해서 받을 수 있는 혜택을 알아보고 방을 등록해보세요.</p>
+          <div class="center-align">
+            <a href="#" class="btn waves-effect waves-light card_btn red accent-2">등록하기 </a>
+          </div>
+        </div>
+      </div>
+    </section>    
+
+    <!-- benefit section -->
+    <section id="benefit" class="valign-wrapper">
+      <div class="container">
+        <div class="row">
+          <div class="col s4">
+            <div class="benefit-item">
+              <img class="responsive-img" src="/images/icons/icon_pen.png">
+              <h5> 등록하기 </h5>
+              <p>Create a listing that showcases your space. Write a description, upload photos, and choose your own pricing</p>
+              <a href="#" class="btn waves-effect waves-light card_btn red accent-2"> 혜택 알아보기 </a>
+            </div>
+          </div>
+          <div class="col s4">
+            <div class="benefit-item">
+              <img class="responsive-img" src="/images/icons/icon_lock.png">
+              <h5> 스마트락 설치 </h5>
+              <p>Create a listing that showcases your space. Write a description, upload photos, and choose your own pricing</p>
+           </div>
+          </div>
+          <div class="col s4">
+            <div class="benefit-item">
+              <img class="responsive-img" src="/images/icons/icon_door.png">
+              <h5> 임대 시작 </h5>
+              <p>Create a listing that showcases your space. Write a description, upload photos, and choose your own pricing</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>    
+
+    <!-- footer -->
+    <%- include('footer') -%>
+  
+  </body>
+</html>

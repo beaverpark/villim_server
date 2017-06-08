@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <!-- head -->
+  <%- include('header') -%>
+
+  <body>
+    <!-- navbar -->
+
+    <div class="container form_container">
+        <h4 class="text_thick"> 회원가입 </h4>
+
+        <!-- show any messages that come back with authentication -->
+        <% if (message.length > 0) { %>
+            <div><p class="err_msg"><%= message %></p></div>
+        <% } %>
+
+        <!-- signup form -->
+        <form action="/signup" method="post" class="form_vertical_margin">
+            <div class="row row_form">
+            	<div class="input-field col s5">
+                  <i class="material-icons prefix">account_circle</i>
+                  <input id="lastname" name="lastname" type="text" class="validate">
+                  <label for="lastname">성</label>
+                </div>
+                <div class="input-field col s7">
+                  <input id="firstname" name="firstname" type="text" class="validate">
+                  <label for="firstname">이름</label>
+                </div>
+                <div class="input-field col s12"> 
+                    <i class="material-icons prefix">email</i>
+                    <input id="email" name="email" type="email" class="validate">
+                    <label for="email" data-error="이메일 주소가 올바르지 않습니다">이메일</label>
+                </div>
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">lock</i>
+                    <input id="password" name="password" type="password" class="validate">
+                    <label for="password">비밀번호</label>
+                </div>
+            </div>
+            <div class="center-align">
+                <button type="submit" class="btn waves-effect waves-light card_btn red accent-2">회원가입 </button>
+            </div>
+        </form>
+
+        <p> 이미 회원이신가요? <a href="/login"> 로그인 </a></p>
+        <p><a href="/"> 홈으로 돌아가기</a></p>
+    </div>
+
+    <!-- footer -->
+    <%- include('footer') -%>
+  </body>
+</html>
+
+
+
+
+<!-- LOGIN FORM -->
+<!-- 	<form action="/signup" method="post">
+		<div class="form-group">
+			<label>email</label>
+			<input type="text" class="form-control" name="email">
+		</div>
+		<div class="form-group">
+			<label>Password</label>
+			<input type="password" class="form-control" name="password">
+		</div>
+
+		<button type="submit" class="btn btn-warning btn-lg">Signup</button>
+	</form>
+
+	<p>Already have an account? <a href="/login">Login</a></p>
+	<p>Or go <a href="/">home</a>.</p>
+ -->

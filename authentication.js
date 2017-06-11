@@ -43,12 +43,38 @@ module.exports = function(app, passport) {
 	}));
 
 
-	// =====================================
-	// LOGOUT ==============================
-	// =====================================
+	// GET log out 
 	app.get('/logout', function(req, res) {
+		console.log("logged out");
 		req.logout();
 		res.redirect('/');
+	});
+
+
+
+	// Andriod requests
+	// POST andriod login
+	app.post('/a/login', function(req, res, next) {
+		passport.authenticate('local-login', function(err, user, info) {
+			if(err) return next(err);
+
+			if(!user) {
+				return res.json({login_success: false, message:'이메일 또는 비밀번호가 올바르지 않습니다.'});
+			}
+
+			req.login(user, function(err){
+		      if(err){
+		        return next(err);
+		      }
+		      var user_info = {
+				"name": req.user.lastname + req.user.firstname,
+				"id": req.user.id,
+				"email": req.user.email,
+				"profile_pic_url": null
+			  }
+   	 		  return res.json({login_success: 'true', user_info});
+    		});
+		})(req, res, next); 
 	});
 
 };

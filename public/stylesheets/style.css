@@ -23,7 +23,7 @@ a {
 .nav_logo {
 	height: 64px;
 	width: auto;
-	padding: 15px;
+	/*padding: 15px;*/
 }
 
 .nav_text.nav_text > li > a {

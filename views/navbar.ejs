@@ -10,7 +10,8 @@
         <% } %>
         <% if(user) { %>
           <li><a href="/dashboard" class="waves-effect"> <%- user.username -%> 님</a></li>
-          <li><i class="material-icons prefix">account_circle</i></li>
+          <li><a href="/logout" class="waves-effect" style="color:red"> 로그아웃 </a></li>
+
         <% } else { %>
           <li><a href="/signup" class="waves-effect"> 회원가입 </a></li>
           <li><a href="/login" class="waves-effect"> 로그인 </a></li>

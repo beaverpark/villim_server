@@ -51,8 +51,10 @@ module.exports = function(app, passport) {
 	});
 
 
+	/**************************/
+	/*** Andriod requests	***/
+	/**************************/
 
-	// Andriod requests
 	// POST andriod login
 	app.post('/a/login', function(req, res, next) {
 		passport.authenticate('local-login', function(err, user, info) {
@@ -67,7 +69,9 @@ module.exports = function(app, passport) {
 		        return next(err);
 		      }
 		      var user_info = {
-				"name": req.user.lastname + req.user.firstname,
+				"fullname": req.user.lastname + req.user.firstname,
+				"firstname": req.user.firstname, 
+				"lastname": req.user.lastname, 
 				"id": req.user.id,
 				"email": req.user.email,
 				"profile_pic_url": null
@@ -76,5 +80,33 @@ module.exports = function(app, passport) {
     		});
 		})(req, res, next); 
 	});
+
+	// POST andriod signup
+	app.post('/a/signup', function(req, res, next) {
+		passport.authenticate('local-signup', function(err, user, info) {
+			if(err) return next(err);
+
+			if(!user) {
+				var signup_msg = req.body.email + ' 는 이미 사용중인 이메일입니다.';
+				return res.json({signup_success: false, message: signup_msg});
+			}
+
+			req.login(user, function(err){
+		      if(err){
+		        return next(err);
+		      }
+		      var user_info = {
+				"fullname": req.user.lastname + req.user.firstname,
+				"firstname": req.user.firstname, 
+				"lastname": req.user.lastname, 
+				"id": req.user.id,
+				"email": req.user.email,
+				"profile_pic_url": null
+			  }
+   	 		  return res.json({signup_success: 'true', user_info});
+    		});
+		})(req, res, next); 
+	});
+
 
 };

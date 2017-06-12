@@ -1,4 +1,3 @@
-
 var express = require('express');
 var app = express();
 var path = require('path');
@@ -9,25 +8,25 @@ var bodyParser = require('body-parser');
 var passport = require('passport')
 var session = require('express-session')
 var flash = require('connect-flash');
-
-var mysql = require('mysql');
-var dbconfig = require('./config/database')
 var MySQLStore = require('express-mysql-session')(session);
 
-var connection = mysql.createConnection(dbconfig.connection);
+// Load db connection from connection file 
+var connection = require('./connection');
 
-connection.query('USE ' + dbconfig.database);
 
-// Routes
+
+/**************/
+/*** Routes ***/
+/**************/
 var webapp = require('./routes/webapp');
 // var andriod = require('./routes/andriod');
 // var ios = require('./routes/ios');
 
 
-// passport configurations
-require('./config/passport')(passport, connection);
 
-
+/*************************/
+/*** app general setup ***/
+/*************************/
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -40,21 +39,30 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// npm downloaded css and scripts
+
+
+/**************************************/
+/*** npm downloaded css, js scripts ***/
+/**************************************/
 app.use('/js', express.static(__dirname + '/node_modules/materialize-css/dist/js'));
 app.use('/css', express.static(__dirname + '/node_modules/materialize-css/dist/css'));
 app.use('/jquery', express.static(__dirname + '/node_modules/materialize-css/node_modules/jquery/dist'));
 
-var sessionStore = new MySQLStore({}, connection);
 
-// passport
+/***********************************************/
+/*** PASSPORT(login, signup, session) CONFIG ***/
+/***********************************************/
+require('./config/passport')(passport, connection);
+
+var sessionStore = new MySQLStore({}, connection); // storage for session info
+
+// passport session config
 app.use(session({
 	secret: 'ganghobeaver',
 	store: sessionStore, 
 	resave: false, 
 	saveUninitialized: false})
 ); 
-
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
@@ -63,10 +71,16 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 require('./authentication.js')(app, passport); // load our routes and pass in our app and fully configured passport
 
 
-// app url navigation 
+/**************************/
+/*** app url navigation ***/
+/**************************/
 app.use('/', webapp);
 
 
+
+/**********************/
+/*** error handling ***/
+/**********************/
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

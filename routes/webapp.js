@@ -1,5 +1,8 @@
+// webapp module
+
 var express = require('express');
 var router = express.Router();
+var connection = require('../connection');
 
 // GET index page
 router.get('/', function(req, res, next) {
@@ -26,7 +29,6 @@ router.get('/search', function(req, res) {
 router.post('/search', function(req, res) {
 	var user = userInfo(req); 
 
-
 	var location = req.body.location;
 	var from_date = req.body.from_date;
 	var to_date = req.body.to_date;
@@ -42,7 +44,6 @@ router.get('/dashboard', isLoggedIn, function(req, res) {
 	res.render('dashboard', {user: user, noRegisterBtn: 1});
 });
 
-module.exports = router;
 
 
 // GET house register page
@@ -51,10 +52,19 @@ router.get('/register', function(req, res) {
 		res.redirect('/login');
 	}
 
+	// var amenities = connection.query("SELECT * FROM amenities", function(err, rows, fields) {
+	// 	if (err) throw err;
+	// 	return rows;
+	// });
+
+	// console.log(amenities);
 	var user = userInfo(req);
 
 	res.render('register', {user: user, noRegisterBtn: 1});
 });
+
+
+module.exports = router;
 
 
 // ===== Helper functions =====
@@ -67,7 +77,7 @@ function isLoggedIn(req, res, next) {
 
 	// if they aren't redirect them to the home page
 	res.redirect('/');
-}
+};
 
 // returns user's info object if user is logged in
 function userInfo(req) {
@@ -84,5 +94,12 @@ function userInfo(req) {
 		};
 		return userInfo; 
 	}
-}
+};
+
+// function getAmenities(data, callback) {
+// 	connection.query("SELECT * FROM amenities", function(err, rows, fields) {
+// 		if (err) throw err;
+// 		return rows;
+// 	});
+// };
 

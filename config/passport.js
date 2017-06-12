@@ -1,5 +1,4 @@
 // passport configurations
-
 var localStrategy = require('passport-local').Strategy; 
 var bcrypt = require('bcrypt-nodejs');
 

@@ -1,3 +1,4 @@
+// authentication module (login, signup, session)
 module.exports = function(app, passport) {
 
 	// GET login form

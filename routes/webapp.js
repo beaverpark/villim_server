@@ -1,21 +1,6 @@
 var express = require('express');
 var router = express.Router();
 
-// // DB
-// var mysql = require('mysql');
-
-// was in db.js
-// var pool = mysql.createPool({
-// 	host: 'localhost',
-// 	user: 'root',
-// 	password: 'qlqjqlqj',
-//   	database: 'villimDB',
-//   	connectionLimit: 10
-//   	// supportBigNumbers: true
-// });
-
-
-
 // GET index page
 router.get('/', function(req, res, next) {
 	var user = userInfo(req); 
@@ -54,11 +39,22 @@ router.post('/search', function(req, res) {
 router.get('/dashboard', isLoggedIn, function(req, res) {
 	var user = userInfo(req); 
 
-	res.render('dashboard', {user: user, inDashboard: 1});
+	res.render('dashboard', {user: user, noRegisterBtn: 1});
 });
 
 module.exports = router;
 
+
+// GET house register page
+router.get('/register', function(req, res) {
+	if(!req.isAuthenticated()) {
+		res.redirect('/login');
+	}
+
+	var user = userInfo(req);
+
+	res.render('register', {user: user, noRegisterBtn: 1});
+});
 
 
 // ===== Helper functions =====

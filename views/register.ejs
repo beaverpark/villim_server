@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<script type="text/javascript">
+
+	window.onload = function() {
+		$('select').material_select();
+	}
+</script>
+
+
+<html>
+  <!-- head -->
+  <%- include('header') -%>
+
+<body>
+   	<%- include('navbar') -%>
+   	<div class="container">
+    <div class="register_content">
+    <div class="row">
+   		<div class="col s12 m9 l9 register_form">
+   			<div class="text_thick register_main_text"> <%- user.username -%> 님 안녕하세요? </div>
+			<div class="text_thick register_sub_text"> 회원님의 임대주택 등록을 도와드리겠습니다. </div>
+
+			<!-- error message here -->
+			<br>
+			<!-- login form -->
+			<form action="#" method="post">
+			<div class="row row_form">
+				<div class="input-field col s12"> 
+					<select>
+ 						<option value="" disabled selected> 하나를 선택해주세요. </option>
+						<option value="1"> 집 전체 </option>
+						<option value="2"> 개인실 </option>
+						<option value="3"> 다인실 </option>
+					</select>
+					<label class="register_form_label">주택 종류 </label>
+                </div>
+
+				<div class="input-field col s12"> 
+					<select>
+ 						<option value="" disabled selected> 하나를 선택해주세요. </option>
+						<option value="1"> 1 </option><option value="2"> 2 </option><option value="3"> 3 </option>
+						<option value="4"> 4 </option><option value="5"> 5 </option><option value="6"> 6 </option>
+						<option value="7"> 7 </option><option value="8"> 8 </option><option value="9"> 9 </option>
+						<!-- <option value="10"> 10 </option><option value="11"> 11 </option><option value="12"> 12 </option> -->
+						<!-- <option value="13"> 13 </option><option value="14"> 14 </option><option value="15"> 15 </option> -->
+						<!-- <option value="16"> 16 </option><option value="17"> 17 </option><option value="18"> 18 </option> -->
+					</select>
+					<label class="register_form_label"> 침실 수 </label>
+                </div>
+
+                <div class="input-field col s12"> 
+					<select>
+ 						<option value="" disabled selected> 하나를 선택해주세요. </option>
+						<option value="1"> 1 </option><option value="2"> 2 </option><option value="3"> 3 </option>
+						<option value="4"> 4 </option><option value="5"> 5 </option><option value="6"> 6 </option>
+						<option value="7"> 7 </option><option value="8"> 8 </option><option value="9"> 9 </option>
+						<option value="10"> 10 </option><option value="11"> 11 </option><option value="12"> 12 </option>
+						<option value="13"> 13 </option><option value="14"> 14 </option><option value="15"> 15 </option>
+						<!-- <option value="16"> 16 </option><option value="17"> 17 </option><option value="18"> 18 </option> -->
+					</select>
+					<label class="register_form_label"> 침대 수 </label>
+                </div>
+
+                <div class="input-field col s12"> 
+					<select>
+ 						<option value="" disabled selected> 하나를 선택해주세요. </option>
+						<option value="1"> 1 </option><option value="2"> 2 </option><option value="3"> 3 </option>
+						<option value="4"> 4 </option><option value="5"> 5 </option><option value="6"> 6 </option>
+						<!-- <option value="7"> 7 </option><option value="8"> 8 </option><option value="9"> 9 </option> -->
+						<!-- <option value="10"> 10 </option><option value="11"> 11 </option><option value="12"> 12 </option> -->
+						<!-- <option value="13"> 13 </option><option value="14"> 14 </option><option value="15"> 15 </option> -->
+						<!-- <option value="16"> 16 </option><option value="17"> 17 </option><option value="18"> 18 </option> -->
+					</select>
+					<label class="register_form_label"> 욕실 수 </label>
+                </div>
+
+<!--                 <div>
+					<img class="" src="/images/icons/villim_main_logo_lg.png">
+				</div> -->
+ 		<!-- 	<div class="input-field col s12"> 
+                    <i class="material-icons prefix">email</i>
+                    <input id="email" name="email" type="email" class="validate">
+                    <label for="email" data-error="이메일 주소가 올바르지 않습니다">이메일</label>
+                </div> -->
+
+            </div>
+            <div class="center-align">
+                <button type="submit" class="btn waves-effect waves-light card_btn red accent-2">등록 신청 </button>
+            </div>
+        	</form>
+   		</div> 
+
+   		<div class="col s12 m3 l3">
+   			 빌림이 주는 혜택 
+   		</div>
+    </div>
+   	</div>
+   	</div>
+
+
+    <!-- footer -->
+	<%- include('footer') -%>
+</body>
+</html>

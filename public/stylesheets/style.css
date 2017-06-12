@@ -158,6 +158,36 @@ footer#index_footer2 ul, li {
 
 }
 
+/* register css */
+
+.register_content {
+	padding-top: 50px;
+	padding-bottom: 80px;
+}
+
+.register_main_text {
+	font-size: 24px;
+}
+
+.register_sub_text {
+	font-size: 20px;
+}
+
+.register_form {
+	padding-left: 40px !important;
+	padding-right: 80px !important;
+}
+
+.register_form_label {
+	font-size: 16px !important;
+	top: -20px !important;
+
+}
+
+.register_content .input-field {
+	margin: 15px 0;
+}
+
 
 /* Overwrite materialize tabs css */
 .tabs .indicator {

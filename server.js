@@ -45,9 +45,7 @@ app.use('/js', express.static(__dirname + '/node_modules/materialize-css/dist/js
 app.use('/css', express.static(__dirname + '/node_modules/materialize-css/dist/css'));
 app.use('/jquery', express.static(__dirname + '/node_modules/materialize-css/node_modules/jquery/dist'));
 
-
 var sessionStore = new MySQLStore({}, connection);
-
 
 // passport
 app.use(session({

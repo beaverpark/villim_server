@@ -3,6 +3,16 @@
 
 	window.onload = function() {
 		$('select').material_select();
+
+		// $('.select-wrapper').
+
+		// $('input[type=text]').click(function() {
+		// 	$('label[for="'+$(this).attr('id')+'"]').removeClass("active");
+		// });
+		// $('#house_type').on('change', function() {
+		// 	$('#house_type').val($('#house_type_select').val());
+		// });
+
 	}
 </script>
 
@@ -22,21 +32,22 @@
 
 			<!-- error message here -->
 			<br>
-			<!-- login form -->
-			<form action="#" method="post">
+			<!-- register form -->
+			<form action="register" method="post">
 			<div class="row row_form">
+				<div class="register_form_label"> 주택 종류 </div>
 				<div class="input-field col s12"> 
-					<select>
+					<select name="house_type">
  						<option value="" disabled selected> 하나를 선택해주세요. </option>
 						<option value="1"> 집 전체 </option>
 						<option value="2"> 개인실 </option>
 						<option value="3"> 다인실 </option>
 					</select>
-					<label class="register_form_label">주택 종류 </label>
                 </div>
 
+				<div class="register_form_label"> 침실 수 </div>
 				<div class="input-field col s12"> 
-					<select>
+					<select name="num_bedroom">
  						<option value="" disabled selected> 하나를 선택해주세요. </option>
 						<option value="1"> 1 </option><option value="2"> 2 </option><option value="3"> 3 </option>
 						<option value="4"> 4 </option><option value="5"> 5 </option><option value="6"> 6 </option>
@@ -45,11 +56,11 @@
 						<!-- <option value="13"> 13 </option><option value="14"> 14 </option><option value="15"> 15 </option> -->
 						<!-- <option value="16"> 16 </option><option value="17"> 17 </option><option value="18"> 18 </option> -->
 					</select>
-					<label class="register_form_label"> 침실 수 </label>
                 </div>
 
+				<div class="register_form_label"> 침대 수 </div>
                 <div class="input-field col s12"> 
-					<select>
+					<select name="num_bed">
  						<option value="" disabled selected> 하나를 선택해주세요. </option>
 						<option value="1"> 1 </option><option value="2"> 2 </option><option value="3"> 3 </option>
 						<option value="4"> 4 </option><option value="5"> 5 </option><option value="6"> 6 </option>
@@ -58,11 +69,11 @@
 						<option value="13"> 13 </option><option value="14"> 14 </option><option value="15"> 15 </option>
 						<!-- <option value="16"> 16 </option><option value="17"> 17 </option><option value="18"> 18 </option> -->
 					</select>
-					<label class="register_form_label"> 침대 수 </label>
                 </div>
 
+				<div class="register_form_label"> 욕실 수 </div>
                 <div class="input-field col s12"> 
-					<select>
+					<select name="num_bathroom">
  						<option value="" disabled selected> 하나를 선택해주세요. </option>
 						<option value="1"> 1 </option><option value="2"> 2 </option><option value="3"> 3 </option>
 						<option value="4"> 4 </option><option value="5"> 5 </option><option value="6"> 6 </option>
@@ -71,21 +82,71 @@
 						<!-- <option value="13"> 13 </option><option value="14"> 14 </option><option value="15"> 15 </option> -->
 						<!-- <option value="16"> 16 </option><option value="17"> 17 </option><option value="18"> 18 </option> -->
 					</select>
-					<label class="register_form_label"> 욕실 수 </label>
                 </div>
 
-<!--                 <div>
-					<img class="" src="/images/icons/villim_main_logo_lg.png">
-				</div> -->
- 		<!-- 	<div class="input-field col s12"> 
-                    <i class="material-icons prefix">email</i>
-                    <input id="email" name="email" type="email" class="validate">
-                    <label for="email" data-error="이메일 주소가 올바르지 않습니다">이메일</label>
-                </div> -->
+                <% if(amenities) { %>
+				<div class="register_form_label"> 편의시설 </div>
+				<div style="width: 100%; height: 265px">
+                <% for (var i=0; i<amenities.length; i++) { %>
+	                <div class="input-field col s6 m6 l4"> 
+						<input type="checkbox" name="amenities<%-i+1-%>" id="check<%-i+1-%>" />
+	   					<label for="check<%-i+1-%>"> <%- amenities[i].name -%> </label>
+					</div>
+				<% } } %>
+				</div>
+
+
+				<div class="register_form_label"> 위치 </div>
+				<div style="padding-left:10px">
+	       			<a href="#" class="btn waves-effect waves-light white nav_btn" style="color:black"> 우편번호 찾기 </a>
+            	</div>
+                <div class="input-field col s12" style="margin-bottom:0">
+	                <input disabled name="zip_code" type="text">
+                </div>
+                <div class="input-field col s12">
+	                <input placeholder="상세주소를 입력해 주세요." name="address" type="text">
+                </div>
+
+
+				<div class="register_form_label" style="margin-top:15px"> 주택명 </div>
+                <div class="input-field col s12">
+	                <input placeholder="주택명을 정해주세요." name="house_name" type="text">
+                </div>
+
+				<div class="register_form_label"> 사진 </div>
+				<div class="register_file_wrapper">
+					<div class="file-field input-field" style="margin: 30px 130px">
+						<div class="btn waves-effect waves-light card_btn red accent-2">
+							<span>사진 업로드 </span>
+							<input type="file" name="photo">
+						</div>
+						<div class="file-path-wrapper">
+							<input disabled class="file-path validate" type="text">
+						</div>
+					</div>
+				</div>
+
+
+				<div class="register_form_label"> 희망 월세 가격 </div>
+                <div class="input-field col s12">
+	                <input placeholder="예) 150만원 " name="monthly_rate" type="text">
+                </div>
+
+				<div class="register_form_label"> 공과금 (관리비) </div>
+                <div class="input-field col s12">
+	                <input placeholder="예) 30만원 " name="utility_fee" type="text">
+                </div>
+
+                <div class="col s12" style="margin-bottom: 20px">
+                  *Villim은 임차인들에게 적합한 주거환경을 제공하기 위해 입력하신 정보 및 주택 사전조사를 통하여 검토를 실시합니다.
+                </div>
+                <div class="col s12" style="margin-bottom: 20px">
+                  **신청 된 주거지는 임대인 동의하에 Villim 기사가 직접 해당 주택을 방문하여 사진 촬영 및 Villim 스마트 도어락 설치가 됩니다.
+                </div>
 
             </div>
             <div class="center-align">
-                <button type="submit" class="btn waves-effect waves-light card_btn red accent-2">등록 신청 </button>
+                <button type="submit" class="btn waves-effect waves-light card_btn red accent-2" style="text-align:left">등록 신청 </button>
             </div>
         	</form>
    		</div> 

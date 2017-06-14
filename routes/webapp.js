@@ -2,7 +2,7 @@
 
 var express = require('express');
 var router = express.Router();
-var connection = require('../connection');
+var db = require('../connection');
 
 // GET index page
 router.get('/', function(req, res, next) {
@@ -51,17 +51,30 @@ router.get('/register', function(req, res) {
 	if(!req.isAuthenticated()) {
 		res.redirect('/login');
 	}
+	var context = {};
 
-	// var amenities = connection.query("SELECT * FROM amenities", function(err, rows, fields) {
-	// 	if (err) throw err;
-	// 	return rows;
-	// });
-
-	// console.log(amenities);
 	var user = userInfo(req);
 
-	res.render('register', {user: user, noRegisterBtn: 1});
+	context['user'] = user;
+	context['noRegisterBtn'] = 1;
+
+	getAllObjects("amenities", context, function(err, rows) {
+		if(err) {
+			res.json(err);
+		}
+
+		else {
+			context['amenities'] = JSON.parse(JSON.stringify(rows));
+			res.render('register', context);
+		}
+	});
 });
+
+
+router.post('/register', function(req, res) {
+	console.log(req.body);
+});
+
 
 
 module.exports = router;
@@ -96,10 +109,11 @@ function userInfo(req) {
 	}
 };
 
-// function getAmenities(data, callback) {
-// 	connection.query("SELECT * FROM amenities", function(err, rows, fields) {
-// 		if (err) throw err;
-// 		return rows;
-// 	});
-// };
+
+
+// get all objects of given name
+function getAllObjects(name, context, callback) {
+	return db.query("select * from ??", [name], callback);
+}
+
 

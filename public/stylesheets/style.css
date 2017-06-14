@@ -7,6 +7,17 @@ a {
   color: #00B7FF;
 }
 
+/* Overwrite materialize media query for nav size */
+nav .brand-logo.left{
+	left:0 !important;
+}
+
+nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
+	height: 64px !important;
+	line-height: 64px !important;
+}
+
+
 .text_thick {
 	font-weight: 900 !important;
 }
@@ -39,6 +50,14 @@ a {
 	border: black 1px solid !important;
 	padding: 0 20px !important;
 }
+
+@media only screen and (max-width: 550px) {
+	.nav_btn {
+		visibility: hidden; 
+	}		
+}
+
+
 
 .nav_btn:hover {
 	border: #ff5252 1px solid !important;
@@ -82,7 +101,9 @@ section#benefit {
 }
 
 section#benefit .container {
+	/*text-align: center;*/
 	width: 80%;
+	/*margin: 40px;*/
 }
 
 section#benefit img {
@@ -90,7 +111,7 @@ section#benefit img {
 	height: 60px;
 }
 
-section#benefit .benefit-item {
+section#benefit .benefit_item {
 	margin: 0 20px;
 }
 

@@ -6,12 +6,13 @@ var db = require('../connection');
 
 // GET index page
 router.get('/', function(req, res, next) {
-	if(req.user && req.user.is_admin) {
+	if(req.user && req.user.is_admin[0]) {
 		res.redirect('/admin');
 	}	
-	var user = userInfo(req); 
-
-	res.render('index', {user: user});
+	else {
+		var user = userInfo(req);
+		res.render('index', {user: user});
+	}
 });
 
 
@@ -50,7 +51,11 @@ router.get('/dashboard', isLoggedIn, function(req, res) {
 
 
 // GET house register page
-router.get('/register', isLoggedIn, function(req, res) {
+router.get('/register', function(req, res) {
+	if (!req.isAuthenticated()) {
+		res.redirect('login');
+	}
+
 	var context = {};
 
 	var user = userInfo(req);
@@ -58,7 +63,7 @@ router.get('/register', isLoggedIn, function(req, res) {
 	context['user'] = user;
 	context['noRegisterBtn'] = 1;
 
-	getAllObjects("amenities", context, function(err, rows) {
+	getAllObjects1("amenities", context, function(err, rows) {
 		if(err) {
 			res.json(err);
 		}
@@ -84,7 +89,8 @@ router.get('/admin', isLoggedIn, function(req, res) {
 
 	context['user'] = user; 
 
-	getAllObjects("user", "house", "reservation", "amenities", context, function(err, rows) {
+
+	getAllObjects4("user", "house", "reservation", "amenities", context, function(err, rows) {
 		if(err) {
 			res.json(err);
 		}
@@ -128,16 +134,22 @@ function userInfo(req) {
 			mobile_num: req.user.mobile_num,
 			dob: req.user.date_of_birth, 
 			about: req.user.about,
-			status: req.user.status
+			status: req.user.status,
+			is_admin: req.user.is_admin[0]
 		};
 		return userInfo; 
 	}
 };
 
 
+// get all objects of given name
+function getAllObjects1(obj1, context, callback) {
+	return db.query("select * from ??", [obj1], callback);
+}
+
 
 // get all objects of given name
-function getAllObjects(obj1, obj2, obj3, obj4, context, callback) {
+function getAllObjects4(obj1, obj2, obj3, obj4, context, callback) {
 	return db.query("select * from ??; select * from ??; select * from ??; select * from ??", [obj1, obj2, obj3, obj4], callback);
 }
 

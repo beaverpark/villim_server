@@ -6,6 +6,9 @@ var db = require('../connection');
 
 // GET index page
 router.get('/', function(req, res, next) {
+	if(req.user && req.user.is_admin) {
+		res.redirect('/admin');
+	}	
 	var user = userInfo(req); 
 
 	res.render('index', {user: user});
@@ -47,10 +50,7 @@ router.get('/dashboard', isLoggedIn, function(req, res) {
 
 
 // GET house register page
-router.get('/register', function(req, res) {
-	if(!req.isAuthenticated()) {
-		res.redirect('/login');
-	}
+router.get('/register', isLoggedIn, function(req, res) {
 	var context = {};
 
 	var user = userInfo(req);
@@ -70,9 +70,34 @@ router.get('/register', function(req, res) {
 	});
 });
 
-
+// POST register house
 router.post('/register', function(req, res) {
 	console.log(req.body);
+});
+
+
+// GET admin page
+router.get('/admin', isLoggedIn, function(req, res) {
+	var user = userInfo(req); 
+
+	var context = {};
+
+	context['user'] = user; 
+
+	getAllObjects("user", "house", "reservation", "amenities", context, function(err, rows) {
+		if(err) {
+			res.json(err);
+		}
+
+		else {
+			context['all_users'] = JSON.parse(JSON.stringify(rows[0]));
+			context['all_houses'] = JSON.parse(JSON.stringify(rows[1]));
+			context['all_reservations'] = JSON.parse(JSON.stringify(rows[2]));
+			context['all_amenities'] = JSON.parse(JSON.stringify(rows[3]));
+
+			res.render('admin', context);
+		}
+	});
 });
 
 
@@ -112,8 +137,10 @@ function userInfo(req) {
 
 
 // get all objects of given name
-function getAllObjects(name, context, callback) {
-	return db.query("select * from ??", [name], callback);
+function getAllObjects(obj1, obj2, obj3, obj4, context, callback) {
+	return db.query("select * from ??; select * from ??; select * from ??; select * from ??", [obj1, obj2, obj3, obj4], callback);
 }
+
+
 
 

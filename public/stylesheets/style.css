@@ -219,6 +219,32 @@ footer#index_footer2 ul, li {
 }
 
 
+/* Admin page css */
+
+.admin_container {
+	width: 95% !important;
+}
+
+.admin_content {
+	padding: 50px 0;
+}
+
+.admin_form_label {
+	font-size: 16px;
+	font-weight: 900;
+}
+
+.admin_table .name_row {
+	font-size: 14px;
+	font-weight: 900;
+}
+
+.admin_table {
+	font-size: 12px;
+}
+
+
+
 /* Overwrite materialize tabs css */
 .tabs .indicator {
 	background-color: black  !important;

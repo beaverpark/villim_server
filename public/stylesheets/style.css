@@ -194,7 +194,7 @@ footer#index_footer2 ul, li {
 	font-size: 20px;
 }
 
-.register_form {
+.register_form_content {
 	padding-left: 40px !important;
 	padding-right: 80px !important;
 }
@@ -205,9 +205,9 @@ footer#index_footer2 ul, li {
 	padding-left: 10px;
 }
 
-.register_content .input-field {
+#register_form .input-field {
 	margin-top: 0;
-	margin-bottom: 15px;
+	margin-bottom: 35px;
 }
 
 .register_file_wrapper {
@@ -218,6 +218,13 @@ footer#index_footer2 ul, li {
 	margin: 0 10px 15px;
 }
 
+.register_error {
+	color: #FF0000;
+}
+
+.register_valid {
+	color: #26a69a;
+}
 
 /* Admin page css */
 
@@ -267,6 +274,16 @@ footer#index_footer2 ul, li {
 .row_form {
 	margin: 40px;
 }
+
+form input {
+	margin-bottom: 0 !important;
+}
+
+.caret {
+	margin:0 !important;
+	top: 20px !important;
+}
+
 
 /* overwrite materialize form css */
 .select-wrapper input.select-dropdown {

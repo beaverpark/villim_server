@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<script type="text/javascript">
+<html>
+	<!-- head -->
+	<%- include('header') -%>
+	<script src="/jquery_validate/jquery.validate.min.js"></script>    
+	<script>
 
 	window.onload = function() {
 		$('select').material_select();
@@ -13,27 +17,56 @@
 		// 	$('#house_type').val($('#house_type_select').val());
 		// });
 
+		// $('#house_type_input .select-dropdown').attr('name', 'house_type');
+
+
+		$.validator.setDefaults({
+		   ignore: ":hidden:not('select')"
+		});
+
+		$('#register_form').validate({
+			debug:true, 
+			rules: {
+				house_type: {
+					required:true
+				},
+				monthly_rate: {
+					required: true
+				},
+				utility_fee: {
+					required: true
+				}
+			},
+			messages: {
+			},
+			errorElement : 'div',
+			errorClass: 'register_error',
+			validClass: 'register_valid'
+			// errorPlacement: function(error, element) {
+			// 	var placement = $(element).data('error');
+			// 	if (placement) {
+			// 		$(placement).append(error);
+			// 	} 
+			// 	else {
+			// 		error.insertAfter(element);
+			// 	}
+			// }
+		});
 	}
-</script>
-
-
-<html>
-  <!-- head -->
-  <%- include('header') -%>
-
+	</script>
 <body>
    	<%- include('navbar') -%>
    	<div class="container">
     <div class="register_content">
     <div class="row">
-   		<div class="col s12 m9 l9 register_form">
+   		<div class="col s12 m9 l9 register_form_content">
    			<div class="text_thick register_main_text"> <%- user.username -%> 님 안녕하세요? </div>
 			<div class="text_thick register_sub_text"> 회원님의 임대주택 등록을 도와드리겠습니다. </div>
 
 			<!-- error message here -->
 			<br>
 			<!-- register form -->
-			<form action="register" method="post">
+			<form action="register" method="post" id="register_form">
 			<div class="row row_form">
 				<div class="register_form_label"> 주택 종류 </div>
 				<div class="input-field col s12"> 
@@ -129,12 +162,12 @@
 
 				<div class="register_form_label"> 희망 월세 가격 </div>
                 <div class="input-field col s12">
-	                <input placeholder="예) 150만원 " name="monthly_rate" type="text">
+	                <input placeholder="예) 150만원 " name="monthly_rate" type="text" class="validate">
                 </div>
 
 				<div class="register_form_label"> 공과금 (관리비) </div>
                 <div class="input-field col s12">
-	                <input placeholder="예) 30만원 " name="utility_fee" type="text">
+	                <input placeholder="예) 30만원 " name="utility_fee" type="text" class="validate">
                 </div>
 
                 <div class="col s12" style="margin-bottom: 20px">
@@ -158,8 +191,8 @@
    	</div>
    	</div>
 
-
     <!-- footer -->
 	<%- include('footer') -%>
+
 </body>
 </html>

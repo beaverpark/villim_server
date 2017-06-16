@@ -47,7 +47,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/js', express.static(__dirname + '/node_modules/materialize-css/dist/js'));
 app.use('/css', express.static(__dirname + '/node_modules/materialize-css/dist/css'));
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist'));
-app.use('/jquery_validate', express.static(__dirname + '/node_modules/jquery-validation/dist'));
+app.use('/jquery_validate', express.static(__dirname + '/node_modules/jquery-form-validator/form-validator/'));
 
 
 /***********************************************/

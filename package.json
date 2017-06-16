@@ -18,6 +18,7 @@
     "express-mysql-session": "^1.2.1",
     "express-session": "^1.15.3",
     "jquery": "^3.2.1",
+    "jquery-form-validator": "^2.3.64",
     "jquery-validation": "^1.16.0",
     "materialize-css": "^0.98.2",
     "morgan": "~1.8.1",

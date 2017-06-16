@@ -2,11 +2,11 @@
 <html>
 	<!-- head -->
 	<%- include('header') -%>
-	<script src="/jquery_validate/jquery.validate.min.js"></script>    
+	<script src="/jquery_validate/jquery.form-validator.min.js"></script>    
 	<script>
 
 	window.onload = function() {
-		$('select').material_select();
+		// $('select').material_select();
 
 		// $('.select-wrapper').
 
@@ -18,39 +18,48 @@
 		// });
 
 		// $('#house_type_input .select-dropdown').attr('name', 'house_type');
+		// $("select").className ='';
+		$("select").css({display: 'block', height: 40, width: '100%', borderColor:'black'});
 
 
-		$.validator.setDefaults({
-		   ignore: ":hidden:not('select')"
-		});
 
-		$('#register_form').validate({
-			debug:true, 
-			rules: {
-				house_type: {
-					required:true
-				},
-				monthly_rate: {
-					required: true
-				},
-				utility_fee: {
-					required: true
-				}
-			},
-			messages: {
-			},
-			errorElement : 'div',
-			errorClass: 'register_error',
-			validClass: 'register_valid'
-			// errorPlacement: function(error, element) {
-			// 	var placement = $(element).data('error');
-			// 	if (placement) {
-			// 		$(placement).append(error);
-			// 	} 
-			// 	else {
-			// 		error.insertAfter(element);
-			// 	}
-			// }
+		// $.validator.setDefaults({
+		//    ignore: ":hidden:not('select')"
+		// });
+
+		// $('#register_form').validate({
+		// 	debug:true, 
+		// 	rules: {
+		// 		house_type: {
+		// 			required:true
+		// 		},
+		// 		monthly_rate: {
+		// 			required: true
+		// 		},
+		// 		utility_fee: {
+		// 			required: true
+		// 		}
+		// 	},
+		// 	messages: {
+		// 	},
+		// 	errorElement : 'div',
+		// 	errorClass: 'register_error',
+		// 	validClass: 'register_valid'
+		// 	// errorPlacement: function(error, element) {
+		// 	// 	var placement = $(element).data('error');
+		// 	// 	if (placement) {
+		// 	// 		$(placement).append(error);
+		// 	// 	} 
+		// 	// 	else {
+		// 	// 		error.insertAfter(element);
+		// 	// 	}
+		// 	// }
+		// });
+
+		$.validate({
+			form:'#register_form',
+			modules : 'date, security',
+			borderColorOnError: 'red'
 		});
 	}
 	</script>
@@ -70,7 +79,7 @@
 			<div class="row row_form">
 				<div class="register_form_label"> 주택 종류 </div>
 				<div class="input-field col s12"> 
-					<select name="house_type">
+					<select name="house_type" data-validation="required" data-validation-error-msg="필수항목 입니다.">
  						<option value="" disabled selected> 하나를 선택해주세요. </option>
 						<option value="1"> 집 전체 </option>
 						<option value="2"> 개인실 </option>
@@ -80,7 +89,7 @@
 
 				<div class="register_form_label"> 침실 수 </div>
 				<div class="input-field col s12"> 
-					<select name="num_bedroom">
+					<select name="num_bedroom" data-validation="required" data-validation-error-msg="필수항목 입니다."> 
  						<option value="" disabled selected> 하나를 선택해주세요. </option>
 						<option value="1"> 1 </option><option value="2"> 2 </option><option value="3"> 3 </option>
 						<option value="4"> 4 </option><option value="5"> 5 </option><option value="6"> 6 </option>
@@ -93,7 +102,7 @@
 
 				<div class="register_form_label"> 침대 수 </div>
                 <div class="input-field col s12"> 
-					<select name="num_bed">
+					<select name="num_bed" data-validation="required" data-validation-error-msg="필수항목 입니다.">
  						<option value="" disabled selected> 하나를 선택해주세요. </option>
 						<option value="1"> 1 </option><option value="2"> 2 </option><option value="3"> 3 </option>
 						<option value="4"> 4 </option><option value="5"> 5 </option><option value="6"> 6 </option>
@@ -106,7 +115,7 @@
 
 				<div class="register_form_label"> 욕실 수 </div>
                 <div class="input-field col s12"> 
-					<select name="num_bathroom">
+					<select name="num_bathroom" data-validation="required" data-validation-error-msg="필수항목 입니다.">
  						<option value="" disabled selected> 하나를 선택해주세요. </option>
 						<option value="1"> 1 </option><option value="2"> 2 </option><option value="3"> 3 </option>
 						<option value="4"> 4 </option><option value="5"> 5 </option><option value="6"> 6 </option>
@@ -119,7 +128,7 @@
 
                 <% if(amenities) { %>
 				<div class="register_form_label"> 편의시설 </div>
-				<div style="width: 100%; height: 265px">
+				<div style="width: 100%">
                 <% for (var i=0; i<amenities.length; i++) { %>
 	                <div class="input-field col s6 m6 l4"> 
 						<input type="checkbox" name="amenities<%-i+1-%>" id="check<%-i+1-%>" />
@@ -137,37 +146,37 @@
 	                <input disabled name="zip_code" type="text">
                 </div>
                 <div class="input-field col s12">
-	                <input placeholder="상세주소를 입력해 주세요." name="address" type="text">
+	                <input placeholder="상세주소를 입력해 주세요." name="address" type="text" data-validation="required" data-validation-error-msg="필수항목 입니다.">
                 </div>
 
 
-				<div class="register_form_label" style="margin-top:15px"> 주택명 </div>
+				<div class="register_form_label" > 주택명 </div>
                 <div class="input-field col s12">
-	                <input placeholder="주택명을 정해주세요." name="house_name" type="text">
+	                <input placeholder="주택명을 정해주세요." name="house_name" type="text" data-validation="required" data-validation-error-msg="필수항목 입니다.">
                 </div>
 
 				<div class="register_form_label"> 사진 </div>
 				<div class="register_file_wrapper">
-					<div class="file-field input-field" style="margin: 30px 130px">
-						<div class="btn waves-effect waves-light card_btn red accent-2">
+					<div class="file-field input-field" style="margin: auto">
+						<div class="btn waves-effect waves-light red accent-2" style="display:block">
 							<span>사진 업로드 </span>
 							<input type="file" name="photo">
 						</div>
-						<div class="file-path-wrapper">
+<!-- 						<div class="file-path-wrapper">
 							<input disabled class="file-path validate" type="text">
-						</div>
+						</div> -->
 					</div>
 				</div>
 
 
-				<div class="register_form_label"> 희망 월세 가격 </div>
+				<div class="register_form_label" style="padding-top: 30px"> 희망 월세 가격 </div>
                 <div class="input-field col s12">
-	                <input placeholder="예) 150만원 " name="monthly_rate" type="text" class="validate">
+	                <input placeholder="예) 150만원 " name="monthly_rate" type="text" data-validation="required" data-validation-error-msg="필수항목 입니다.">
                 </div>
 
 				<div class="register_form_label"> 공과금 (관리비) </div>
                 <div class="input-field col s12">
-	                <input placeholder="예) 30만원 " name="utility_fee" type="text" class="validate">
+	                <input placeholder="예) 30만원 " name="utility_fee" type="text" data-validation="required" data-validation-error-msg="필수항목 입니다.">
                 </div>
 
                 <div class="col s12" style="margin-bottom: 20px">

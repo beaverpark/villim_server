@@ -203,6 +203,7 @@ footer#index_footer2 ul, li {
 	font-size: 16px;
 	font-weight: 900;
 	padding-left: 10px;
+	padding-bottom: 10px;
 }
 
 #register_form .input-field {
@@ -212,10 +213,13 @@ footer#index_footer2 ul, li {
 
 .register_file_wrapper {
 	border: 1px solid black;
+	width: 100%;
 	height:250px;
+	display: inline-flex;
+	margin-left: 10px;
 	/*text-align: center;*/
-	padding: 60px;
-	margin: 0 10px 15px;
+	/*padding: 60px;*/
+	/*margin: 0 10px 15px;*/
 }
 
 .register_error {
@@ -275,15 +279,19 @@ footer#index_footer2 ul, li {
 	margin: 40px;
 }
 
+.form_select_label {
+	/*padding-bottom: 10px;*/
+}
+
 form input {
 	margin-bottom: 0 !important;
 }
-
+/*
 .caret {
 	margin:0 !important;
 	top: 20px !important;
 }
-
+*/
 
 /* overwrite materialize form css */
 .select-wrapper input.select-dropdown {
@@ -298,7 +306,22 @@ form input {
 
 
 /* Error msgs */
-.err_msg {
+select .error {
+	border: red solid 1px;
+}
+
+.form-error {
+	color: red;
+}
+
+select .valid {
+	border: green solid 1px;
+}
+
+
+/*div .err_msg {
 	color: #ff5252;
 }
+*/
+
 

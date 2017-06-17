@@ -49,6 +49,10 @@ app.use('/css', express.static(__dirname + '/node_modules/materialize-css/dist/c
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist'));
 app.use('/jquery_validate', express.static(__dirname + '/node_modules/jquery-form-validator/form-validator/'));
 
+/**************************************/
+/*** other npm downloaded libraries ***/
+/**************************************/
+
 
 /***********************************************/
 /*** PASSPORT(login, signup, session) CONFIG ***/

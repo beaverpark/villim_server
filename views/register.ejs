@@ -81,9 +81,9 @@
 				<div class="input-field col s12"> 
 					<select name="house_type" data-validation="required" data-validation-error-msg="필수항목 입니다.">
  						<option value="" disabled selected> 하나를 선택해주세요. </option>
-						<option value="1"> 집 전체 </option>
-						<option value="2"> 개인실 </option>
-						<option value="3"> 다인실 </option>
+						<option value="0"> 집 전체 </option>
+						<option value="1"> 개인실 </option>
+						<option value="2"> 다인실 </option>
 					</select>
                 </div>
 
@@ -131,8 +131,8 @@
 				<div style="width: 100%">
                 <% for (var i=0; i<amenities.length; i++) { %>
 	                <div class="input-field col s6 m6 l4"> 
-						<input type="checkbox" name="amenities<%-i+1-%>" id="check<%-i+1-%>" />
-	   					<label for="check<%-i+1-%>"> <%- amenities[i].name -%> </label>
+						<input type="checkbox" name="amenities<%- i+1 -%>" id="check<%- i+1 -%>" />
+	   					<label for="check<%- i+1 -%>"> <%- amenities[i].name -%> </label>
 					</div>
 				<% } } %>
 				</div>

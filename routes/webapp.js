@@ -63,7 +63,7 @@ router.get('/register', function(req, res) {
 	context['user'] = user;
 	context['noRegisterBtn'] = 1;
 
-	getAllObjects1("amenities", context, function(err, rows) {
+	selectAllObjects1("amenities", context, function(err, rows) {
 		if(err) {
 			res.json(err);
 		}
@@ -76,8 +76,65 @@ router.get('/register', function(req, res) {
 });
 
 // POST register house
-router.post('/register', function(req, res) {
-	console.log(req.body);
+router.post('/register', isLoggedIn, function(req, res) {
+
+	var house_context = {};
+
+	house_context['user_id'] = req.user.id; 
+	house_context['name'] = req.body.house_name;
+	house_context['addr_full'] = req.body.address;
+	// house_context['addr_summary'] = req.body.
+	// house_context['addr_direction'] = req.body.
+	// house_context['description'] = req.body.
+	house_context['room_type'] = req.body.house_type;
+	// house_context['num_guest'] = req.body.
+	house_context['num_bedroom'] = req.body.num_bedroom;
+	house_context['num_bed'] = req.body.num_bed;
+	house_context['num_bathroom'] = req.body.num_bathroom;
+	// house_context['daily_rate'] = req.body.
+	house_context['monthly_rate'] = req.body.monthly_rate;
+	// house_context['deposit'] = req.body.
+	// house_context['cleaning_fee'] = req.body.;
+	house_context['utility_fee'] = req.body.utility_fee;
+	// house_images 
+
+	// TODO: update this list if additional amenities gets added to the db
+	var amenitiesList = [req.body.amenities1, req.body.amenities2, req.body.amenities3, req.body.amenities4, req.body.amenities5, req.body.amenities6,
+						req.body.amenities7, req.body.amenities8, req.body.amenities9, req.body.amenities10, req.body.amenities11, req.body.amenities12,
+						req.body.amenities13, req.body.amenities14, req.body.amenities15, req.body.amenities16, req.body.amenities17, req.body.amenities18];
+
+	// save the selected amenities into list  
+	var amenities = [];
+	for(var i=0; i<amenitiesList.length; i++) {
+		if(amenitiesList[i] == "on") {
+			amenities.push(i + 1);
+		}
+	}
+	house_context['amenities'] = amenities; 
+
+	// insert into house table 
+	insertHouse(house_context, function(err, rows) {
+		if(err) res.json(err);
+
+		else {
+			console.log("register house successful");
+
+			var houseAmenities_context = {};
+
+			houseAmenities_context['house_id'] = rows.insertId;
+			houseAmenities_context['amenities'] = house_context.amenities;
+
+			// link house and its amenities 
+			insertHouseAmenities(houseAmenities_context, function(err, rows) {
+				if(err) res.json(err);
+
+				else {
+					console.log("register house amenities successful");
+					res.redirect('/');
+				}
+			});
+		}
+	});
 });
 
 
@@ -89,11 +146,9 @@ router.get('/admin', isLoggedIn, function(req, res) {
 
 	context['user'] = user; 
 
-
-	getAllObjects4("user", "house", "reservation", "amenities", context, function(err, rows) {
-		if(err) {
-			res.json(err);
-		}
+	// get all cols from user, house ,reservation, amenities table
+	selectAllObjects4("user", "house", "reservation", "amenities", context, function(err, rows) {
+		if(err) res.json(err);
 
 		else {
 			context['all_users'] = JSON.parse(JSON.stringify(rows[0]));
@@ -106,12 +161,12 @@ router.get('/admin', isLoggedIn, function(req, res) {
 	});
 });
 
-
-
 module.exports = router;
 
 
-// ===== Helper functions =====
+/************************/
+/*** helper functions ***/
+/************************/
 
 // if user is not logged in, navigates to index page 
 function isLoggedIn(req, res, next) {
@@ -141,18 +196,41 @@ function userInfo(req) {
 	}
 };
 
+/************************/
+/*** QUERY functions ****/
+/************************/
 
-// get all objects of given name
-function getAllObjects1(obj1, context, callback) {
+// get all cols of given table name
+function selectAllObjects1(obj1, context, callback) {
 	return db.query("select * from ??", [obj1], callback);
 }
 
 
-// get all objects of given name
-function getAllObjects4(obj1, obj2, obj3, obj4, context, callback) {
+// get all cols of given 4 table names
+function selectAllObjects4(obj1, obj2, obj3, obj4, context, callback) {
 	return db.query("select * from ??; select * from ??; select * from ??; select * from ??", [obj1, obj2, obj3, obj4], callback);
 }
 
+// insert new house into house table 
+function insertHouse(house_context, callback) {
+	var insertQuery = "insert into house (user_id, name, addr_full, room_type, num_bedroom, num_bed, num_bathroom, monthly_rate, utility_fee) values (?,?,?,?,?,?,?,?,?)";
+	return db.query(insertQuery, [house_context.user_id, house_context.name, house_context.addr_full, house_context.room_type, house_context.num_bedroom, house_context.num_bed, house_context.num_bathroom, house_context.monthly_rate, house_context.utility_fee], callback); 
+}
 
+// insert(link) house and its amenities into house_amenities table  
+// 		houseAmenities_context = {house_id, amenities}
+// 		amenities = list of amenities ids [1,3,4,5]
+function insertHouseAmenities(houseAmenities_context, callback) {
+	var insertQueryTxt = "insert into house_amenities (house_id, amenities_id) values (?,?)";
+	var insertQuery= ""; 
+	var values = [];
 
+	for(var i=0; i<houseAmenities_context.amenities.length; i++) {
+		insertQuery += insertQueryTxt + ";";
+		values.push(houseAmenities_context.house_id);
+		values.push(houseAmenities_context.amenities[i]);
+	}
+
+	return db.query(insertQuery, values, callback);
+}
 

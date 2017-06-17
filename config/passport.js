@@ -1,6 +1,10 @@
 // passport configurations
 var localStrategy = require('passport-local').Strategy; 
 var bcrypt = require('bcrypt-nodejs');
+var moment = require('moment-timezone');
+moment.tz.setDefault("Asia/Seoul");
+
+
 
 module.exports = function(passport, connection) {
     /*
@@ -46,9 +50,10 @@ module.exports = function(passport, connection) {
                         password: bcrypt.hashSync(password, null, null)  // use the generateHash function in our user model
                     };
 
-                    var insertQuery = "INSERT INTO user ( email, password, firstname, lastname ) values (?,?,?,?)";
+                    var insertQuery = "INSERT INTO user ( email, password, firstname, lastname, created) values (?,?,?,?,?)";
+                    var created_at = moment().format("YYYY-MM-DD HH:MM:SS"); 
 
-                    connection.query(insertQuery,[newUser.email, newUser.password, newUser.firstname, newUser.lastname],function(err, rows) {
+                    connection.query(insertQuery,[newUser.email, newUser.password, newUser.firstname, newUser.lastname, created_at],function(err, rows) {
                         newUser.id = rows.insertId;
                         console.log("user created");
                         return done(null, newUser);

@@ -3,6 +3,13 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../connection');
+var moment = require('moment-timezone');
+moment.tz.setDefault("Asia/Seoul");
+
+
+
+// moment.tz.setDefault("Asia/Seoul");
+// console.log(moment().format("YYYY-MM-DD HH:MM:SS"));
 
 // GET index page
 router.get('/', function(req, res, next) {
@@ -144,6 +151,16 @@ router.get('/admin', isLoggedIn, function(req, res) {
 
 	var context = {};
 
+	var date;
+	date = new Date();
+	date = date.getUTCFullYear() + '-' +
+    ('00' + (date.getUTCMonth()+1)).slice(-2) + '-' +
+    ('00' + date.getUTCDate()).slice(-2) + ' ' + 
+    ('00' + date.getUTCHours()).slice(-2) + ':' + 
+    ('00' + date.getUTCMinutes()).slice(-2) + ':' + 
+    ('00' + date.getUTCSeconds()).slice(-2);
+	console.log(date);
+
 	context['user'] = user; 
 
 	// get all cols from user, house ,reservation, amenities table
@@ -213,22 +230,26 @@ function selectAllObjects4(obj1, obj2, obj3, obj4, context, callback) {
 
 // insert new house into house table 
 function insertHouse(house_context, callback) {
-	var insertQuery = "insert into house (user_id, name, addr_full, room_type, num_bedroom, num_bed, num_bathroom, monthly_rate, utility_fee) values (?,?,?,?,?,?,?,?,?)";
-	return db.query(insertQuery, [house_context.user_id, house_context.name, house_context.addr_full, house_context.room_type, house_context.num_bedroom, house_context.num_bed, house_context.num_bathroom, house_context.monthly_rate, house_context.utility_fee], callback); 
+	var created_at = moment().format("YYYY-MM-DD HH:MM:SS");
+	var insertQuery = "insert into house (user_id, name, addr_full, room_type, num_bedroom, num_bed, num_bathroom, monthly_rate, utility_fee, created) values (?,?,?,?,?,?,?,?,?,?)";
+	return db.query(insertQuery, [house_context.user_id, house_context.name, house_context.addr_full, house_context.room_type, house_context.num_bedroom, house_context.num_bed, house_context.num_bathroom, house_context.monthly_rate, house_context.utility_fee, created_at], callback); 
 }
 
 // insert(link) house and its amenities into house_amenities table  
 // 		houseAmenities_context = {house_id, amenities}
 // 		amenities = list of amenities ids [1,3,4,5]
 function insertHouseAmenities(houseAmenities_context, callback) {
-	var insertQueryTxt = "insert into house_amenities (house_id, amenities_id) values (?,?)";
-	var insertQuery= ""; 
+	var insertQueryTxt = "insert into house_amenities (house_id, amenities_id, created) values (?,?,?)";
+	var insertQuery= "";
 	var values = [];
+
+	var created_at = moment().format("YYYY-MM-DD HH:MM:SS");
 
 	for(var i=0; i<houseAmenities_context.amenities.length; i++) {
 		insertQuery += insertQueryTxt + ";";
 		values.push(houseAmenities_context.house_id);
 		values.push(houseAmenities_context.amenities[i]);
+		values.push(created_at);
 	}
 
 	return db.query(insertQuery, values, callback);

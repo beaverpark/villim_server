@@ -146,7 +146,10 @@
 	                <input disabled name="zip_code" type="text">
                 </div>
                 <div class="input-field col s12">
-	                <input placeholder="상세주소를 입력해 주세요." name="address" type="text" data-validation="required" data-validation-error-msg="필수항목 입니다.">
+	                <input placeholder="상세주소를 입력해 주세요." name="addr_full" type="text" data-validation="required" data-validation-error-msg="필수항목 입니다.">
+                </div>
+                <div class="input-field col s12">
+	                <input placeholder="짧은 주소: (시 구 동)" name="addr_summary" type="text" data-validation="required" data-validation-error-msg="필수항목 입니다.">
                 </div>
 
 
@@ -169,14 +172,14 @@
 				</div>
 
 
-				<div class="register_form_label" style="padding-top: 30px"> 희망 월세 가격 </div>
+				<div class="register_form_label" style="padding-top: 30px; inline-block"> 희망 월세 가격 (&#8361;)</div> 
                 <div class="input-field col s12">
-	                <input placeholder="예) 150만원 " name="monthly_rate" type="text" data-validation="required" data-validation-error-msg="필수항목 입니다.">
+	                <input placeholder="예) 1,500,000 " name="monthly_rate" type="text" data-validation="required" data-validation-error-msg="필수항목 입니다.">
                 </div>
 
-				<div class="register_form_label"> 공과금 (관리비) </div>
+				<div class="register_form_label" style="padding-top: 30px; inline-block"> 공과금/관리비 (&#8361;)</div> 
                 <div class="input-field col s12">
-	                <input placeholder="예) 30만원 " name="utility_fee" type="text" data-validation="required" data-validation-error-msg="필수항목 입니다.">
+	                <input placeholder="예) 300,000 " name="utility_fee" type="text" data-validation="required" data-validation-error-msg="필수항목 입니다.">
                 </div>
 
                 <div class="col s12" style="margin-bottom: 20px">

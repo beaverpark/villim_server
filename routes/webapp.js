@@ -112,8 +112,8 @@ router.post('/register', isLoggedIn, function(req, res) {
 
 	house_context['user_id'] = req.user.id; 
 	house_context['name'] = req.body.house_name;
-	house_context['addr_full'] = req.body.address;
-	// house_context['addr_summary'] = req.body.
+	house_context['addr_full'] = req.body.addr_full;
+	house_context['addr_summary'] = req.body.addr_summary;
 	// house_context['addr_direction'] = req.body.
 	// house_context['description'] = req.body.
 	house_context['room_type'] = req.body.house_type;
@@ -261,8 +261,8 @@ function insertHouse(house_context, callback) {
 
 	// main_image 
 
-	var insertQuery = "insert into house (user_id, name, addr_full, room_type, num_bedroom, num_bed, num_bathroom, monthly_rate, utility_fee, created) values (?,?,?,?,?,?,?,?,?,?)";
-	return db.query(insertQuery, [house_context.user_id, house_context.name, house_context.addr_full, house_context.room_type, house_context.num_bedroom, house_context.num_bed, house_context.num_bathroom, house_context.monthly_rate, house_context.utility_fee, created_at], callback); 
+	var insertQuery = "insert into house (user_id, name, addr_full, addr_summary, room_type, num_bedroom, num_bed, num_bathroom, monthly_rate, utility_fee, created) values (?,?,?,?,?,?,?,?,?,?,?)";
+	return db.query(insertQuery, [house_context.user_id, house_context.name, house_context.addr_full, house_context.addr_summary, house_context.room_type, house_context.num_bedroom, house_context.num_bed, house_context.num_bathroom, house_context.monthly_rate, house_context.utility_fee, created_at], callback); 
 }
 
 // insert(link) house and its amenities into house_amenities table  

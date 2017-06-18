@@ -43,9 +43,9 @@
                       <div class="card-content search_card_content">
                         <div class="search_card_rate text_thick"> &#8361; <%- house_monthly_rate[i].monthly_rate -%> / 1개월 </div>
                         <div class="search_card_name"> <%- house_name[i].name -%> </div>
-                        <div class="search_card_addr"> -주소- <%- house_addr_summary[i].addr_summary -%> </div>
+                        <div class="search_card_addr"> <%- house_addr_summary[i].addr_summary -%> </div>
                         <div class="search_card_rating">
-                          -별점- <%- house_avg_rating[i].avg_rating -%> 
+                          rating: <%- house_avg_rating[i].avg_rating -%> 
                         </div>                   
                       </div>       
                     </div>
@@ -97,7 +97,7 @@
           </div>
         </div>
         <div class="col s0 m6 l5">
-          Map
+          Fixed Map
         </div>
       </div>
     </div>

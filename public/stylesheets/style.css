@@ -254,6 +254,42 @@ footer#index_footer2 ul, li {
 	font-size: 12px;
 }
 
+/* Search page css */
+.search_container {
+	width: 95% !important;
+}
+
+.search_card {
+	border:0 !important;
+	box-shadow: none !important;
+}
+
+.search_card_content {
+	padding: 10px !important;
+	margin-bottom: 30px !important;
+}
+
+.search_card_rate {
+}
+
+.search_card_name {
+	font-size: 16px;
+}
+
+.search_card_addr {
+	font-size: 14px;
+}
+
+.search_card_rating {
+
+}
+
+.btn-floating.top_right_fab {
+	position: absolute;
+	right: 5px;
+	top: 5px;
+}
+
 
 
 /* Overwrite materialize tabs css */

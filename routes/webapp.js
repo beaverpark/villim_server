@@ -23,29 +23,52 @@ router.get('/', function(req, res, next) {
 });
 
 
+// TODO: redirect this back to search
 // GET search page
 router.get('/search', function(req, res) {
-	var user = userInfo(req); 
-
-	var location = req.body.location;
-	var from_date = req.body.from_date;
-	var to_date = req.body.to_date;
-
-	res.render('search', {user: user, location: location, from_date: from_date, to_date:to_date});
-
+	res.redirect('/');
 });
 
 
 // POST search houses
 router.post('/search', function(req, res) {
+	var	context = {};
+
 	var user = userInfo(req); 
+	context['user'] = user; 
+	context['location'] = req.body.location;
+	context['from_date'] = req.body.from_date;
+	context['to_date'] = req.body.to_date;
 
-	var location = req.body.location;
-	var from_date = req.body.from_date;
-	var to_date = req.body.to_date;
+	var query_context = {};
 
-	res.render('search', {user: user, location: location, from_date: from_date, to_date:to_date});
+	// for now, query all rooms 
+	selectHouse_search(query_context, function(err, rows) {
+		if(err) console.log(err);
+
+		else {
+
+			console.log("select houses successful");
+			context['house_main_image'] = JSON.parse(JSON.stringify(rows[0]));
+
+			// TODO: process monthly rate with commas ex-  150,000,000
+			context['house_monthly_rate'] = JSON.parse(JSON.stringify(rows[1]));
+			context['house_addr_summary'] = JSON.parse(JSON.stringify(rows[2]));
+			context['house_avg_rating'] = JSON.parse(JSON.stringify(rows[3]));
+			context['house_name'] = JSON.parse(JSON.stringify(rows[4]));
+
+			console.log(context)
+			res.render('search', context);
+		}
+	});
+
 });
+
+
+function selectHouse_search(context, callback) {
+	return db.query("select main_image from house; select monthly_rate from house; select addr_summary from house; select avg_rating from house; select name from house", callback);
+}
+
 
 
 // GET current user's profile
@@ -121,7 +144,8 @@ router.post('/register', isLoggedIn, function(req, res) {
 
 	// insert into house table 
 	insertHouse(house_context, function(err, rows) {
-		if(err) res.json(err);
+		if(err) 
+			console.log(err);
 
 		else {
 			console.log("register house successful");
@@ -228,9 +252,15 @@ function selectAllObjects4(obj1, obj2, obj3, obj4, context, callback) {
 	return db.query("select * from ??; select * from ??; select * from ??; select * from ??", [obj1, obj2, obj3, obj4], callback);
 }
 
+
+
+
 // insert new house into house table 
 function insertHouse(house_context, callback) {
 	var created_at = moment().format("YYYY-MM-DD HH:MM:SS");
+
+	// main_image 
+
 	var insertQuery = "insert into house (user_id, name, addr_full, room_type, num_bedroom, num_bed, num_bathroom, monthly_rate, utility_fee, created) values (?,?,?,?,?,?,?,?,?,?)";
 	return db.query(insertQuery, [house_context.user_id, house_context.name, house_context.addr_full, house_context.room_type, house_context.num_bedroom, house_context.num_bed, house_context.num_bathroom, house_context.monthly_rate, house_context.utility_fee, created_at], callback); 
 }

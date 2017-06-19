@@ -4,8 +4,12 @@ module.exports = function(app, passport) {
 	// GET login form
 	app.get('/login', function(req, res) {
 		if (req.isAuthenticated()) {
+			if(req.user.is_admin[0]) {
+				res.redirect('/admin/dashboard');
+			}
 			res.redirect('/');
 		}
+
 		res.render('login', {message: req.flash('loginMessage')});
 	});
 
@@ -24,9 +28,24 @@ module.exports = function(app, passport) {
 			else {
 			  req.session.cookie.expires = false;
 			}
-			res.redirect('/');
+			if(req.user.is_admin[0]) {
+				res.redirect('/admin/dashboard');
+			}
+			else {
+				res.redirect('/');
+			}
 		}
 	);
+
+	// GET login form
+	app.get('/admin', function(req, res) {
+		if (req.isAuthenticated() && req.user.is_admin[0]) {
+			res.redirect('/admin/dashboard');
+		}
+		res.render('login', {admin:"1", message: req.flash('loginMessage')});
+	});
+
+
 
 	// GET signup form
 	app.get('/signup', function(req, res) {
@@ -42,7 +61,6 @@ module.exports = function(app, passport) {
 		failureRedirect : '/signup', // redirect back to the signup page if there is an error
 		failureFlash : true // allow flash messages
 	}));
-
 
 	// GET log out 
 	app.get('/logout', function(req, res) {

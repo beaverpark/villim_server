@@ -1,18 +1,24 @@
 <div class="navbar-fixed">
   <nav class="nav_bg_color">
     <div class="nav-wrapper">
-      <a href="/" class="brand-logo left" style="color: black">
-        <img class="nav_logo" src="/images/icons/villim_main_logo_lg.png">
-      </a>
+      <% if(user) { %>
+        <% if(!user.is_admin) { %>
+          <a href="/" class="brand-logo left" style="color: black">
+        <% } else { %>
+          <a href="/admin/dashboard" class="brand-logo left" style="color: black">
+        <% } %>
+      <% } %>
+            <img class="nav_logo" src="/images/icons/villim_main_logo_lg.png">
+          </a>
       <ul id="side_content" class="nav_text right">
         <% if(typeof noRegisterBtn === 'undefined') { %>
-        <li><a href="register" class="btn waves-effect waves-light white nav_btn"> 방 등록하기 </a></li>
+        <li><a href="/register" class="btn waves-effect waves-light white nav_btn"> 방 등록하기 </a></li>
         <% } %>
         <% if(user) { %>
           <% if(!user.is_admin) { %>
           <li><a href="dashboard" class="waves-effect"> <%- user.username -%> 님</a></li>
           <% } %>
-          <li><a href="logout" class="waves-effect" style="color:red"> 로그아웃 </a></li>
+          <li><a href="/logout" class="waves-effect" style="color:red"> 로그아웃 </a></li>
 
         <% } else { %>
           <li><a href="signup" class="waves-effect"> 회원가입 </a></li>

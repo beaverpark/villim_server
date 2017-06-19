@@ -13,13 +13,13 @@ moment.tz.setDefault("Asia/Seoul");
 
 // GET index page
 router.get('/', function(req, res, next) {
-	if(req.user && req.user.is_admin[0]) {
-		res.redirect('/admin');
-	}	
-	else {
+	// if(req.user && req.user.is_admin[0]) {
+		// res.redirect('/admin/dashboard');
+	// }	
+	// else {
 		var user = userInfo(req);
 		res.render('index', {user: user});
-	}
+	// }
 });
 
 
@@ -170,20 +170,13 @@ router.post('/register', isLoggedIn, function(req, res) {
 
 
 // GET admin page
-router.get('/admin', isLoggedIn, function(req, res) {
+router.get('/admin/dashboard', function(req, res) {
+	if (!req.isAuthenticated())
+		res.redirect("/admin");
+
 	var user = userInfo(req); 
 
 	var context = {};
-
-	var date;
-	date = new Date();
-	date = date.getUTCFullYear() + '-' +
-    ('00' + (date.getUTCMonth()+1)).slice(-2) + '-' +
-    ('00' + date.getUTCDate()).slice(-2) + ' ' + 
-    ('00' + date.getUTCHours()).slice(-2) + ':' + 
-    ('00' + date.getUTCMinutes()).slice(-2) + ':' + 
-    ('00' + date.getUTCSeconds()).slice(-2);
-	console.log(date);
 
 	context['user'] = user; 
 
@@ -197,7 +190,7 @@ router.get('/admin', isLoggedIn, function(req, res) {
 			context['all_reservations'] = JSON.parse(JSON.stringify(rows[2]));
 			context['all_amenities'] = JSON.parse(JSON.stringify(rows[3]));
 
-			res.render('admin', context);
+			res.render('admin-dashboard', context);
 		}
 	});
 });

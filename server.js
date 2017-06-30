@@ -19,7 +19,7 @@ var connection = require('./connection');
 /*** Routes ***/
 /**************/
 var webapp = require('./routes/webapp');
-// var andriod = require('./routes/andriod');
+var android = require('./routes/android');
 // var ios = require('./routes/ios');
 
 
@@ -80,6 +80,7 @@ require('./authentication.js')(app, passport); // load our routes and pass in ou
 /*** app url navigation ***/
 /**************************/
 app.use('/', webapp);
+app.use('/a/', android);
 
 
 

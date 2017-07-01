@@ -33,6 +33,8 @@ module.exports = function(passport, connection) {
 			passReqToCallback: true	// passes back req to the callback 
 		},
 		function(req, username, password, done) {
+            var created_at = moment().format("YYYY-MM-DD HH:MM:SS"); 
+
 			//  check if the user trying to sign up already exists
 			connection.query("SELECT * FROM user WHERE email = ?", [username], function(err, rows) {
                 if (err)
@@ -51,7 +53,6 @@ module.exports = function(passport, connection) {
                     };
 
                     var insertQuery = "INSERT INTO user ( email, password, firstname, lastname, created) values (?,?,?,?,?)";
-                    var created_at = moment().format("YYYY-MM-DD HH:MM:SS"); 
 
                     connection.query(insertQuery,[newUser.email, newUser.password, newUser.firstname, newUser.lastname, created_at],function(err, rows) {
                         newUser.id = rows.insertId;

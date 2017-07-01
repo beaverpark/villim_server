@@ -5,7 +5,6 @@ var router = express.Router();
 var db = require('../connection');
 var moment = require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul");
-
 var async = require('async');
 
 function stringToList(stringList) {
@@ -16,6 +15,28 @@ function stringToListStr(stringList) {
 	return stringList.split(',');
 }
 
+function userInfo(req) {
+	var userInfo = {
+		id: req.user.id,
+		mobile_num: req.user.mobile_num,
+		email: req.user.email,
+		fullname : req.user.lastname + req.user.firstname,
+		firstname: req.user.firstname,
+		lastname: req.user.lastname, 
+		sex: req.user.sex, 
+		phone_number: req.user.phone_number, 
+		date_of_birth: req.user.date_of_birth, 
+		about: req.user.about,
+		host: req.user.is_host,
+		status: req.user.status,
+		profile_pic_url: req.user.profile_pic_url,
+		push_notifications: req.user.push_notifications,
+		preferred_currency: req.user.pref_currency,
+		preferred_language: req.user.pref_language,
+		city_of_residence: req.user.city_of_residence
+	};
+	return userInfo; 
+};
 
 // get user's full info 
 function getUserInfo(req, result) {
@@ -141,30 +162,7 @@ function getUserInfo(req, result) {
 	});
 };
 
-
-
-// sends current session's user info 
-router.get('/userinfo', function(req, res) {
-	// var user_id = req.session.passport.user; 
-	// if(typeof user_id === 'undefined') {
-	// 	res.json({query_success: false , message: "오류 발생: 없는 아이디", user_info: null});
-	// }
-	
-	// console.time("test");
-	if (!req.isAuthenticated()) {
-		return res.json({query_success: false , message: "err: user not logged in.", user_info: null});
-	}
-
-	// get user's full info 
-	var user_info = getUserInfo(req, function(user_info) {
-		if(user_info == -1) {
-			return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
-		}
-
-		return res.json({query_success: true, message: null, user_info});
-	}); 
-});
-
+// TODO: merge these three queries into one 
 // selects user's all house ids of current and past reservations 
 function selectUserAllReservation(user_id, callback) {
 	var selectQuery = "select group_concat(CASE when reservation.status = 1 then reservation.house_id end) as confirmed_list,"
@@ -182,7 +180,7 @@ function selectUserVisits(user_id, callback) {
 						+ "group_concat(CASE when visit.status = 2 then visit.house_id end) as done_list "
 						+ "from visit where user_id = ? group by user_id";
 	return db.query(selectQuery, [user_id], callback);
-}
+};
 
 // select user's hosting house ids 
 function selectHostingHouses(user_id, callback) {
@@ -191,7 +189,189 @@ function selectHostingHouses(user_id, callback) {
 };
 
 
-// get user's current or upcoming house/reservation info 
+// get host's full info 
+function getHostInfo(host_id, result) {
+	selectHostById(host_id, function(err, rows) {
+		if(err) {
+			console.log(err);
+			return result(-1);
+		}
+		var host_info = JSON.parse(JSON.stringify(rows))[0];
+
+		if(typeof host_info === 'undefined') {
+			console.log("host id doesn't exist");
+			return result(-1);
+		}
+		return result(host_info);
+	});
+};
+
+function selectHostById(host_id, callback) {
+	var selectQuery = "select u.id as host_id, concat(u.lastname, u.firstname) as host_name, u.about, u.profile_pic_url as host_profile_pic_url, h.rating as host_rating, h.review_count as host_review_count from user u inner join host h on u.id = h.id where u.id = ?";
+	return db.query(selectQuery, [host_id], callback);
+};
+
+// get house's full info  
+function getHouseInfo(house_id, result) {
+	selectHouseById(house_id, function(err, rows) {
+		if(err) {
+			console.log(err);
+			return result(-1);
+		}
+		var house_info = JSON.parse(JSON.stringify(rows))[0];
+
+		if(typeof house_info === 'undefined') {
+			console.log("house id doesn't exist");
+			return result(-1);
+		}
+		return result(house_info);
+	});
+};
+
+function selectHouseById(house_id, callback) {
+	var selectQuery = "select house.id as house_id, name as house_name, addr_full, addr_summary, addr_direction, description, type as house_type, num_guest, num_bedroom, num_bed, num_bathroom, monthly_rate as rate_per_month, daily_rate as rate_per_night, utility_fee, cleaning_fee, latitude, longitude, house_policy, cancellation_policy, main_image as house_thumbnail_url, rating_overall as house_rating, review_count as house_review_count from house inner join house_rating on house.id = house_rating.house_id where house.id = ?";
+	return db.query(selectQuery, [house_id], callback);
+};
+
+// get house's latest review  (review 가 없을때 대)
+function getLatestReview(house_id, result) {
+	selectLatestReviewByHouseId(house_id, function(err, rows) {
+		if(err) {
+			console.log(err);
+			return result(-1);
+		}
+		var latest_review_info = JSON.parse(JSON.stringify(rows))[0];
+		// if review doesn't exist
+		if(typeof latest_review_info === 'undefined') {
+			latest_review_info = {'review_last_reviewer': null, 'review_last_content': null, 'review_last_rating': null, 'review_last_profile_pic_url': ''};
+		}
+		return result(latest_review_info);
+	});
+};
+
+// TODO: query 다시 보기
+function selectLatestReviewByHouseId(house_id, callback) {
+	var selectQuery = "select r.commenter_id as review_last_reviewer, r.comment as review_last_content, r.rating_overall as review_last_rating, u.profile_pic_url as review_last_profile_pic_url from review r right outer join user u on r.commenter_id = u.id where r.house_id = ? order by r.created desc limit 1";
+	return db.query(selectQuery, [house_id], callback);
+}
+
+function getHouseAmenities(house_id, result) {
+	selectHouseAmenities(house_id, function(err, rows) {
+		if(err) {
+			console.log(err);
+			return result(-1);
+		}
+		var amenities = JSON.parse(JSON.stringify(rows))[0];
+		if(amenities.amenity_ids != null) {
+			var amenities_list = stringToList(amenities.amenity_ids);
+		}
+		else {
+			var amenities_list = [];
+		}
+		return result(amenities_list)
+	});
+};
+
+function selectHouseAmenities(house_id, callback) {
+	var selectQuery = "select group_concat(amenities_id) as amenity_ids from house_amenities where house_id = ?";
+	return db.query(selectQuery, [house_id], callback);
+}
+
+
+function getHousePics(house_id, result) {
+	selectHousePics(house_id, function(err, rows) {
+		if(err) {
+			console.log(err);
+			return result(-1);
+		}
+		var house_pics = JSON.parse(JSON.stringify(rows))[0];
+
+		if(house_pics.house_pic_urls != null) {
+			var house_pics_list = stringToListStr(house_pics.house_pic_urls);
+		}
+		else {
+			var house_pics_list = [];
+		}
+		return result(house_pics_list);
+
+	});
+};
+
+function selectHousePics(house_id, callback) {
+	var selectQuery = "select group_concat(image) as house_pic_urls from house_images where house_id = ?";
+	return db.query(selectQuery, [house_id], callback);
+}
+
+// 3. 유저 화면 - get user info about currently logged in user
+router.get('/userinfo', function(req, res) {	
+	// console.time("test");
+	if (!req.isAuthenticated()) {
+		return res.json({query_success: false , message: "err: user not logged in.", user_info: null});
+	}
+
+	// get user's full info 
+	getUserInfo(req, function(user_info) {
+		if(user_info == -1) {
+			return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+		}
+		console.log(user_info)
+		return res.json({query_success: true, message: null, user_info});
+	}); 
+});
+
+
+// 4. 프로필 변경하기 (POST) - update uesr's profile 
+router.get('/update-profile', function(req, res) {
+	if (!req.isAuthenticated()) {
+		return res.json({update_success: false, message: "err: user not logged in."});
+	}
+	var new_profile = {};
+	new_profile['firstname'] = req.query.firstname;
+	new_profile['lastname'] = req.query.lastname;
+	new_profile['sex'] = req.query.sex;
+	// new_profile['email'] = req.query.email; 
+	// new_profile['phone_number'] = req.query.phone_number;
+	new_profile['about'] = req.query.about; 
+	// new_profile['pref_currency'] = req.query.pref_currency;
+	// new_profile['pref_language'] = req.query.pref_language;
+	new_profile['city_of_residence'] = req.query.city_of_residence;
+	// new_profile['push_notifications'] = req.query.push_notifications;
+	// new_profile['profile_pic_url'] = req.query.profile_pic; 	// multipart image
+
+	updateProfile(req.user.id, new_profile, function(err, rows) {
+		if(err) return res.json({update_success: false , message: "err: 서버가 불안정합니다."});
+		// update successful
+
+		// redirect to getting user's changed full info (to update req)
+		res.redirect('/a/userinfo');
+	});
+
+});
+
+function updateProfile(user_id, new_profile, callback) {
+	var update_user = "update user set firstname = ?, lastname = ?, sex = ?, about = ?, city_of_residence = ? where id = ?";
+	return db.query(update_user, [new_profile.firstname, new_profile.lastname, new_profile.sex, new_profile.about, new_profile.city_of_residence, user_id], callback);
+};
+
+
+// 5. 호스트 화면 - get host info about currently selected house 
+router.get('/host-info', function(req, res) {
+	var host_id = req.query.host_id;
+
+	// get user's full info 
+	getHostInfo(host_id, function(host_info) {
+		if(host_info == -1) {
+			return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+		}
+		host_info['query_success'] = true;
+		host_info['message'] = null;
+		console.log(host_info)
+		return res.json(host_info);
+	}); 
+});
+
+
+// 6. 유저의 집 화면(현재 사용하는 집 or 가장 가까운 예약 컨펌된 집) - get user's current house or confirmed house (w/ closest check-in date)
 router.get('/my-house', function(req, res) {
 	if (!req.isAuthenticated()) {
 		return res.json({query_success: false , message: "err: user not logged in."});
@@ -214,6 +394,10 @@ router.get('/my-house', function(req, res) {
 			else {
 				var house_info = {};
 				house_info = JSON.parse(JSON.stringify(rows))[0];
+
+				if(typeof house_info === 'undefined') {
+					return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+				}
 				house_info['query_success'] = true;
 				house_info['message'] = "staying";
 				console.log("currently staying house")
@@ -252,32 +436,12 @@ function selectUserStayingReservation(user_id, callback) {
 
 // selects user's closest upcoming confirmed reservation
 function selectUserClosestConfirmedReservation(user_id, callback) {
-	var selectQuery = "select r.id as reservation_id, r.house_id, r.checkin_date as start_date, r.checkout_date as end_date, h.main_image as house_thumbnail_url from reservation r, house h where r.house_id = h.id and r.user_id = ? and r.status = 1 order by r.checkin_date limit 1";
+	var selectQuery = "select r.id as reservation_id, r.house_id, r.checkin_date as start_date, r.checkout_date as end_date, h.main_image as house_thumbnail_url from reservation r inner join house h on r.house_id = h.id where r.user_id = ? and r.status = 2";
 	return db.query(selectQuery, [user_id], callback);
 };
 
 
-router.get('/open-doorlock', function(req, res) {
-	if (!req.isAuthenticated()) {
-		return res.json({open_authorized: false, message: "err: user not logged in."});
-	}
-
-	// if user is not currently staying at house
-	if(!req.user.staying) {
-		return res.json({open_authorized: false, message: "err: user not currently staying in any house."});
-	}
-
-	// TODO: doorlock logic 
-	// if door lock fails 
-	// if(doorlock fails) {
-		// return res.json({open_authorized: true, open_success: false, message: "실패: 도어락이 고장났습니다."})
-	// }
-
-	return res.json({open_authorized: true, open_success: true, message: null});
-});
-
-
-// send houses info for featured houses display  
+// 7. 집 리스트 화면 - get list of all registered houses
 router.get('/featured-houses', function(req, res) {
 
 	selectAllHouses(function(err, rows) {
@@ -318,243 +482,84 @@ router.get('/featured-houses', function(req, res) {
 	});
 });
 
-// get house info about given house id 
+function selectAllHouses(callback) {
+	// house_review_count, house_id, house_name, rate_per_night, house_rating, houes_thumbnail_url
+	var select_query = "select count(review.id) as num_reviews from house left join review on (house.id = review.house_id) group by house.id;";
+	select_query += "select id from house; select name from house; select daily_rate as daily_rate from house; select rating_overall from house_rating; select main_image from house; select monthly_rate as monthly_rate from house";
+
+	return db.query(select_query, callback);
+}
+
+
+// 8. 집 상세 화면 - get house info about currently selected house  
 router.get('/house-info', function(req, res) {
 	var house_id = req.query.house_id;
 
-	var tasks = {};
-	var house_info = {};
-
-	// Task 1 
-	// get house info by house id 
-	var selectHouseById_task = function(callback) {
-		selectHouseById(house_id, function(err, rows) {
-			if(err) return callback(err);			
-
-			house_info = JSON.parse(JSON.stringify(rows))[0][0];
-			// house with given id doesn't exist.
-			if(typeof house_info === "undefined") {
-				return callback(new Error("house_id doesn't exist"));
-			}
-			house_rating = JSON.parse(JSON.stringify(rows))[1][0];
-			house_info['house_rating'] = house_rating.rating_overall;
-
-			house_info['house_id'] = Number(house_id); // manually add house_id
-
-			// console.log("1")
-			// console.log(house_info)
-
-			async.parallel([
-				// Task 1.1
-				// get house's host info 
-				function(callback) {
-					selectHostById(house_info.host_id, function(err, rows) {
-						if(err) return callback(err);			
-
-						var host_info = JSON.parse(JSON.stringify(rows))[0][0];
-						var host_rating = JSON.parse(JSON.stringify(rows))[1][0];
-						for(var key in host_info) {
-							house_info[key] = host_info[key];
-						}
-						house_info['host_rating'] = host_rating.rating;
-
-						// console.log("1.1")
-						// console.log(house_info)
-						callback();
-					});
-				},
-				// Task 1.2
-				// get host's review count 
-				function(callback) {
-					selectHostReviewCount(house_info.host_id, function(err, rows) {
-						if(err) return callback(err);			
-
-						house_info['host_review_count'] = JSON.parse(JSON.stringify(rows))[0].host_review_count;
-						// console.log("1.2")
-						// console.log(house_info)
-						callback();
-					});
-				},
-
-				// Task 2
-				// get house's latest review 
-				function(callback) {
-					selectReviewByHouseId(house_id, function(err, rows) {
-						if(err) return callback(err);			
-
-						var last_reviewer_info = JSON.parse(JSON.stringify(rows))[0];			
-						for(var key in last_reviewer_info) {
-							house_info[key] = last_reviewer_info[key];
-						}
-						// console.log("2")
-						// console.log(house_info)
-						callback();
-					});
-				},
-
-				// Task 3
-				// get house's review count 
-				function(callback) {
-					selectHouseReviewCount(house_id, function(err, rows) {
-						if(err) return callback(err);
-
-						house_info['house_review_count'] = JSON.parse(JSON.stringify(rows))[0].house_review_count;
-						// console.log("3")
-						// console.log(house_info)
-						callback();
-					});
-				},
-
-				// Task 4
-				// get house's amenity ids  
-				function(callback) {
-					selectHouseAmenities(house_id, function(err, rows) {
-						if(err) return callback(err);
-						var amenities_info = JSON.parse(JSON.stringify(rows))[0];
-						if(amenities_info.amenity_ids != null) {
-							house_info['amenity_ids'] = stringToList(amenities_info.amenity_ids);
-						}
-						else {
-							house_info['amenity_ids'] = [];
-						}
-						// console.log("4")
-						callback();
-					});
-				},
-
-				// Task 5
-				// get house's pic urls 
-				function(callback) {
-					selectHousePics(house_id, function(err, rows) {
-						if(err) return callback(err);
-						var pics_info = JSON.parse(JSON.stringify(rows))[0];
-						if(pics_info.house_pic_urls != null) {
-							house_info['house_pic_urls'] = stringToListStr(pics_info.house_pic_urls);
-						}
-						else {
-							house_info['house_pic_urls'] = [];
-						}
-						// console.log("5")
-						callback();
-					});
-				}
-			], callback);
-		});
-	};
-
-	// // Task 2
-	// // get the latest review info of the house
-	// var selectReviewByHouseId_task = function(callback) {
-	// 	selectReviewByHouseId(house_id, function(err, rows) {
-	// 		if(err) return callback(err);			
-
-	// 		var last_reviewer_info = JSON.parse(JSON.stringify(rows))[0];			
-	// 		for(var key in last_reviewer_info) {
-	// 			house_info[key] = last_reviewer_info[key];
-	// 		}
-	// 		console.log("2")
-	// 		// console.log(house_info)
-	// 		callback();
-	// 	});
-	// };
-
-	// // Task 3
-	// // get house info by house id 
-	// var selectHouseReviewCount_task = function(callback) {
-	// 	selectHouseReviewCount(house_id, function(err, rows) {
-	// 		if(err) return callback(err);
-
-	// 		house_info['house_review_count'] = JSON.parse(JSON.stringify(rows))[0].house_review_count;
-	// 		console.log("3")
-	// 		// console.log(house_info)
-	// 		callback();
-	// 	});
-	// };
-
-	// // Task 4
-	// // get house info by house id 
-	// var selectHouseAmenitiesAndPics_task = function(callback) {
-	// 	selectHouseAmenitiesAndPics(house_id, function(err, rows) {
-	// 		if(err) return callback(err);
-	// 		var AmenitiesAndPics = JSON.parse(JSON.stringify(rows))[0];
-	// 		if(AmenitiesAndPics.amenity_ids != null) {
-	// 			house_info['amenity_ids'] = stringToList(AmenitiesAndPics.amenity_ids);
-	// 		}
-	// 		else {
-	// 			house_info['amenity_ids'] = [];
-	// 		}
-
-	// 		if(AmenitiesAndPics.house_pic_urls != null) {
-	// 			house_info['house_pic_urls'] = stringToListStr(AmenitiesAndPics.house_pic_urls);
-	// 		}
-	// 		else {
-	// 			house_info['house_pic_urls'] = [];
-	// 		}
-	// 		console.log("4")
-	// 		callback();
-	// 	});
-	// }
-
-	// Adding tasks 
-	tasks['task1'] = selectHouseById_task;
-	// tasks['task2'] = selectReviewByHouseId_task;
-	// tasks['task3'] = selectHouseReviewCount_task;
-	// tasks['task4'] = selectHouseAmenitiesAndPics_task;
-
-	// call query tasks in parallel 
-	async.parallel(tasks, function(err) {
-		if(err) {
-			console.log(err);
+	// get house's full info 
+	getHouseInfo(house_id, function(house_info) {
+		if(house_info == -1) {
 			return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
 		}
+		// console.log(house_info)
+	// getLatestReview , getHouseAmenities , getHousePics
 
-		else {
-			console.log(house_info)
-			return res.json({query_success: true, message: null, house_info});
-		}
+		async.parallel([
+				function(callback) {
+					getLatestReview(house_id, function(review) {
+						if(house_info == -1) {
+							return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+						}
+						// console.log("1")
+						// console.log(review)
+						for(var key in review) {
+							house_info[key] = review[key];
+						}
+						callback();
+					})
+				},
+
+				function(callback) {
+					getHouseAmenities(house_id, function(amenities) {
+						if(house_info == -1) {
+							return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+						}
+						// console.log("2")
+						// console.log(amenities)
+						house_info['amenity_ids'] = amenities;
+						callback();
+					})
+				},
+
+				function(callback) {
+					getHousePics(house_id, function(pics) {
+						if(house_info == -1) {
+							return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+						}
+						// console.log("3")
+						// console.log(pics)
+						house_info['house_pic_urls'] = pics;
+						callback();
+					})
+				}
+			], 
+			function(err) {
+				if(err) {
+					console.log(err);
+					return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+				}
+
+				else {
+					house_info['query_success'] = true;
+					house_info['message'] = null;
+					console.log(house_info)
+					return res.json({query_success: true, message: null, house_info});
+				}			
+			}
+		);
 	});
 });
 
-function selectHouseReviewCount(house_id, callback) {
-	var selectQuery = "select count(house_id) as house_review_count from review where house_id = ?";
-	return db.query(selectQuery, [house_id], callback);
-}
-
-function selectHostReviewCount(host_id, callback) {
-	var selectQuery = "select count(r.id) as host_review_count from review r, house h where r.house_id = h.id and h.user_id = ?";
-	return db.query(selectQuery, [host_id], callback);
-}
-
-function selectReviewByHouseId(house_id, callback) {
-	var selectQuery = "select r.commenter_id as review_last_reviewer, r.comment as review_last_content, r.rating_overall as review_last_rating, u.profile_pic_url as review_last_profile_pic_url from review r, user u where (r.commenter_id = u.id) and r.house_id = ? order by r.created desc limit 1";
-	return db.query(selectQuery, [house_id], callback);
-}
-
-function selectHostById(host_id, callback) {
-	var selectQuery = "select concat(lastname, firstname) as host_name, profile_pic_url as host_profile_pic_url from user where id = ?;";
-	selectQuery += "select rating from host where id = ?";
-	return db.query(selectQuery, [host_id, host_id], callback);
-}
-
-function selectHouseById(house_id, callback) {
-	var selectQuery = "select user_id as host_id, name as house_name, addr_full, addr_summary, addr_direction, description, type, num_guest, num_bedroom, num_bed, num_bathroom, format(monthly_rate,0) as rate_per_month, format(daily_rate, 0) as rate_per_night, format(utility_fee, 0) as utility_fee, format(cleaning_fee, 0) as cleaning_fee, latitude, longitude, house_policy, cancellation_policy, main_image as house_thumbnail_url from house where id = ?;";
-	selectQuery += "select rating_overall from house_rating where house_id = ?";
-	return db.query(selectQuery, [house_id, house_id], callback);
-}
-
-function selectHouseAmenities(house_id, callback) {
-	var selectQuery = "select group_concat(amenities_id) as amenity_ids from house_amenities where house_id = ?";
-	return db.query(selectQuery, [house_id], callback);
-}
-
-function selectHousePics(house_id, callback) {
-	var selectQuery = "select group_concat(image) as house_pic_urls from house_images where house_id = ?";
-	return db.query(selectQuery, [house_id], callback);
-}
-
-
-
-// 8. 집 후기 화면 - get all the review info about given house id
+// 9. 집 후기 화면 - get all the review info about currently selected house
 router.get('/house-reviews', function(req, res) {
 	var house_id = req.query.house_id;
 	var tasks = {};
@@ -621,105 +626,7 @@ function selectAllReviewsByHouseId(house_id, callback) {
 	return db.query(house_reviews_query, [house_id], callback);
 }
 
-
-
-// 9. 호스트 화면 - get host info by given user id
-router.get('/host-info', function(req, res) {
-	var host_id = req.query.host_id;
-
-	selectHostById2(host_id, function(err, rows) {
-		if(err) return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
-
-		var host_info = JSON.parse(JSON.stringify(rows))[0];
-
-		if(typeof host_info === 'undefined') {
-			return res.json({query_success: false , message: "host_id doens't exist."});
-		}
-		host_info['host_id'] = Number(host_id); // manually add host_id
-		host_info['query_success'] = true;
-		host_info['message'] = null;
-		console.log(host_info)
-		return res.json(host_info);
-	});
-
-});
-
-function selectHostById2(host_id, callback) {
-	var host_query = "select concat(lastname, firstname) as host_name, about, profile_pic_url as host_picture_url from user where id = ?";
-	return db.query(host_query, [host_id], callback);
-}
-
-// TODO: for now, this is request for visit
-// 10. 예약하기(POST) - make a reservation 
-router.post('/reserve-room', function(req, res) {
-	if (!req.isAuthenticated()) {
-		return res.json({reservation_success: false, message: "err: user not logged in."});
-	}
-
-	var user_id = req.user.id; 
-	var house_id = req.query.room_id;
-	var start_date = req.query.start_date; //yyyy-mm-dd
-	var end_date = req.query.end_date; 
-	var created = moment().format("YYYY-MM-DD HH:MM:SS");
-
-	makeVisitRequest(house_id, user_id, start_date, end_date, created, function(err, rows) {
-		if(err) {
-			console.log(err)
-			return res.json({reservation_success: false, message: "err: 서버가 불안정합니다."});
-		} 
-
-		// TODO: reservation으로 바꿀때 여기서 reservation_info 보내야함 
-
-		return res.json({reservation_success: true, message: "성공적으로 예약되었습니다."});
-	});
-});
-
-function makeVisitRequest(house_id, user_id, start_date, end_date, created, callback) {
-	var insert_visit = "insert into visit (house_id, user_id, checkin_date, checkout_date, created) values (?,?,?,?,?)";
-	return db.query(insert_visit, [house_id, user_id, start_date, end_date, created], callback);
-};
-
-// 11. 방문 리스트 화면 - get user's confirmed visits 
-router.get('/visit-list', function(req, res) {
-	if (!req.isAuthenticated()) {
-		return res.json({reservation_success: false, message: "err: user not logged in."});
-	}	
-
-	var user_id = req.user.id;
-
-	selectConfirmedVisits(user_id, function(err, rows) {
-		if(err) return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
-
-		var visits = JSON.parse(JSON.stringify(rows));
-		console.log(visits)
-		return res.json({query_success: true , message: null, visits});
-	});
-});
-
-function selectConfirmedVisits(user_id, callback) {
-	var host_query = "select visit.id as visit_id, visit.house_id, visit.user_id as visitor_id, date_time as visit_time, name as house_name, monthly_rate as rate_per_month, daily_rate as rate_per_night, rating_overall as house_rating, review_count as house_review_count, main_image as house_thumbnail_url from visit inner join house on visit.house_id = house.id inner join house_rating on house_rating.house_id = visit.house_id where visit.user_id = ? and visit.status = 1 order by visit.date_time";
-	return db.query(host_query, [user_id], callback);
-}
-
-// 12. 방문 상세 화면 - get detailed visit info by visit id 
-router.get('/visit-info', function(req, res) {
-	if (!req.isAuthenticated()) {
-		return res.json({reservation_success: false, message: "err: user not logged in."});
-	}	
-
-	var visit_id = req.query.visit_id;
-
-
-
-
-});
-
-// 13. 방문 캔슬 
-router.get('/cancel-visit', function(req, res) {
-	var visit_id = req.query.visitId;	// TODO: typo?
-});
-
-// 14. 리뷰 남기기(POST) - post a review to given house id 
+// 10. 리뷰 남기기 (POST) - post a review to selected house
 router.post('/post-review', function(req, res) {
 	if (!req.isAuthenticated()) {
 		return res.json({post_success: false, message: "err: user not logged in."});
@@ -805,50 +712,192 @@ function postReview(house_id, user_id, reservation_id, review_info, created, cal
 };
 
 
-// 15. 프로필 변경하기(POST) - update uesr's profile 
-router.post('/update-profile', function(req, res) {
+// TODO: add pending visits too 
+// 11. 방문 목록 화면 - get user's confirmed visits 
+router.get('/visit-list', function(req, res) {
 	if (!req.isAuthenticated()) {
-		return res.json({update_success: false, message: "err: user not logged in."});
-	}
-	var new_profile = {};
-	new_profile['firstname'] = req.query.firstname;
-	new_profile['lastname'] = req.query.lastname;
-	new_profile['sex'] = req.query.sex;
-	// new_profile['email'] = req.query.email; 
-	// new_profile['phone_number'] = req.query.phone_number;
-	new_profile['about'] = req.query.about; 
-	// new_profile['pref_currency'] = req.query.pref_currency;
-	// new_profile['pref_language'] = req.query.pref_language;
-	new_profile['city_of_residence'] = req.query.city_of_residence;
-	// new_profile['push_notifications'] = req.query.push_notifications;
-	// new_profile['profile_pic_url'] = req.query.profile_pic; 	// multipart image
+		return res.json({reservation_success: false, message: "err: user not logged in."});
+	}	
 
-	updateProfile(req.user.id, new_profile, function(err, rows) {
-		if(err) return res.json({update_success: false , message: "err: 서버가 불안정합니다."});
-		// update successful
+	var user_id = req.user.id;
 
-		// redirect to getting user's changed full info 
-		res.redirect('/a/userinfo');
+	selectConfirmedVisits(user_id, function(err, rows) {
+		if(err) return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+
+		var visits = JSON.parse(JSON.stringify(rows));
+		console.log(visits)
+		return res.json({query_success: true , message: null, visits});
 	});
-
 });
 
-function updateProfile(user_id, new_profile, callback) {
-	var update_user = "update user set firstname = ?, lastname = ?, sex = ?, about = ?, city_of_residence = ? where id = ?";
-	return db.query(update_user, [new_profile.firstname, new_profile.lastname, new_profile.sex, new_profile.about, new_profile.city_of_residence, user_id], callback);
+function selectConfirmedVisits(user_id, callback) {
+	var host_query = "select visit.id as visit_id, visit.house_id, visit.user_id as visitor_id, date_time as visit_time, name as house_name, monthly_rate as rate_per_month, daily_rate as rate_per_night, rating_overall as house_rating, review_count as house_review_count, main_image as house_thumbnail_url from visit inner join house on visit.house_id = house.id inner join house_rating on house_rating.house_id = visit.house_id where visit.user_id = ? and visit.status = 1 order by visit.date_time";
+	return db.query(host_query, [user_id], callback);
+}
+
+// 12. 방문 상세 화면 - get visit info about selected visit 
+router.get('/visit-info', function(req, res) {
+	if (!req.isAuthenticated()) {
+		return res.json({reservation_success: false, message: "err: user not logged in."});
+	}	
+
+	var visit_id = req.query.visit_id;
+
+	var context = {};
+
+	selectVisit(visit_id, function(err, rows) {
+		if(err) return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+
+		var visit_info = JSON.parse(JSON.stringify(rows))[0];
+
+		if(typeof visit_info === 'undefined') {
+			console.log('no visit id found');
+			return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+		}
+		
+		// console.log(visit_info);
+		var house_id = visit_info['house_id'];
+
+		getHouseInfo(house_id, function(house_info) {
+			if(house_info == -1) {
+				return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+			}
+			// console.log(house_info)
+
+			async.parallel([
+					function(callback) {
+						getLatestReview(house_id, function(review) {
+							if(house_info == -1) {
+								return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+							}
+							// console.log("1")
+							// console.log(review)
+							for(var key in review) {
+								house_info[key] = review[key];
+							}
+							callback();
+						})
+					},
+
+					function(callback) {
+						getHouseAmenities(house_id, function(amenities) {
+							if(house_info == -1) {
+								return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+							}
+							// console.log("2")
+							// console.log(amenities)
+							house_info['amenity_ids'] = amenities;
+							callback();
+						})
+					},
+
+					function(callback) {
+						getHousePics(house_id, function(pics) {
+							if(house_info == -1) {
+								return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+							}
+							// console.log("3")
+							// console.log(pics)
+							house_info['house_pic_urls'] = pics;
+							callback();
+						})
+					}
+				], 
+				function(err) {
+					if(err) {
+						console.log(err);
+						return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+					}
+
+					else {
+						context['query_success'] = true;
+						context['message'] = null;
+						context['visit_info'] = visit_info;
+						context['house_info'] = house_info;
+						console.log(context)
+						return res.json(context);
+					}			
+				}
+			);
+		});
+	});
+});
+
+function selectVisit(visit_id, callback) {
+	var selectQuery = "select id, house_id, user_id as visitor_id, date_time as visit_time from visit where id = ?";
+	return db.query(selectQuery, [visit_id], callback);
+}
+
+
+// TODO: for now, this is request for visit
+// 13. 예약하기 (POST) - make a reservation 
+router.post('/reserve-room', function(req, res) {
+	if (!req.isAuthenticated()) {
+		return res.json({reservation_success: false, message: "err: user not logged in."});
+	}
+
+	var user_id = req.user.id; 
+	var house_id = req.query.room_id;
+	var start_date = req.query.start_date; //yyyy-mm-dd
+	var end_date = req.query.end_date; 
+	var created = moment().format("YYYY-MM-DD HH:MM:SS");
+
+	makeVisitRequest(house_id, user_id, start_date, end_date, created, function(err, rows) {
+		if(err) {
+			console.log(err)
+			return res.json({reservation_success: false, message: "err: 서버가 불안정합니다."});
+		} 
+
+		// TODO: reservation으로 바꿀때 여기서 reservation_info 보내야함 
+
+		return res.json({reservation_success: true, message: "성공적으로 예약되었습니다."});
+	});
+});
+
+function makeVisitRequest(house_id, user_id, start_date, end_date, created, callback) {
+	var insert_visit = "insert into visit (house_id, user_id, checkin_date, checkout_date, created) values (?,?,?,?,?)";
+	return db.query(insert_visit, [house_id, user_id, start_date, end_date, created], callback);
 };
 
 
-// 16. 비밀번호 찾기 (POST) - find user's password given user's email
+//TODO
+// 14. 방문 캔슬 (POST) - cancel visit request
+router.post('/cancel-visit', function(req, res) {
+	var visit_id = req.query.visit_id;
+});
+
+
+// 15. 도어락 열기 - open doorlock of currently logged in user 
+router.get('/open-doorlock', function(req, res) {
+	if (!req.isAuthenticated()) {
+		return res.json({open_authorized: false, message: "err: user not logged in."});
+	}
+
+	// if user is not currently staying at house
+	if(!req.user.staying) {
+		return res.json({open_authorized: false, message: "err: user not currently staying in any house."});
+	}
+
+	// TODO: doorlock logic 
+	// if door lock fails 
+	// if(doorlock fails) {
+		// return res.json({open_authorized: true, open_success: false, message: "실패: 도어락이 고장났습니다."})
+	// }
+
+	return res.json({open_authorized: true, open_success: true, message: null});
+});
+
+
+// 16. 도어락 비밀번호 변경 (POST) - change pascode for currently logged in user's house
+router.post('/change-passcode', function(req, res) {
+});
+
+
+// 17. 비밀번호 찾기 (POST) - find user's password given user's email
 router.post('/find-password', function(req, res) {
 	var email = req.query.email;
 });
 
-
-// TODO: no house id given????
-// 17. 도어락 비밀번호 변경 (POST) - change pascode for doorlock of given house
-router.post('/change-passcode', function(req, res) {
-});
 
 // 18. FAQ 화면 - get faq page
 router.get('/faq', function(req, res) {
@@ -867,38 +916,10 @@ module.exports = router;
 /************************/
 /*** helper functions ***/
 /************************/
-function userInfo(req) {
-	var userInfo = {
-		id: req.user.id,
-		mobile_num: req.user.mobile_num,
-		email: req.user.email,
-		fullname : req.user.lastname + req.user.firstname,
-		firstname: req.user.firstname,
-		lastname: req.user.lastname, 
-		sex: req.user.sex, 
-		phone_number: req.user.phone_number, 
-		date_of_birth: req.user.date_of_birth, 
-		about: req.user.about,
-		host: req.user.is_host,
-		status: req.user.status,
-		profile_pic_url: req.user.profile_pic_url,
-		push_notifications: req.user.push_notifications,
-		preferred_currency: req.user.pref_currency,
-		preferred_language: req.user.pref_language,
-		city_of_residence: req.user.city_of_residence
-	};
-	return userInfo; 
-};
 
 
 /************************/
 /*** QUERY functions ****/
 /************************/
-function selectAllHouses(callback) {
-	// house_review_count, house_id, house_name, rate_per_night, house_rating, houes_thumbnail_url
-	var select_query = "select count(review.id) as num_reviews from house left join review on (house.id = review.house_id) group by house.id;";
-	select_query += "select id from house; select name from house; select format(daily_rate, 0) as daily_rate from house; select rating_overall from house_rating; select main_image from house; select format(monthly_rate, 0) as monthly_rate from house";
 
-	return db.query(select_query, callback);
-}
 

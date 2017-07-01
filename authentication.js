@@ -84,18 +84,21 @@ module.exports = function(app, passport) {
 			}
 
 			req.login(user, function(err){
-		      if(err){
-		        return next(err);
-		      }
-		      var user_info = {
-				"fullname": req.user.lastname + req.user.firstname,
-				"firstname": req.user.firstname, 
-				"lastname": req.user.lastname, 
-				"id": req.user.id,
-				"email": req.user.email,
-				"profile_pic_url": null
-			  }
-   	 		  return res.json({login_success: 'true', user_info});
+				if(err){
+					return next(err);
+				}
+          	  	req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 200;
+
+				res.redirect('/a/userinfo');
+	    //   		var user_info = {
+					// "fullname": req.user.lastname + req.user.firstname,
+					// "firstname": req.user.firstname, 
+					// "lastname": req.user.lastname, 
+					// "id": req.user.id,
+					// "email": req.user.email,
+					// "profile_pic_url": null
+			 	// }
+   	 // 		    return res.json({login_success: 'true', user_info});
     		});
 		})(req, res, next); 
 	});
@@ -111,21 +114,22 @@ module.exports = function(app, passport) {
 			}
 
 			req.login(user, function(err){
-		      if(err){
-		        return next(err);
-		      }
-		      var user_info = {
-				"fullname": req.user.lastname + req.user.firstname,
-				"firstname": req.user.firstname, 
-				"lastname": req.user.lastname, 
-				"id": req.user.id,
-				"email": req.user.email,
-				"profile_pic_url": null
-			  }
-   	 		  return res.json({signup_success: 'true', user_info});
-    		});
+				if(err){
+					return next(err);
+				}
+				req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 200;
+
+				res.redirect('/a/userinfo');
+				// var user_info = {
+				// 	"fullname": req.user.lastname + req.user.firstname,
+				// 	"firstname": req.user.firstname, 
+				// 	"lastname": req.user.lastname, 
+				// 	"id": req.user.id,
+				// 	"email": req.user.email,
+				// 	"profile_pic_url": null
+				// }
+				// return res.json({signup_success: 'true', user_info});
+			});
 		})(req, res, next); 
 	});
-
-
 };

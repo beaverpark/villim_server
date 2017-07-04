@@ -54,8 +54,6 @@ app.use('/jquery_validate', express.static(__dirname + '/node_modules/jquery-for
 /**************************************/
 
 
-
-
 /***************************************/
 /*** TWILIO (phone verification) API ***/
 /***************************************/

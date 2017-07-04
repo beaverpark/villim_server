@@ -6,6 +6,18 @@ var db = require('../connection');
 var moment = require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul");
 var async = require('async');
+var multer  = require('multer')
+
+
+var storage = multer.diskStorage({
+ destination: function (req, file, cb) {
+    cb(null, './public/uploads/profile_pics')
+  },
+  filename: function (req, file, cb) {
+    cb(null, 'user' + req.user.id + '_profile.png')
+  }
+})
+var upload = multer({storage:storage});
 
 function stringToList(stringList) {
 	return stringList.split(',').map(Number);
@@ -321,8 +333,8 @@ router.get('/userinfo', function(req, res) {
 });
 
 
-// 4. 프로필 변경하기 (POST) - update uesr's profile 
-router.post('/update-profile', function(req, res) {
+// 4. 프로필 변경하기 (POST) - update user's profile 
+router.post('/update-profile', upload.single('profile_pic'), function(req, res) {
 	if (!req.isAuthenticated()) {
 		return res.json({update_success: false, message: "err: user not logged in."});
 	}
@@ -331,13 +343,19 @@ router.post('/update-profile', function(req, res) {
 	new_profile['firstname'] = req.body.firstname;
 	new_profile['lastname'] = req.body.lastname;
 	// new_profile['sex'] = req.query.sex;
-	// TODO: remove pref stuff
 	new_profile['email'] = req.body.email; 
 	new_profile['phone_number'] = req.body.phone_number;
 	new_profile['about'] = req.body.about; 
-	new_profile['pref_currency'] = req.body.pref_currency;
-	new_profile['pref_language'] = req.body.pref_language;
+	// new_profile['pref_currency'] = req.body.pref_currency;
+	// new_profile['pref_language'] = req.body.pref_language;
 	new_profile['city_of_residence'] = req.body.city_of_residence;
+
+	// TODO: this is just for local storage. 
+	// make profile url path  http://175.207.29.19/uploads/profile_pics/user1_profile.png
+	var temp_url = req.file.path.slice(7);
+	var profile_pic_url = "http://175.207.29.19/" + temp_url; 
+
+	new_profile['profile_pic_url'] = profile_pic_url;
 
 	// console.log(new_profile)
 	if(req.body.push_notifications) {
@@ -347,8 +365,6 @@ router.post('/update-profile', function(req, res) {
 	else {
 		new_profile['push_notifications'] = 0;
 	}
-
-	// new_profile['profile_pic_url'] = req.query.profile_pic; 	// multipart image
 
 	updateProfile(req.user.id, new_profile, function(err, rows) {
 		if(err) {
@@ -364,8 +380,8 @@ router.post('/update-profile', function(req, res) {
 });
 
 function updateProfile(user_id, new_profile, callback) {
-	var update_user = "update user set firstname = ?, lastname = ?, email = ?, phone_number = ?, about = ?, pref_currency = ?, pref_language = ?, city_of_residence = ?, push_notifications = ? where id = ?";
-	return db.query(update_user, [new_profile.firstname, new_profile.lastname, new_profile.email, new_profile.phone_number, new_profile.about, new_profile.pref_currency, new_profile.pref_language, new_profile.city_of_residence, new_profile.push_notifications, user_id], callback);
+	var update_user = "update user set firstname = ?, lastname = ?, email = ?, phone_number = ?, about = ?, city_of_residence = ?, push_notifications = ?, profile_pic_url = ? where id = ?";
+	return db.query(update_user, [new_profile.firstname, new_profile.lastname, new_profile.email, new_profile.phone_number, new_profile.about, new_profile.city_of_residence, new_profile.push_notifications, new_profile.profile_pic_url, user_id], callback);
 };
 
 
@@ -459,6 +475,11 @@ function selectUserClosestConfirmedReservation(user_id, callback) {
 // 7. 집 리스트 화면 - get list of all registered houses
 router.get('/featured-houses', function(req, res) {
 
+	var pref_currency = req.params.preferred_currency;
+
+	//TODO: currency convert 
+
+
 	selectAllHouses(function(err, rows) {
 		if(err) {
 			console.log(err); 
@@ -510,6 +531,7 @@ function selectAllHouses(callback) {
 // 8. 집 상세 화면 - get house info about currently selected house  
 router.get('/house-info', function(req, res) {
 	var house_id = req.query.house_id;
+	var pref_currency = req.query.preferred_currency;
 
 	var house_info = {};
 	var tasks = {};
@@ -777,6 +799,8 @@ router.get('/visit-list', function(req, res) {
 	if (!req.isAuthenticated()) {
 		return res.json({reservation_success: false, message: "err: user not logged in."});
 	}	
+
+	var pref_currency = req.params.preferred_currency;
 
 	var user_id = req.user.id;
 	var context = {};

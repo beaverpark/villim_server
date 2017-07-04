@@ -15,10 +15,10 @@ module.exports = function(app) {
         phoneReg.requestPhoneVerification(phone_number, country_code, via, locale, function (err, response) {
             if (err) {
                 console.log('error creating phone reg request', err);
-                return res.json({post_success: false, message: "전화번호가 올바르지 않습니다."});
+                return res.json({success: false, message: "전화번호가 올바르지 않습니다."});
             } else {
                 console.log('Success register phone API call: ', response);
-                return res.json({post_success: true , message: null});
+                return res.json({success: true , message: null});
             }
         });
         } else {
@@ -38,13 +38,13 @@ module.exports = function(app) {
         phoneReg.verifyPhoneToken(phone_number, country_code, token, function (err, response) {
             if (err) {
                 console.log('error creating phone reg request', err);
-                return res.json({post_success: false , message: "인증 실패. 인증번호를 다시 확인주세요."});
+                return res.json({success: false , message: "인증 실패. 인증번호를 다시 확인주세요."});
             } else {
                 console.log('Confirm phone success confirming code: ', response);
                 if (response.success) {
-                    return res.json({post_success: true , message: null});
+                    return res.json({success: true , message: null});
                 }
-                return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+                return res.json({success: false , message: "err: 서버가 불안정합니다."});
             }
         });
         } else {

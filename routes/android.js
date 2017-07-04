@@ -28,7 +28,7 @@ function userInfo(req) {
 		date_of_birth: req.user.date_of_birth, 
 		about: req.user.about,
 		host: req.user.is_host,
-		status: req.user.status,
+		// status: req.user.status,
 		profile_pic_url: req.user.profile_pic_url,
 		push_notifications: req.user.push_notifications,
 		preferred_currency: req.user.pref_currency,
@@ -157,12 +157,11 @@ function getUserInfo(req, result) {
 			console.log(err);
 			return result(-1); 
 		}
-		// console.timeEnd("test");
 		return result(user_info);
 	});
 };
 
-// TODO: merge these three queries into one 
+// TODO: efficiency? merge these three queries into one ?
 // selects user's all house ids of current and past reservations 
 function selectUserAllReservation(user_id, callback) {
 	var selectQuery = "select group_concat(CASE when reservation.status = 1 then reservation.house_id end) as confirmed_list,"
@@ -229,7 +228,7 @@ function getHouseInfo(house_id, result) {
 };
 
 function selectHouseById(house_id, callback) {
-	var selectQuery = "select house.id as house_id, name as house_name, addr_full, addr_summary, addr_direction, description, type as house_type, num_guest, num_bedroom, num_bed, num_bathroom, monthly_rate as rate_per_month, daily_rate as rate_per_night, utility_fee, cleaning_fee, latitude, longitude, house_policy, cancellation_policy, main_image as house_thumbnail_url, rating_overall as house_rating, review_count as house_review_count from house inner join house_rating on house.id = house_rating.house_id where house.id = ?";
+	var selectQuery = "select house.id as house_id, house.user_id as host_id, name as house_name, addr_full, addr_summary, addr_direction, description, type as house_type, num_guest, num_bedroom, num_bed, num_bathroom, monthly_rate as rate_per_month, daily_rate as rate_per_night, utility_fee, cleaning_fee, latitude, longitude, house_policy, cancellation_policy, main_image as house_thumbnail_url, rating_overall as house_rating, review_count as house_review_count from house inner join house_rating on house.id = house_rating.house_id where house.id = ?";
 	return db.query(selectQuery, [house_id], callback);
 };
 
@@ -262,6 +261,8 @@ function getHouseAmenities(house_id, result) {
 			return result(-1);
 		}
 		var amenities = JSON.parse(JSON.stringify(rows))[0];
+		// console.log(amenities)
+		// TODO: 여기서 house_id 가 없어도 null, amenities가 없어도 null임. 에러 differentiate하게만들어야함 
 		if(amenities.amenity_ids != null) {
 			var amenities_list = stringToList(amenities.amenity_ids);
 		}
@@ -321,27 +322,41 @@ router.get('/userinfo', function(req, res) {
 
 
 // 4. 프로필 변경하기 (POST) - update uesr's profile 
-router.get('/update-profile', function(req, res) {
+router.post('/update-profile', function(req, res) {
 	if (!req.isAuthenticated()) {
 		return res.json({update_success: false, message: "err: user not logged in."});
 	}
 	var new_profile = {};
-	new_profile['firstname'] = req.query.firstname;
-	new_profile['lastname'] = req.query.lastname;
-	new_profile['sex'] = req.query.sex;
-	// new_profile['email'] = req.query.email; 
-	// new_profile['phone_number'] = req.query.phone_number;
-	new_profile['about'] = req.query.about; 
-	// new_profile['pref_currency'] = req.query.pref_currency;
-	// new_profile['pref_language'] = req.query.pref_language;
-	new_profile['city_of_residence'] = req.query.city_of_residence;
-	// new_profile['push_notifications'] = req.query.push_notifications;
+
+	new_profile['firstname'] = req.body.firstname;
+	new_profile['lastname'] = req.body.lastname;
+	// new_profile['sex'] = req.query.sex;
+	// TODO: remove pref stuff
+	new_profile['email'] = req.body.email; 
+	new_profile['phone_number'] = req.body.phone_number;
+	new_profile['about'] = req.body.about; 
+	new_profile['pref_currency'] = req.body.pref_currency;
+	new_profile['pref_language'] = req.body.pref_language;
+	new_profile['city_of_residence'] = req.body.city_of_residence;
+
+	// console.log(new_profile)
+	if(req.body.push_notifications) {
+		new_profile['push_notifications'] = 1;
+	}
+
+	else {
+		new_profile['push_notifications'] = 0;
+	}
+
 	// new_profile['profile_pic_url'] = req.query.profile_pic; 	// multipart image
 
 	updateProfile(req.user.id, new_profile, function(err, rows) {
-		if(err) return res.json({update_success: false , message: "err: 서버가 불안정합니다."});
-		// update successful
+		if(err) {
+			console.log(err)
+			return res.json({update_success: false , message: "err: 서버가 불안정합니다."});			
+		}
 
+		// update successful
 		// redirect to getting user's changed full info (to update req)
 		res.redirect('/a/userinfo');
 	});
@@ -349,8 +364,8 @@ router.get('/update-profile', function(req, res) {
 });
 
 function updateProfile(user_id, new_profile, callback) {
-	var update_user = "update user set firstname = ?, lastname = ?, sex = ?, about = ?, city_of_residence = ? where id = ?";
-	return db.query(update_user, [new_profile.firstname, new_profile.lastname, new_profile.sex, new_profile.about, new_profile.city_of_residence, user_id], callback);
+	var update_user = "update user set firstname = ?, lastname = ?, email = ?, phone_number = ?, about = ?, pref_currency = ?, pref_language = ?, city_of_residence = ?, push_notifications = ? where id = ?";
+	return db.query(update_user, [new_profile.firstname, new_profile.lastname, new_profile.email, new_profile.phone_number, new_profile.about, new_profile.pref_currency, new_profile.pref_language, new_profile.city_of_residence, new_profile.push_notifications, user_id], callback);
 };
 
 
@@ -484,80 +499,121 @@ router.get('/featured-houses', function(req, res) {
 
 function selectAllHouses(callback) {
 	// house_review_count, house_id, house_name, rate_per_night, house_rating, houes_thumbnail_url
-	var select_query = "select count(review.id) as num_reviews from house left join review on (house.id = review.house_id) group by house.id;";
-	select_query += "select id from house; select name from house; select daily_rate as daily_rate from house; select rating_overall from house_rating; select main_image from house; select monthly_rate as monthly_rate from house";
+	var selectQuery = "select count(review.id) as num_reviews from house left join review on (house.id = review.house_id) group by house.id;";
+	selectQuery += "select id from house; select name from house; select daily_rate as daily_rate from house; select rating_overall from house_rating; select main_image from house; select monthly_rate as monthly_rate from house";
 
-	return db.query(select_query, callback);
+	return db.query(selectQuery, callback);
 }
 
 
+// TODO: async parallel running sequentailly
 // 8. 집 상세 화면 - get house info about currently selected house  
 router.get('/house-info', function(req, res) {
 	var house_id = req.query.house_id;
 
-	// get house's full info 
-	getHouseInfo(house_id, function(house_info) {
-		if(house_info == -1) {
+	var house_info = {};
+	var tasks = {};
+
+	var getHouseInfo_task = function(callback) {
+		// get house's full info 
+		getHouseInfo(house_id, function(house_result) {
+			if(house_result == -1) {
+				return callback(new Error("getHouseInfo err"));
+			}
+			// TODO: shouldn't do this when running parallel, but async parallel is running sequential :\
+			house_info = house_result; 
+			// console.log("1")
+
+			// get host's full info
+			getHostInfo(house_info['host_id'], function(host_info) {
+				if(host_info == -1) {
+					return callback(new Error("host id doesn't exist"));
+				}
+				for(var key in host_info) {
+					house_info[key] = host_info[key];
+				}
+				callback();
+			})
+		});
+	};
+
+
+	var getReservedDates_task = function(callback) {
+		getReservedDates(house_id, function(err, rows) {
+			if(err) return callback(err);
+
+			var dates_reserved = JSON.parse(JSON.stringify(rows));
+
+			// console.log("2")
+			// console.log(dates_reserved)
+			house_info['reservations'] = dates_reserved;
+
+			callback();
+		});
+	};
+
+	var getLatestReview_task = function(callback) {
+		getLatestReview(house_id, function(review) {
+			if(review == -1) {
+				return callback(new Error("getLatestReview err"));
+			}
+			// console.log("3")
+			// console.log(review)
+			for(var key in review) {
+				house_info[key] = review[key];
+			}
+        	callback();
+		});
+	};
+
+
+	var getHouseAmenities_task = function(callback) {
+		getHouseAmenities(house_id, function(amenities) {
+			if(amenities == -1) {
+				return callback(new Error("getHouseAmenities err"));
+			}
+			// console.log("4")
+			// console.log(amenities)
+			house_info['amenity_ids'] = amenities;
+			callback();
+		});
+	};
+
+	var getHousePics_task = function(callback) {
+		getHousePics(house_id, function(pics) {
+			if(pics == -1) {
+				return callback(new Error("getHousePics err"));
+			}
+			// console.log("5")
+			// console.log(pics)
+			house_info['house_pic_urls'] = pics;
+			callback();
+		});
+	};
+
+	// add tasks
+	tasks['task1'] = getHouseInfo_task;
+	tasks['task2'] = getReservedDates_task;
+	tasks['task3'] = getLatestReview_task;
+	tasks['task4'] = getHouseAmenities_task;
+	tasks['task5'] = getHousePics_task;
+
+	// call query tasks in parallel 
+	async.parallel(tasks, function(err) {
+		if(err) {
+			console.log(err);
 			return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
 		}
 		// console.log(house_info)
-	// getLatestReview , getHouseAmenities , getHousePics
-
-		async.parallel([
-				function(callback) {
-					getLatestReview(house_id, function(review) {
-						if(house_info == -1) {
-							return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
-						}
-						// console.log("1")
-						// console.log(review)
-						for(var key in review) {
-							house_info[key] = review[key];
-						}
-						callback();
-					})
-				},
-
-				function(callback) {
-					getHouseAmenities(house_id, function(amenities) {
-						if(house_info == -1) {
-							return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
-						}
-						// console.log("2")
-						// console.log(amenities)
-						house_info['amenity_ids'] = amenities;
-						callback();
-					})
-				},
-
-				function(callback) {
-					getHousePics(house_id, function(pics) {
-						if(house_info == -1) {
-							return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
-						}
-						// console.log("3")
-						// console.log(pics)
-						house_info['house_pic_urls'] = pics;
-						callback();
-					})
-				}
-			], 
-			function(err) {
-				if(err) {
-					console.log(err);
-					return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
-				}
-
-				else {
-					house_info['query_success'] = true;
-					house_info['message'] = null;
-					console.log(house_info)
-					return res.json({query_success: true, message: null, house_info});
-				}			
-			}
-		);
+		return res.json({query_success: true , message:null, house_info});
 	});
 });
+
+function getReservedDates(house_id, callback) {
+	var selectQuery = "select checkin_date as start_date, checkout_date as end_date from reservation where house_id = ? order by checkin_date";
+	return db.query(selectQuery, [house_id], callback);
+}
+
 
 // 9. 집 후기 화면 - get all the review info about currently selected house
 router.get('/house-reviews', function(req, res) {
@@ -637,7 +693,7 @@ router.post('/post-review', function(req, res) {
 		return res.json({post_success: false, message: "err: 서버가 불안정합니다."});
 	}
 
-	var house_id = req.query.house_id;
+	var house_id = req.body.house_id;
 	var user_id = req.user.id;
 	var tasks = {};
 	var reservation_id;
@@ -657,9 +713,9 @@ router.post('/post-review', function(req, res) {
 				return callback(new Error("no matching reservation record found."));
 			}
 
-			// if user does, check if its status is 4 (done)
-			if(reservation.status != 4) {
-				return callback(new Error("user is not done staying."));
+			// if user does, check if its status is 2 or 3 (done)
+			if(!(reservation.status == 2 || reservation.status == 3)) {
+				return callback(new Error("either user is not staying or not done staying."));
 			}
 			reservation_id = reservation.id; 
 			// if all is well, move on to the next task
@@ -672,17 +728,20 @@ router.post('/post-review', function(req, res) {
 	var postReview_task = function(callback) {
 
 		var review_info = {};
-		review_info['review_con'] = req.query.review_content;
-		review_info['rating_acr'] = req.query.rating_accuracy;
-		review_info['rating_loc'] = req.query.rating_location;
-		review_info['rating_com'] = req.query.rating_communication; 
-		review_info['rating_chk'] = req.query.rating_checkin;
-		review_info['rating_cln'] = req.query.rating_cleanliness; 
-		review_info['rating_val'] = req.query.rating_value; 
+		review_info['review_con'] = req.body.review_content;
+		review_info['rating_acr'] = req.body.rating_accuracy;
+		review_info['rating_loc'] = req.body.rating_location;
+		review_info['rating_com'] = req.body.rating_communication; 
+		review_info['rating_chk'] = req.body.rating_checkin;
+		review_info['rating_cln'] = req.body.rating_cleanliness; 
+		review_info['rating_val'] = req.body.rating_value; 
 
 		postReview(house_id, user_id, reservation_id, review_info, created, function(err, rows) {
-			if(err) return callback(err);
+			if(err) {
+				return callback(err);
+			}
 			// successfully posted review
+			console.log("successfully posted review")
 			callback();
 		});
 	};
@@ -707,7 +766,7 @@ function checkPastReservation(house_id, user_id, callback) {
 }
 
 function postReview(house_id, user_id, reservation_id, review_info, created, callback) {
-	var insert_visit = "insert into review (house_id, commenter_id, reservation_id, comment, rating_accuracy, rating_communication, rating_cleanliness, rating_location, rating_checkin, rating_value, created) values (?,?,?,?,?,?,?,?,?,?,?,?)";
+	var insert_visit = "insert into review (house_id, commenter_id, reservation_id, comment, rating_accuracy, rating_communication, rating_cleanliness, rating_location, rating_checkin, rating_value, created) values (?,?,?,?,?,?,?,?,?,?,?)";
 	return db.query(insert_visit, [house_id, user_id, reservation_id, review_info.review_con, review_info.rating_acr, review_info.rating_com, review_info.rating_cln, review_info.rating_loc, review_info.rating_chk, review_info.rating_val, created], callback);
 };
 
@@ -720,20 +779,60 @@ router.get('/visit-list', function(req, res) {
 	}	
 
 	var user_id = req.user.id;
+	var context = {};
+	async.parallel([
+			function(callback) {
+				selectConfirmedVisits(user_id, function(err, rows) {
+					if(err) return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
 
-	selectConfirmedVisits(user_id, function(err, rows) {
-		if(err) return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+					var confirmed_visits = JSON.parse(JSON.stringify(rows));
+					console.log("1")
+					console.log(confirmed_visits)
+					context['confirmed_visits'] = confirmed_visits;
+					callback();
+				});
+			},
 
-		var visits = JSON.parse(JSON.stringify(rows));
-		console.log(visits)
-		return res.json({query_success: true , message: null, visits});
-	});
+			function(callback) {
+				selectPendingVisits(user_id, function(err, rows) {
+					if(err) return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+
+					var pending_visits = JSON.parse(JSON.stringify(rows));
+					console.log("2")
+					console.log(pending_visits);
+					context['pending_visits'] = pending_visits;
+					callback()
+				});
+			}
+		], 
+		function(err) {
+			if(err) {
+				console.log(err);
+				return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+			}
+
+			else {
+				context['query_success'] = true;
+				context['message'] = null;
+				console.log(context)
+				return res.json(context);
+			}	
+		}
+	);
 });
 
+// select confirmed visits (visit closest to current date is shown first)
 function selectConfirmedVisits(user_id, callback) {
-	var host_query = "select visit.id as visit_id, visit.house_id, visit.user_id as visitor_id, date_time as visit_time, name as house_name, monthly_rate as rate_per_month, daily_rate as rate_per_night, rating_overall as house_rating, review_count as house_review_count, main_image as house_thumbnail_url from visit inner join house on visit.house_id = house.id inner join house_rating on house_rating.house_id = visit.house_id where visit.user_id = ? and visit.status = 1 order by visit.date_time";
-	return db.query(host_query, [user_id], callback);
+	var selectQuery = "select visit.id as visit_id, visit.house_id, visit.user_id as visitor_id, date_time as visit_time, name as house_name, monthly_rate as rate_per_month, daily_rate as rate_per_night, rating_overall as house_rating, review_count as house_review_count, main_image as house_thumbnail_url from visit inner join house on visit.house_id = house.id inner join house_rating on house_rating.house_id = visit.house_id where visit.user_id = ? and visit.status = 1 order by visit.date_time";
+	return db.query(selectQuery, [user_id], callback);
 }
+
+// select pending visits (latest visit request is shown first)
+function selectPendingVisits(user_id, callback) {
+	var selectQuery = "select visit.id as visit_id, visit.house_id, visit.user_id as visitor_id, date_time as visit_time, name as house_name, monthly_rate as rate_per_month, daily_rate as rate_per_night, rating_overall as house_rating, review_count as house_review_count, main_image as house_thumbnail_url from visit inner join house on visit.house_id = house.id inner join house_rating on house_rating.house_id = visit.house_id where visit.user_id = ? and visit.status = 0 order by visit.id desc";
+	return db.query(selectQuery, [user_id], callback);
+}
+
 
 // 12. 방문 상세 화면 - get visit info about selected visit 
 router.get('/visit-info', function(req, res) {
@@ -829,41 +928,61 @@ function selectVisit(visit_id, callback) {
 }
 
 
-// TODO: for now, this is request for visit
-// 13. 예약하기 (POST) - make a reservation 
-router.post('/reserve-room', function(req, res) {
+// 13. 방문 신청하기 (POST) - make a visit request
+router.post('/visit-request', function(req, res) {
 	if (!req.isAuthenticated()) {
-		return res.json({reservation_success: false, message: "err: user not logged in."});
+		return res.json({success: false, message: "err: user not logged in."});
 	}
 
-	var user_id = req.user.id; 
-	var house_id = req.query.room_id;
-	var start_date = req.query.start_date; //yyyy-mm-dd
-	var end_date = req.query.end_date; 
+	var user_id = req.user.id;
+	var house_id = req.body.house_id;
+	var start_date = req.body.start_date; //yyyy-mm-dd
+	var end_date = req.body.end_date;
 	var created = moment().format("YYYY-MM-DD HH:MM:SS");
+
+	var visit_info = {};
+	visit_info['house_id'] = house_id;
+	visit_info['guest_id'] = user_id;
+	visit_info['start_date'] = start_date;
+	visit_info['end_date'] = end_date;
 
 	makeVisitRequest(house_id, user_id, start_date, end_date, created, function(err, rows) {
 		if(err) {
 			console.log(err)
-			return res.json({reservation_success: false, message: "err: 서버가 불안정합니다."});
-		} 
+			return res.json({success: false, message: "err: 서버가 불안정합니다."});
+		}
+		visit_info['visit_id'] = rows.insertId;
+		visit_info['visit_time'] = null; // visit time is null anyway
+		visit_info['visit_created'] = created;
+		visit_info['visit_status'] = 0;	// status is pending anyway
 
-		// TODO: reservation으로 바꿀때 여기서 reservation_info 보내야함 
+		updateUserVstatus(user_id, function(err, rows) {
+			if(err) {
+				console.log(err)
+				return res.json({success: false, message: "err: 서버가 불안정합니다."});
+			} 
 
-		return res.json({reservation_success: true, message: "성공적으로 예약되었습니다."});
+			console.log(visit_info)
+			return res.json({success: true, message: "성공적으로 예약되었습니다.", visit_info});
+		});
 	});
 });
 
 function makeVisitRequest(house_id, user_id, start_date, end_date, created, callback) {
-	var insert_visit = "insert into visit (house_id, user_id, checkin_date, checkout_date, created) values (?,?,?,?,?)";
-	return db.query(insert_visit, [house_id, user_id, start_date, end_date, created], callback);
+	var insertQuery = "insert into visit (house_id, user_id, checkin_date, checkout_date, created) values (?,?,?,?,?)";
+	return db.query(insertQuery, [house_id, user_id, start_date, end_date, created], callback);
 };
 
+function updateUserVstatus(user_id, callback) {
+	var updateQuery = "update user set v_active = ?, v_newcomer = ? where id = ?";
+	return db.query(updateQuery, [1, 0, user_id], callback);		
+}
 
+	
 //TODO
 // 14. 방문 캔슬 (POST) - cancel visit request
 router.post('/cancel-visit', function(req, res) {
-	var visit_id = req.query.visit_id;
+	var visit_id = req.body.visit_id;
 });
 
 

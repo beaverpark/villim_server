@@ -17,6 +17,9 @@ router.get('/', function(req, res, next) {
 		// res.redirect('/admin/dashboard');
 	// }	
 	// else {
+
+	
+		// console.log(req.user.test)
 		var user = userInfo(req);
 		res.render('index', {user: user});
 	// }
@@ -40,10 +43,10 @@ router.post('/search', function(req, res) {
 	context['from_date'] = req.body.from_date;
 	context['to_date'] = req.body.to_date;
 
-	var query_context = {};
+	// var query_context = {};
 
 	// for now, query all rooms 
-	selectHouse_search(query_context, function(err, rows) {
+	selectHouse_search(function(err, rows) {
 		if(err) console.log(err);
 
 		else {
@@ -65,7 +68,7 @@ router.post('/search', function(req, res) {
 });
 
 
-function selectHouse_search(context, callback) {
+function selectHouse_search(callback) {
 	return db.query("select main_image from house; select monthly_rate from house; select addr_summary from house; select avg_rating from house; select name from house", callback);
 }
 
@@ -224,7 +227,7 @@ function userInfo(req) {
 			dob: req.user.date_of_birth, 
 			about: req.user.about,
 			status: req.user.status,
-			is_admin: req.user.is_admin[0]
+			is_admin: req.user.is_admin,
 		};
 		return userInfo; 
 	}
@@ -244,9 +247,6 @@ function selectAllObjects1(obj1, context, callback) {
 function selectAllObjects4(obj1, obj2, obj3, obj4, context, callback) {
 	return db.query("select * from ??; select * from ??; select * from ??; select * from ??", [obj1, obj2, obj3, obj4], callback);
 }
-
-
-
 
 // insert new house into house table 
 function insertHouse(house_context, callback) {

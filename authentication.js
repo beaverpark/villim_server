@@ -85,6 +85,7 @@ module.exports = function(app, passport) {
 
 			req.login(user, function(err){
 				if(err){
+					console.log(err)
 					return next(err);
 				}
           	  	req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 200;

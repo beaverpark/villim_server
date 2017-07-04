@@ -1,7 +1,7 @@
 .DS_Store
 
 /config/database.js
-/config/config.json
+/config/twilio.js
 
 # Logs
 logs

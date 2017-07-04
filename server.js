@@ -54,9 +54,17 @@ app.use('/jquery_validate', express.static(__dirname + '/node_modules/jquery-for
 /**************************************/
 
 
-/***********************************************/
-/*** PASSPORT(login, signup, session) CONFIG ***/
-/***********************************************/
+
+
+/***************************************/
+/*** TWILIO (phone verification) API ***/
+/***************************************/
+require('./phone_verification')(app);
+
+
+/********************************************/
+/*** PASSPORT(login, signup, session) API ***/
+/********************************************/
 require('./config/passport')(passport, connection);
 
 var sessionStore = new MySQLStore({}, connection); // storage for session info

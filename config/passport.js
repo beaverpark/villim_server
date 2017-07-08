@@ -15,7 +15,7 @@ module.exports = function(passport, connection) {
         var key = {id: user.id};
 
         // this is admin object
-        if(typeof user.staying === 'undefined') {
+        if(typeof user.firstname === 'undefined') {
             key['type'] = 'admin';
         }
         // this is user object

@@ -316,7 +316,7 @@ function selectHousePics(house_id, callback) {
 }
 
 // 3. 유저 화면 - get user info about currently logged in user
-router.get('/userinfo', function(req, res) {	
+router.get('/user-info', function(req, res) {	
 	// console.time("test");
 	if (!req.isAuthenticated()) {
 		return res.json({query_success: false , message: "err: user not logged in.", user_info: null});
@@ -381,7 +381,7 @@ router.post('/update-profile', upload.single('profile_pic'), function(req, res) 
 
 		// update successful
 		// redirect to getting user's changed full info (to update req)
-		res.redirect('/a/userinfo');
+		res.redirect('/a/user-info');
 	});
 
 });

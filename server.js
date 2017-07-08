@@ -5,8 +5,8 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var passport = require('passport')
-var session = require('express-session')
+var passport = require('passport');
+var session = require('express-session');
 var flash = require('connect-flash');
 var MySQLStore = require('express-mysql-session')(session);
 
@@ -14,12 +14,12 @@ var MySQLStore = require('express-mysql-session')(session);
 var connection = require('./connection');
 
 
-
 /**************/
-/*** Routes ***/
+/*** Routers ***/
 /**************/
 var webapp = require('./routes/webapp');
 var android = require('./routes/android');
+var admin = require('./routes/admin');
 // var ios = require('./routes/ios');
 
 
@@ -64,8 +64,10 @@ require('./phone_verification')(app);
 /*** PASSPORT(login, signup, session) API ***/
 /********************************************/
 require('./config/passport')(passport, connection);
+// require('./config/passport-admin')(admin_passport, connection);
 
 var sessionStore = new MySQLStore({}, connection); // storage for session info
+// var admin_sessionStore = new admin_MySQLStore({}, connection); // storage for session info
 
 // passport session config
 app.use(session({
@@ -74,6 +76,7 @@ app.use(session({
 	resave: false, 
 	saveUninitialized: false})
 ); 
+
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
@@ -81,13 +84,12 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 // pass in app and fully configured passport & load authentication module
 require('./authentication.js')(app, passport); // load our routes and pass in our app and fully configured passport
 
-
 /**************************/
 /*** app url navigation ***/
 /**************************/
 app.use('/', webapp);
 app.use('/a/', android);
-
+app.use('/admin/', admin);
 
 
 /**********************/

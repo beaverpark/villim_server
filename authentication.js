@@ -4,9 +4,6 @@ module.exports = function(app, passport) {
 	// GET login form
 	app.get('/login', function(req, res) {
 		if (req.isAuthenticated()) {
-			if(req.user.is_admin[0]) {
-				res.redirect('/admin/dashboard');
-			}
 			res.redirect('/');
 		}
 
@@ -21,6 +18,7 @@ module.exports = function(app, passport) {
 			failureFlash : true // allow flash messages
 		}),
 		function(req, res) {
+
 			if (req.body.remember) {
 			  // maxAge in ms. session continues for 200 days
 			  req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 200;
@@ -28,22 +26,17 @@ module.exports = function(app, passport) {
 			else {
 			  req.session.cookie.expires = false;
 			}
-			if(req.user.is_admin[0]) {
-				res.redirect('/admin/dashboard');
-			}
-			else {
-				res.redirect('/');
-			}
+			res.redirect('/');
 		}
 	);
 
-	// GET login form
-	app.get('/admin', function(req, res) {
-		if (req.isAuthenticated() && req.user.is_admin[0]) {
-			res.redirect('/admin/dashboard');
-		}
-		res.render('login', {admin:"1", message: req.flash('loginMessage')});
-	});
+	// // GET login form
+	// app.get('/admin', function(req, res) {
+	// 	if (req.isAuthenticated() && req.user.is_admin[0]) {
+	// 		res.redirect('/admin/dashboard');
+	// 	}
+	// 	res.render('login', {admin:"1", message: req.flash('loginMessage')});
+	// });
 
 
 
@@ -64,9 +57,17 @@ module.exports = function(app, passport) {
 
 	// GET log out 
 	app.get('/logout', function(req, res) {
-		console.log("logged out");
-		req.logout();
-		res.redirect('/');
+		if(req.user.type == 'user') {
+			console.log("USER logged out");
+			req.logout();
+			res.redirect('/');			
+		}
+
+		else {
+			console.log("ADMIN logged out");
+			req.logout();
+			res.redirect('/admin');			
+		}
 	});
 
 
@@ -91,15 +92,6 @@ module.exports = function(app, passport) {
           	  	req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 200;
 
 				res.redirect('/a/userinfo');
-	    //   		var user_info = {
-					// "fullname": req.user.lastname + req.user.firstname,
-					// "firstname": req.user.firstname, 
-					// "lastname": req.user.lastname, 
-					// "id": req.user.id,
-					// "email": req.user.email,
-					// "profile_pic_url": null
-			 	// }
-   	 // 		    return res.json({login_success: 'true', user_info});
     		});
 		})(req, res, next); 
 	});
@@ -121,16 +113,56 @@ module.exports = function(app, passport) {
 				req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 200;
 
 				res.redirect('/a/userinfo');
-				// var user_info = {
-				// 	"fullname": req.user.lastname + req.user.firstname,
-				// 	"firstname": req.user.firstname, 
-				// 	"lastname": req.user.lastname, 
-				// 	"id": req.user.id,
-				// 	"email": req.user.email,
-				// 	"profile_pic_url": null
-				// }
-				// return res.json({signup_success: 'true', user_info});
 			});
 		})(req, res, next); 
 	});
+
+
+	// GET admin login form
+	app.get('/admin/login', function(req, res) {
+		// only when logged in user is admin, redirect to admin
+		if (req.isAuthenticated()) {
+			if(req.user.type == 'admin') {
+				res.redirect('/admin');
+			}
+		}
+		res.render('login', {message: req.flash('loginMessage'), admin: true});
+	});
+
+	// POST process admin login form
+	app.post('/admin/login', passport.authenticate('local-admin-login', 
+		{
+			// successRedirect : '/', // redirect to index page
+			failureRedirect : '/admin/login', // redirect back to the login page if there is an error
+			failureFlash : true // allow flash messages
+		}),
+		function(req, res) {
+			if (req.body.remember) {
+			  // maxAge in ms. session continues for 200 days
+			  req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 200;
+			} 
+			else {
+			  req.session.cookie.expires = false;
+			}
+			res.redirect('/admin');
+		}
+	);
+
+	// GET admin signup form
+	app.get('/admin/signup', function(req, res) {
+		if (req.isAuthenticated()) {
+			if(req.user.type == 'admin') {
+				res.redirect('/admin');
+			}
+		}
+		res.render('signup', {message: req.flash('signupMessage'), admin: true});
+	});
+
+	// POST process the admin signup form
+	app.post('/admin/signup', passport.authenticate('local-admin-signup', {
+		successRedirect : '/admin', // redirect to index page
+		failureRedirect : '/admin/signup', // redirect back to the signup page if there is an error
+		failureFlash : true // allow flash messages
+	}));
+
 };

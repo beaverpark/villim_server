@@ -3,67 +3,70 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../connection');
+
 var moment = require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul");
 
 
-
-// moment.tz.setDefault("Asia/Seoul");
-// console.log(moment().format("YYYY-MM-DD HH:MM:SS"));
-
 // GET index page
 router.get('/', function(req, res, next) {
-	// if(req.user && req.user.is_admin[0]) {
-		// res.redirect('/admin/dashboard');
-	// }	
-	// else {
-
-	
-		// console.log(req.user.test)
-		var user = userInfo(req);
-		res.render('index', {user: user});
-	// }
+	if(req.isAuthenticated()) {
+		var user = req.user;
+		user['username'] = req.user.lastname + req.user.firstname;
+	}
+	res.render('index', {user: user});
 });
 
 
-// TODO: redirect this back to search
-// GET search page
-router.get('/search', function(req, res) {
-	res.redirect('/');
-});
+// // TODO: redirect this back to search
+// // GET search page
+// router.get('/search', function(req, res) {
+// 	res.redirect('/');
+// });
 
 
-// POST search houses
-router.post('/search', function(req, res) {
+// GET search houses
+router.get('/s/:location', function(req, res) {
 	var	context = {};
 
-	var user = userInfo(req); 
-	context['user'] = user; 
-	context['location'] = req.body.location;
-	context['from_date'] = req.body.from_date;
-	context['to_date'] = req.body.to_date;
+	var location = req.params.location;
+	console.log(location)
+
+	var checkin = req.query.checkin;
+	var checkout = req.query.checkout;
+	var pref_currency = req.query.curr;
+	
+	// var user = userInfo(req); 
+	// context['user'] = user; 
+	// context['location'] = req.query.location;
+	// context['checkin'] = req.query.checkin;
+	// context['checkout'] = req.query.checkout;
+	// context['preferred_currency'] = req.params.curr;
+
+	// console.log(context);
 
 	// var query_context = {};
 
 	// for now, query all rooms 
-	selectHouse_search(function(err, rows) {
-		if(err) console.log(err);
+	// selectHouse_search(function(err, rows) {
+	// 	if(err) console.log(err);
 
-		else {
+	// 	else {
 
-			console.log("select houses successful");
-			context['house_main_image'] = JSON.parse(JSON.stringify(rows[0]));
+	// 		console.log("select houses successful");
+	// 		context['house_main_image'] = JSON.parse(JSON.stringify(rows[0]));
 
-			// TODO: process monthly rate with commas ex-  150,000,000
-			context['house_monthly_rate'] = JSON.parse(JSON.stringify(rows[1]));
-			context['house_addr_summary'] = JSON.parse(JSON.stringify(rows[2]));
-			context['house_avg_rating'] = JSON.parse(JSON.stringify(rows[3]));
-			context['house_name'] = JSON.parse(JSON.stringify(rows[4]));
+	// 		// TODO: process monthly rate with commas ex-  150,000,000
+	// 		context['house_monthly_rate'] = JSON.parse(JSON.stringify(rows[1]));
+	// 		context['house_addr_summary'] = JSON.parse(JSON.stringify(rows[2]));
+	// 		context['house_avg_rating'] = JSON.parse(JSON.stringify(rows[3]));
+	// 		context['house_name'] = JSON.parse(JSON.stringify(rows[4]));
 
-			console.log(context)
-			res.render('search', context);
-		}
-	});
+	// 		console.log(context)
+	// 		res.render('search', context);
+	// 	}
+	// });
+	
 
 });
 
@@ -76,9 +79,10 @@ function selectHouse_search(callback) {
 
 // GET current user's profile
 router.get('/dashboard', isLoggedIn, function(req, res) {
-	var user = userInfo(req); 
+	var user = req.user;
+	user['username'] = req.user.lastname + req.user.firstname;
 
-	res.render('dashboard', {user: user, noRegisterBtn: 1});
+	res.render('dashboard', {user: user});
 });
 
 
@@ -91,10 +95,11 @@ router.get('/register', function(req, res) {
 
 	var context = {};
 
-	var user = userInfo(req);
+	var user = req.user;
+	user['username'] = req.user.lastname + req.user.firstname;
 
 	context['user'] = user;
-	context['noRegisterBtn'] = 1;
+	// context['noRegisterBtn'] = 1;
 
 	selectAllObjects1("amenities", context, function(err, rows) {
 		if(err) {
@@ -172,31 +177,7 @@ router.post('/register', isLoggedIn, function(req, res) {
 });
 
 
-// GET admin page
-router.get('/admin/dashboard', function(req, res) {
-	if (!req.isAuthenticated())
-		res.redirect("/admin");
 
-	var user = userInfo(req); 
-
-	var context = {};
-
-	context['user'] = user; 
-
-	// get all cols from user, house ,reservation, amenities table
-	selectAllObjects4("user", "house", "reservation", "amenities", context, function(err, rows) {
-		if(err) res.json(err);
-
-		else {
-			context['all_users'] = JSON.parse(JSON.stringify(rows[0]));
-			context['all_houses'] = JSON.parse(JSON.stringify(rows[1]));
-			context['all_reservations'] = JSON.parse(JSON.stringify(rows[2]));
-			context['all_amenities'] = JSON.parse(JSON.stringify(rows[3]));
-
-			res.render('admin-dashboard', context);
-		}
-	});
-});
 
 module.exports = router;
 
@@ -213,24 +194,6 @@ function isLoggedIn(req, res, next) {
 
 	// if they aren't redirect them to the home page
 	res.redirect('/');
-};
-
-// returns user's info object if user is logged in
-function userInfo(req) {
-	if(req.isAuthenticated()) {
-		var userInfo = {
-			username : req.user.lastname + req.user.firstname,
-			firstname: req.user.firstname,
-			lastname: req.user.lastname, 
-			email: req.user.email,
-			mobile_num: req.user.mobile_num,
-			dob: req.user.date_of_birth, 
-			about: req.user.about,
-			status: req.user.status,
-			is_admin: req.user.is_admin,
-		};
-		return userInfo; 
-	}
 };
 
 /************************/

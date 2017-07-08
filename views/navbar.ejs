@@ -1,35 +1,25 @@
 <div class="navbar-fixed">
   <nav class="nav_bg_color">
     <div class="nav-wrapper">
-      <% if(user) { %>
-        <% if(!user.is_admin) { %>
-          <a href="/" class="brand-logo left" style="color: black">
-        <% } else { %>
-          <a href="/admin/dashboard" class="brand-logo left" style="color: black">
-        <% } %>
+      <% if(user && user.type == 'admin') { %>
+        <a href="/admin" class="brand-logo left" style="color: black">
+      <% } else { %>
+        <a href="/" class="brand-logo left" style="color: black">
       <% } %>
-            <img class="nav_logo" src="/images/icons/villim_main_logo_lg.png">
-          </a>
-      <ul id="side_content" class="nav_text right">
-        <% if(typeof noRegisterBtn === 'undefined') { %>
-        <li><a href="/register" class="btn waves-effect waves-light white nav_btn"> 방 등록하기 </a></li>
-        <% } %>
-        <% if(user) { %>
-          <% if(!user.is_admin) { %>
-          <li><a href="dashboard" class="waves-effect"> <%- user.username -%> 님</a></li>
-          <% } %>
-          <li><a href="/logout" class="waves-effect" style="color:red"> 로그아웃 </a></li>
-
-        <% } else { %>
-          <li><a href="signup" class="waves-effect"> 회원가입 </a></li>
-          <li><a href="login" class="waves-effect"> 로그인 </a></li>
-        <% } %>
-        
-      </ul>
+          <img class="nav_logo" src="/images/icons/villim_main_logo_lg.png">
+        </a>
+        <ul id="side_content" class="nav_text right">
+          <% if(!user) { %>
+            <li><a href="signup" class="waves-effect"> 회원가입 </a></li>
+            <li><a href="login" class="waves-effect"> 로그인 </a></li>
+          <% } else if(user.type == 'user') { %>
+            <li><a href="dashboard" class="waves-effect"> <%- user.username -%> 님</a></li>
+            <li><a href="/logout" class="waves-effect" style="color:red"> 로그아웃 </a></li>
+          <% } else {%>
+            <li><a href="/admin/profile" class="waves-effect"> <%- user.name -%> 어드민님</a></li>
+            <li><a href="/logout" class="waves-effect" style="color:red"> 로그아웃 </a></li>          
+          <% } %>    
+        </ul>
     </div>
   </nav>
 </div>
-
-
-
-

@@ -14,9 +14,9 @@ var storage = multer.diskStorage({
     cb(null, './public/uploads/profile_pics')
   },
   filename: function (req, file, cb) {
-    cb(null, 'user' + req.user.id + '_profile.png')
+    cb(null,  file.originalname + '.png')
   }
-})
+});
 var upload = multer({storage:storage});
 
 function stringToList(stringList) {
@@ -352,10 +352,17 @@ router.post('/update-profile', upload.single('profile_pic'), function(req, res) 
 
 	// TODO: this is just for local storage. 
 	// make profile url path  http://175.207.29.19/uploads/profile_pics/user1_profile.png
-	var temp_url = req.file.path.slice(7);
-	var profile_pic_url = "http://175.207.29.19/" + temp_url; 
+	// console.log(req.user.profile_pic_url);
 
-	new_profile['profile_pic_url'] = profile_pic_url;
+	new_profile['profile_pic_url'] = req.user.profile_pic_url;
+
+	if(typeof req.file !== 'undefined') {
+		var temp_url = req.file.path.slice(7);
+		var profile_pic_url = "http://175.207.29.19/" + temp_url; 
+		new_profile['profile_pic_url'] = profile_pic_url;		
+	}
+
+	// console.log(new_profile['profile_pic_url'])
 
 	// console.log(new_profile)
 	if(req.body.push_notifications) {
@@ -431,8 +438,8 @@ router.get('/my-house', function(req, res) {
 				}
 				house_info['query_success'] = true;
 				house_info['message'] = "staying";
-				console.log("currently staying house")
-				console.log(house_info)
+				// console.log("currently staying house")
+				// console.log(house_info)
 				return res.json(house_info);
 			}
 		});
@@ -451,8 +458,8 @@ router.get('/my-house', function(req, res) {
 				confirmed_house_info = JSON.parse(JSON.stringify(rows))[0];
 				confirmed_house_info['query_success'] = true;
 				confirmed_house_info['message'] = "confirmed";
-				console.log("upcoming house")
-				console.log(confirmed_house_info)
+				// console.log("upcoming house")
+				// console.log(confirmed_house_info)
 				return res.json(confirmed_house_info);
 			}
 		});
@@ -461,13 +468,13 @@ router.get('/my-house', function(req, res) {
 
 // selects user's currently staying house reservation
 function selectUserStayingReservation(user_id, callback) {
-	var selectQuery = "select r.id as reservation_id, r.house_id, r.checkin_date as start_date, r.checkout_date as end_date, h.main_image as house_thumbnail_url from reservation r, house h where r.house_id = h.id and r.user_id = ? and r.status = 2";
+	var selectQuery = "select r.id as reservation_id, r.house_id, r.checkin, r.checkout, h.main_image as house_thumbnail_url from reservation r, house h where r.house_id = h.id and r.user_id = ? and r.status = 2";
 	return db.query(selectQuery, [user_id], callback);
 };
 
 // selects user's closest upcoming confirmed reservation
 function selectUserClosestConfirmedReservation(user_id, callback) {
-	var selectQuery = "select r.id as reservation_id, r.house_id, r.checkin_date as start_date, r.checkout_date as end_date, h.main_image as house_thumbnail_url from reservation r inner join house h on r.house_id = h.id where r.user_id = ? and r.status = 2";
+	var selectQuery = "select r.id as reservation_id, r.house_id, r.checkin, r.checkout, h.main_image as house_thumbnail_url from reservation r inner join house h on r.house_id = h.id where r.user_id = ? and r.status = 2";
 	return db.query(selectQuery, [user_id], callback);
 };
 
@@ -632,7 +639,7 @@ router.get('/house-info', function(req, res) {
 });
 
 function getReservedDates(house_id, callback) {
-	var selectQuery = "select checkin_date as start_date, checkout_date as end_date from reservation where house_id = ? order by checkin_date";
+	var selectQuery = "select checkin, checkout from reservation where house_id = ? order by checkin";
 	return db.query(selectQuery, [house_id], callback);
 }
 
@@ -793,7 +800,6 @@ function postReview(house_id, user_id, reservation_id, review_info, created, cal
 };
 
 
-// TODO: add pending visits too 
 // 11. 방문 목록 화면 - get user's confirmed visits 
 router.get('/visit-list', function(req, res) {
 	if (!req.isAuthenticated()) {
@@ -810,8 +816,8 @@ router.get('/visit-list', function(req, res) {
 					if(err) return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
 
 					var confirmed_visits = JSON.parse(JSON.stringify(rows));
-					console.log("1")
-					console.log(confirmed_visits)
+					// console.log("1")
+					// console.log(confirmed_visits)
 					context['confirmed_visits'] = confirmed_visits;
 					callback();
 				});
@@ -822,8 +828,8 @@ router.get('/visit-list', function(req, res) {
 					if(err) return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
 
 					var pending_visits = JSON.parse(JSON.stringify(rows));
-					console.log("2")
-					console.log(pending_visits);
+					// console.log("2")
+					// console.log(pending_visits);
 					context['pending_visits'] = pending_visits;
 					callback()
 				});
@@ -960,17 +966,17 @@ router.post('/visit-request', function(req, res) {
 
 	var user_id = req.user.id;
 	var house_id = req.body.house_id;
-	var start_date = req.body.start_date; //yyyy-mm-dd
-	var end_date = req.body.end_date;
+	var checkin = req.body.checkin; //yyyy-mm-dd
+	var checkout = req.body.checkout;
 	var created = moment().format("YYYY-MM-DD HH:MM:SS");
 
 	var visit_info = {};
 	visit_info['house_id'] = house_id;
 	visit_info['guest_id'] = user_id;
-	visit_info['start_date'] = start_date;
-	visit_info['end_date'] = end_date;
+	visit_info['checkin'] = checkin;
+	visit_info['checkout'] = checkout;
 
-	makeVisitRequest(house_id, user_id, start_date, end_date, created, function(err, rows) {
+	makeVisitRequest(house_id, user_id, checkin, checkout, created, function(err, rows) {
 		if(err) {
 			console.log(err)
 			return res.json({success: false, message: "err: 서버가 불안정합니다."});
@@ -992,9 +998,9 @@ router.post('/visit-request', function(req, res) {
 	});
 });
 
-function makeVisitRequest(house_id, user_id, start_date, end_date, created, callback) {
-	var insertQuery = "insert into visit (house_id, user_id, checkin_date, checkout_date, created) values (?,?,?,?,?)";
-	return db.query(insertQuery, [house_id, user_id, start_date, end_date, created], callback);
+function makeVisitRequest(house_id, user_id, checkin, checkout, created, callback) {
+	var insertQuery = "insert into visit (house_id, user_id, checkin, checkout, created) values (?,?,?,?,?)";
+	return db.query(insertQuery, [house_id, user_id, checkin, checkout, created], callback);
 };
 
 function updateUserVstatus(user_id, callback) {

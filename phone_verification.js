@@ -7,7 +7,7 @@ module.exports = function(app) {
     // 핸드폰 번호 받기 / 인증코드 보내기 (POST) - get user's phone number for verification / send verification code
     app.post('/send-verification-phone', function(req, res) {
         var phone_number = req.body.phone_number;
-        var country_code = 1;
+        var country_code = 82;
         var via = "sms";
         var locale = "ko";
 
@@ -30,7 +30,7 @@ module.exports = function(app) {
 
     // 핸드폰 인증하기 (POST) - verify user's phone by given verification code 
     app.post('/verify-phone', function(req, res) {
-        var country_code = 1;
+        var country_code = 82;
         var phone_number = req.body.phone_number;
         var token = req.body.verification_code;
 

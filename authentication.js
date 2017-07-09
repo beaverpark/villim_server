@@ -81,7 +81,7 @@ module.exports = function(app, passport) {
 			if(err) return next(err);
 
 			if(!user) {
-				return res.json({login_success: false, message:'이메일 또는 비밀번호가 올바르지 않습니다.'});
+				return res.json({success: false, message:'이메일 또는 비밀번호가 올바르지 않습니다.'});
 			}
 
 			req.login(user, function(err){
@@ -91,7 +91,7 @@ module.exports = function(app, passport) {
 				}
           	  	req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 200;
 
-				res.redirect('/a/userinfo');
+				res.redirect('/a/user-info');
     		});
 		})(req, res, next); 
 	});
@@ -103,7 +103,7 @@ module.exports = function(app, passport) {
 
 			if(!user) {
 				var signup_msg = req.body.email + ' 는 이미 사용중인 이메일입니다.';
-				return res.json({signup_success: false, message: signup_msg});
+				return res.json({success: false, message: signup_msg});
 			}
 
 			req.login(user, function(err){
@@ -112,7 +112,7 @@ module.exports = function(app, passport) {
 				}
 				req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 200;
 
-				res.redirect('/a/userinfo');
+				res.redirect('/a/user-info');
 			});
 		})(req, res, next); 
 	});

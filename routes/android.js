@@ -319,16 +319,16 @@ function selectHousePics(house_id, callback) {
 router.get('/user-info', function(req, res) {	
 	// console.time("test");
 	if (!req.isAuthenticated()) {
-		return res.json({query_success: false , message: "err: user not logged in.", user_info: null});
+		return res.json({success: false , message: "err: user not logged in.", user_info: null});
 	}
 
 	// get user's full info 
 	getUserInfo(req, function(user_info) {
 		if(user_info == -1) {
-			return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+			return res.json({success: false , message: "err: 서버가 불안정합니다."});
 		}
 		console.log(user_info)
-		return res.json({query_success: true, message: null, user_info});
+		return res.json({success: true, message: null, user_info});
 	}); 
 });
 
@@ -336,7 +336,7 @@ router.get('/user-info', function(req, res) {
 // 4. 프로필 변경하기 (POST) - update user's profile 
 router.post('/update-profile', upload.single('profile_pic'), function(req, res) {
 	if (!req.isAuthenticated()) {
-		return res.json({update_success: false, message: "err: user not logged in."});
+		return res.json({success: false, message: "err: user not logged in."});
 	}
 	var new_profile = {};
 
@@ -362,9 +362,9 @@ router.post('/update-profile', upload.single('profile_pic'), function(req, res) 
 		new_profile['profile_pic_url'] = profile_pic_url;		
 	}
 
-	// console.log(new_profile['profile_pic_url'])
+	console.log(new_profile['profile_pic_url'])
 
-	// console.log(new_profile)
+	console.log(new_profile)
 	if(req.body.push_notifications) {
 		new_profile['push_notifications'] = 1;
 	}
@@ -376,7 +376,7 @@ router.post('/update-profile', upload.single('profile_pic'), function(req, res) 
 	updateProfile(req.user.id, new_profile, function(err, rows) {
 		if(err) {
 			console.log(err)
-			return res.json({update_success: false , message: "err: 서버가 불안정합니다."});			
+			return res.json({success: false , message: "err: 서버가 불안정합니다."});			
 		}
 
 		// update successful
@@ -399,9 +399,9 @@ router.get('/host-info', function(req, res) {
 	// get user's full info 
 	getHostInfo(host_id, function(host_info) {
 		if(host_info == -1) {
-			return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+			return res.json({success: false , message: "err: 서버가 불안정합니다."});
 		}
-		host_info['query_success'] = true;
+		host_info['success'] = true;
 		host_info['message'] = null;
 		console.log(host_info)
 		return res.json(host_info);
@@ -412,13 +412,13 @@ router.get('/host-info', function(req, res) {
 // 6. 유저의 집 화면(현재 사용하는 집 or 가장 가까운 예약 컨펌된 집) - get user's current house or confirmed house (w/ closest check-in date)
 router.get('/my-house', function(req, res) {
 	if (!req.isAuthenticated()) {
-		return res.json({query_success: false , message: "err: user not logged in."});
+		return res.json({success: false , message: "err: user not logged in."});
 	}
 
 	// if user has never made any reservations or is not currently "reservation active", don't need to query
 	if(req.user.r_newcomer || !req.user.r_active) {
 		console.log("user has no active reservation");
-		return res.json({query_success: false , message: "실패: 유저의 방이 존재하지 않습니다."});
+		return res.json({success: false , message: "실패: 유저의 방이 존재하지 않습니다."});
 	}
 
 	// if user has currently staying house, query staying house reservation info
@@ -426,7 +426,7 @@ router.get('/my-house', function(req, res) {
 		selectUserStayingReservation(req.user.id, function(err, rows) {
 			if(err) {
 				console.log(err); 
-				return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+				return res.json({success: false , message: "err: 서버가 불안정합니다."});
 			}
 
 			else {
@@ -434,9 +434,9 @@ router.get('/my-house', function(req, res) {
 				house_info = JSON.parse(JSON.stringify(rows))[0];
 
 				if(typeof house_info === 'undefined') {
-					return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+					return res.json({success: false , message: "err: 서버가 불안정합니다."});
 				}
-				house_info['query_success'] = true;
+				house_info['success'] = true;
 				house_info['message'] = "staying";
 				// console.log("currently staying house")
 				// console.log(house_info)
@@ -450,13 +450,13 @@ router.get('/my-house', function(req, res) {
 		selectUserClosestConfirmedReservation(req.user.id, function(err, rows) {
 			if(err) {
 				console.log(err); 
-				return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+				return res.json({success: false , message: "err: 서버가 불안정합니다."});
 			}
 
 			else {
 				var confirmed_house_info = {};
 				confirmed_house_info = JSON.parse(JSON.stringify(rows))[0];
-				confirmed_house_info['query_success'] = true;
+				confirmed_house_info['success'] = true;
 				confirmed_house_info['message'] = "confirmed";
 				// console.log("upcoming house")
 				// console.log(confirmed_house_info)
@@ -490,7 +490,7 @@ router.get('/featured-houses', function(req, res) {
 	selectAllHouses(function(err, rows) {
 		if(err) {
 			console.log(err); 
-			return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+			return res.json({success: false , message: "err: 서버가 불안정합니다."});
 		} 
 
 		else {
@@ -520,7 +520,7 @@ router.get('/featured-houses', function(req, res) {
 			}
 			console.log(houses);
 
-			return res.json({query_success: true , message: null, houses});
+			return res.json({success: true , message: null, houses});
 		}
 	});
 });
@@ -631,10 +631,10 @@ router.get('/house-info', function(req, res) {
 	async.parallel(tasks, function(err) {
 		if(err) {
 			console.log(err);
-			return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+			return res.json({success: false , message: "err: 서버가 불안정합니다."});
 		}
 		// console.log(house_info)
-		return res.json({query_success: true , message:null, house_info});
+		return res.json({success: true , message:null, house_info});
 	});
 });
 
@@ -690,9 +690,9 @@ router.get('/house-reviews', function(req, res) {
 	async.series(tasks, function(err) {
 		if(err) {
 			console.log(err);
-			return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+			return res.json({success: false , message: "err: 서버가 불안정합니다."});
 		}
-		context['query_success'] = true;
+		context['success'] = true;
 		context['message'] = null;
 		console.log(context)
 		return res.json(context);
@@ -714,12 +714,12 @@ function selectAllReviewsByHouseId(house_id, callback) {
 // 10. 리뷰 남기기 (POST) - post a review to selected house
 router.post('/post-review', function(req, res) {
 	if (!req.isAuthenticated()) {
-		return res.json({post_success: false, message: "err: user not logged in."});
+		return res.json({success: false, message: "err: user not logged in."});
 	}
 	
 	// if house_id = -1, err 
 	if(req.query.house_id == -1) {
-		return res.json({post_success: false, message: "err: 서버가 불안정합니다."});
+		return res.json({success: false, message: "err: 서버가 불안정합니다."});
 	}
 
 	var house_id = req.body.house_id;
@@ -783,9 +783,9 @@ router.post('/post-review', function(req, res) {
 	async.series(tasks, function(err) {
 		if(err) {
 			console.log(err);
-			return res.json({post_success: false , message: "err: 서버가 불안정합니다."});
+			return res.json({success: false , message: "err: 서버가 불안정합니다."});
 		}
-		return res.json({post_success: true, message: "후기가 성공적으로 등록되었습니다."});
+		return res.json({success: true, message: "후기가 성공적으로 등록되었습니다."});
 	});
 });
 
@@ -803,7 +803,7 @@ function postReview(house_id, user_id, reservation_id, review_info, created, cal
 // 11. 방문 목록 화면 - get user's confirmed visits 
 router.get('/visit-list', function(req, res) {
 	if (!req.isAuthenticated()) {
-		return res.json({reservation_success: false, message: "err: user not logged in."});
+		return res.json({success: false, message: "err: user not logged in."});
 	}	
 
 	var pref_currency = req.params.preferred_currency;
@@ -813,7 +813,7 @@ router.get('/visit-list', function(req, res) {
 	async.parallel([
 			function(callback) {
 				selectConfirmedVisits(user_id, function(err, rows) {
-					if(err) return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+					if(err) return res.json({success: false , message: "err: 서버가 불안정합니다."});
 
 					var confirmed_visits = JSON.parse(JSON.stringify(rows));
 					// console.log("1")
@@ -825,7 +825,7 @@ router.get('/visit-list', function(req, res) {
 
 			function(callback) {
 				selectPendingVisits(user_id, function(err, rows) {
-					if(err) return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+					if(err) return res.json({success: false , message: "err: 서버가 불안정합니다."});
 
 					var pending_visits = JSON.parse(JSON.stringify(rows));
 					// console.log("2")
@@ -838,11 +838,11 @@ router.get('/visit-list', function(req, res) {
 		function(err) {
 			if(err) {
 				console.log(err);
-				return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+				return res.json({success: false , message: "err: 서버가 불안정합니다."});
 			}
 
 			else {
-				context['query_success'] = true;
+				context['success'] = true;
 				context['message'] = null;
 				console.log(context)
 				return res.json(context);
@@ -867,7 +867,7 @@ function selectPendingVisits(user_id, callback) {
 // 12. 방문 상세 화면 - get visit info about selected visit 
 router.get('/visit-info', function(req, res) {
 	if (!req.isAuthenticated()) {
-		return res.json({reservation_success: false, message: "err: user not logged in."});
+		return res.json({success: false, message: "err: user not logged in."});
 	}	
 
 	var visit_id = req.query.visit_id;
@@ -875,13 +875,13 @@ router.get('/visit-info', function(req, res) {
 	var context = {};
 
 	selectVisit(visit_id, function(err, rows) {
-		if(err) return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+		if(err) return res.json({success: false , message: "err: 서버가 불안정합니다."});
 
 		var visit_info = JSON.parse(JSON.stringify(rows))[0];
 
 		if(typeof visit_info === 'undefined') {
 			console.log('no visit id found');
-			return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+			return res.json({success: false , message: "err: 서버가 불안정합니다."});
 		}
 		
 		// console.log(visit_info);
@@ -889,7 +889,7 @@ router.get('/visit-info', function(req, res) {
 
 		getHouseInfo(house_id, function(house_info) {
 			if(house_info == -1) {
-				return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+				return res.json({success: false , message: "err: 서버가 불안정합니다."});
 			}
 			// console.log(house_info)
 
@@ -897,7 +897,7 @@ router.get('/visit-info', function(req, res) {
 					function(callback) {
 						getLatestReview(house_id, function(review) {
 							if(house_info == -1) {
-								return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+								return res.json({success: false , message: "err: 서버가 불안정합니다."});
 							}
 							// console.log("1")
 							// console.log(review)
@@ -911,7 +911,7 @@ router.get('/visit-info', function(req, res) {
 					function(callback) {
 						getHouseAmenities(house_id, function(amenities) {
 							if(house_info == -1) {
-								return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+								return res.json({success: false , message: "err: 서버가 불안정합니다."});
 							}
 							// console.log("2")
 							// console.log(amenities)
@@ -923,7 +923,7 @@ router.get('/visit-info', function(req, res) {
 					function(callback) {
 						getHousePics(house_id, function(pics) {
 							if(house_info == -1) {
-								return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+								return res.json({success: false , message: "err: 서버가 불안정합니다."});
 							}
 							// console.log("3")
 							// console.log(pics)
@@ -935,11 +935,11 @@ router.get('/visit-info', function(req, res) {
 				function(err) {
 					if(err) {
 						console.log(err);
-						return res.json({query_success: false , message: "err: 서버가 불안정합니다."});
+						return res.json({success: false , message: "err: 서버가 불안정합니다."});
 					}
 
 					else {
-						context['query_success'] = true;
+						context['success'] = true;
 						context['message'] = null;
 						context['visit_info'] = visit_info;
 						context['house_info'] = house_info;

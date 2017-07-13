@@ -262,7 +262,7 @@ function getLatestReview(house_id, result) {
 
 // TODO: query 다시 보기
 function selectLatestReviewByHouseId(house_id, callback) {
-	var selectQuery = "select r.commenter_id as review_last_reviewer, r.comment as review_last_content, r.rating_overall as review_last_rating, u.profile_pic_url as review_last_profile_pic_url from review r right outer join user u on r.commenter_id = u.id where r.house_id = ? order by r.created desc limit 1";
+	var selectQuery = "select concat(u.lastname, u.firstname) as review_last_reviewer, r.comment as review_last_content, r.rating_overall as review_last_rating, u.profile_pic_url as review_last_profile_pic_url from review r right outer join user u on r.commenter_id = u.id where r.house_id = ? order by r.created desc limit 1";
 	return db.query(selectQuery, [house_id], callback);
 }
 
@@ -358,6 +358,7 @@ router.post('/update-profile', upload.single('profile_pic'), function(req, res) 
 
 	if(typeof req.file !== 'undefined') {
 		var temp_url = req.file.path.slice(7);
+		// TODO: change the url to villim.com 
 		var profile_pic_url = "http://175.207.29.19/" + temp_url; 
 		new_profile['profile_pic_url'] = profile_pic_url;		
 	}
@@ -1033,12 +1034,13 @@ router.get('/open-doorlock', function(req, res) {
 		// return res.json({open_authorized: true, open_success: false, message: "실패: 도어락이 고장났습니다."})
 	// }
 
-	return res.json({open_authorized: true, open_success: true, message: null});
+	return res.json({open_authorized: true, success: true, message: null});
 });
 
 
 // 16. 도어락 비밀번호 변경 (POST) - change pascode for currently logged in user's house
 router.post('/change-passcode', function(req, res) {
+	return res.json({success: true});
 });
 
 

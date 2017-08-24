@@ -38,40 +38,40 @@
     <script>
 	$(function(){
 
-		// function autoHypenPhone(str){
-	 //        str = str.replace(/[^0-9]/g, '');
-	 //        var tmp = '';
-	 //        if( str.length < 4){
-	 //            return str;
-	 //        }else if(str.length < 7){
-	 //            tmp += str.substr(0, 3);
-	 //            tmp += '-';
-	 //            tmp += str.substr(3);
-	 //            return tmp;
-	 //        }else if(str.length < 11){
-	 //            tmp += str.substr(0, 3);
-	 //            tmp += '-';
-	 //            tmp += str.substr(3, 3);
-	 //            tmp += '-';
-	 //            tmp += str.substr(6);
-	 //            return tmp;
-	 //        }else{              
-	 //            tmp += str.substr(0, 3);
-	 //            tmp += '-';
-	 //            tmp += str.substr(3, 4);
-	 //            tmp += '-';
-	 //            tmp += str.substr(7);
-	 //            return tmp;
-	 //        }
-	 //        return str;
-	 //    }
+		function autoHypenPhone(str){
+	        str = str.replace(/[^0-9]/g, '');
+	        var tmp = '';
+	        if( str.length < 4){
+	            return str;
+	        }else if(str.length < 7){
+	            tmp += str.substr(0, 3);
+	            tmp += '-';
+	            tmp += str.substr(3);
+	            return tmp;
+	        }else if(str.length < 11){
+	            tmp += str.substr(0, 3);
+	            tmp += '-';
+	            tmp += str.substr(3, 3);
+	            tmp += '-';
+	            tmp += str.substr(6);
+	            return tmp;
+	        }else{              
+	            tmp += str.substr(0, 3);
+	            tmp += '-';
+	            tmp += str.substr(3, 4);
+	            tmp += '-';
+	            tmp += str.substr(7);
+	            return tmp;
+	        }
+	        return str;
+	    }
 
-		// var cellphone = document.getElementById('cellphone');
-		// cellphone.onkeyup = function(event){
-	 //        event = event || window.event;
-	 //        var _val = this.value.trim();
-	 //        this.value = autoHypenPhone(_val) ;
-		// }
+		var cellphone = document.getElementById('checkout_phone_number');
+		cellphone.onkeyup = function(event){
+	        event = event || window.event;
+	        var _val = this.value.trim();
+	        this.value = autoHypenPhone(_val) ;
+		}
 
 		// var IMP = window.IMP; // 생략가능
 
@@ -121,10 +121,10 @@
 				pay_method : 'card',
 				merchant_uid : 'merchant_' + new Date().getTime(),
 				name : '주문명:결제테스트',
-				amount : 100,
+				amount : 1000,
 				buyer_email : 'iamport@siot.do',
 				buyer_name : '구매자이름',
-				buyer_tel : '01092694712',
+				buyer_tel : '',
 				buyer_addr : '서울특별시 강남구 삼성동',
 				buyer_postcode : '123-456',
 				// kakoOpenApp: true
@@ -142,7 +142,8 @@
 				    var msg = '결제에 실패하였습니다.';
 				    msg += '에러내용 : ' + rsp.error_msg;
 				}
-				alert(msg);
+				console.log(msg)
+				// alert(msg);
 			});
 		});
 
@@ -150,31 +151,6 @@
 
 
     </script>
-
-<script>
-	$(function() {
-		$('#phone_btn').click(function() {
-			var data = {};
-			data['phone_number'] = $('#checkout_phone_number').val();
-			console.log("data:\n", data)
-			$.ajax({
-				type:'POST',
-				data: JSON.stringify(data),
-				contentType:'application/json',
-				url: '175.207.29.19/send-verification-phone',
-				success: function() {
-					console.log("send code successful")
-				},
-				error: function(err) {
-					console.log("ajax err")
-				}
-			});
-		});
-
-
-
-	});
-</script>
 
 
 	<div class="container index_container checkout_container">
@@ -227,20 +203,13 @@
 				  <div class="step-content">
 				     <div class="row">
 
-
-
-				        <!-- <div class="input-field"> -->
-	 	        		<!-- <a class="waves-effect waves-light btn modal-trigger" href="#phone_modal"> -->
-				           <input id="checkout_phone_number" name="phone_number" type="text" >
-				           <label for="cellphone">전화번호 </label>
-				        <!-- </a> -->
-
-				        <!-- </div> -->
-				        <div>
+	 	        		<a class="modal-trigger" href="#phone_modal">
+				           <input id="phone_number_holder" name="phone_number" placeholder="전화번호" type="text">
+				        </a>
+<!-- 				        <div>
 					      <button id="phone_btn" class="btn waves-effect waves-light red accent-2">인증번호 받기</button>
-				        </div>
+				        </div> -->
   <!-- <a class="waves-effect waves-light btn modal-trigger" href="#phone_modal">Modal</a> -->
-
 
 
 
@@ -253,49 +222,26 @@
 				<li class="step">
 				  <div class="step-title waves-effect"> 결제 방식 선택 </div>
 				  <div class="step-content">
-				  	<div class="row">
-				  		<div class="col s4">
-				  			<div class="payment_item">
-								<a href="#" role="button" id="kakaopay_btn">
-									<img src="/images/icons/payment_icon_yellow_medium.png" style="width: 100%; height: 100%">
-								</a>
-				  			</div>
-				  		</div>
-				  		<div class="col s4">
-				  			<div class="payment_item">
-								<a href="#" role="button" id="">
-									<img src="/images/icons/kginicis.png" style="width: 100%; height: 100%">
-								</a>
-							</div>
-				  		</div>
-				  		<div class="col s4">
+<!-- 				  	<div class="row">
+				  		<div class="col s4"> -->
+					<a href="#" role="button" id="kakaopay_btn">
+		  			<div class="payment_item">
+						<img src="/images/icons/payment_icon_yellow_medium.png">
+		  			</div>
+					</a>
 
-				  		</div>
-				  	</div>
-
-<!-- 
-				  	<div style="width: 100px; height: 50px; padding: 5px 0">
-						<a href="#" role="button" id="kakaopay_btn">
-							<img src="/images/icons/payment_icon_yellow_medium.png" style="width: 100%; height: 100%">
-						</a>
+<!-- 				  		</div>
+				  		<div class="col s4"> -->
+					<a href="#" role="button" id="">
+		  			<div class="payment_item">
+						<img src="/images/icons/kginicis.png">
 					</div>
-
-				  	<div style="width: 100px; height: 50px; padding: 5px 0">
-						<a href="#" role="button" id="kakaopay_btn">
-							<img src="/images/icons/kginicis.png" style="width: 100%; height: 100%">
-						</a>
-					</div> -->
-
-				     <div class="step-actions">
-				        <button style="background-color: teal" class="waves-effect waves-dark btn previous-step">이전 </button>
-				        <button style="background-color: teal"class="waves-effect waves-dark btn next-step">다음 </button>
-
-<!-- 					     <div class="step-actions">
-					        <button class="waves-effect waves-dark btn" type="submit">예약하기 </button>
-					     </div> -->
-
-				     </div>
-				  </div>
+					</a>
+				  	</div>
+	 		    	<div class="step-actions">
+					        <button style="background-color: teal" class="waves-effect waves-dark btn previous-step">이전 </button>
+					        <button style="background-color: teal"class="waves-effect waves-dark btn next-step">다음 </button>
+			    	</div>
 				</li>
 			</ul>
 		</form>
@@ -303,28 +249,171 @@
 		</div>
 	  </div>
 
-		<!-- Phone Modal --><!-- 
+		<!-- Phone Modal -->
 		<div id="phone_modal" class="modal">
-		<div class="modal-content">
-		  <h4>Modal Header</h4>
-		  <p>A bunch of text</p>
-		</div>
-		<div class="modal-footer">
-		  <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
-		</div>
-		</div> -->
+			<div class="modal-content" style="">
+			 	<h4>핸드폰 번호 인증 </h4>
+			 	<div class="row">
+			 		<div class="col s12 m7 l8">
+				        <div class="input-field" style="height: 64px">
+				           <input id="checkout_phone_number" name="phone_number" type="text" maxlength="13">
+				           <label for="cellphone">번호를 입력해주세요.</label>
+				        </div>
+			        </div>
+			 		<div class="col s12 m5 l4" style="margin-top: 16px; height: 64px">
+				        <button id="phone_btn" style="vertical-align: bottom" class="btn waves-effect waves-light accent-2">인증번호 받기</button>
+			        </div>
+		   	 	</div>
+		   	 	<div id="verificationTxt"></div>
+<!-- 				<div class="verification text-thick" style="color: blue; margin:10px 0">
+					인증번호가 발송되었습니다. 10분 이내에 인증번호 6자리를 입력해주세요.
+				</div> -->
 
+			</div>
+			<div class="modal-footer" style="height:auto">
+				<div id="verificationBox"></div>
+<!-- 			 	<div class="row">
+			 		<div class="col s8" style="text-align: center">
+			 			<span style="font-size: 20px">인증코드:</span>
+						<input style="width: 80px" id="checkout_verification_code" name="verification_code" type="text" maxlength="6">
+					</div>
+			 		<div class="col s4" style="text-align: right">
+						 <button id="verification_btn" style="float: none" class="btn waves-effect waves-light accent-2">인증하기</button>
+			        </div>
+		   	 	</div> -->
+		   	 	<div id="codeTxt"></div>
+			</div>
+		</div>
 	</div>
 
+<style>
+	.stepper .payment_item {
+		background-color: #DCDCDC;
+		width: 120px;
+		height: 120px;
+		position: relative;
+		display: inline-block;
 
+	}
+
+	.stepper .payment_item img {
+		width: 80%;
+		height: auto;
+		position: absolute;
+		width: 90%;
+		height: auto;
+		margin: auto;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+	}
+
+
+input#checkout_verification_code[type=text] {
+  color: black;
+  border: 1px solid rgb(80, 87, 95);
+  border-radius: 1px;
+}
+
+input#checkout_verification_code {
+  /*height: 40px;*/
+  padding-left: 5px;
+  margin: 0;
+}
+
+.verification_success {
+	color: blue; 
+	margin:10px 0;
+}
+
+.verification_fail {
+	color: red; 
+	margin:10px 0;
+}
+
+</style>
+<!-- 01092694712 -->
 	<script>
 	$(function(){
-	   $('.stepper').activateStepper();
+		$('.stepper').activateStepper();
+
+		$('#phone_modal').modal();
+		// TODO: user can input text into the inputbox when opening the modal
+
+		$('#phone_btn').click(function() {
+			var data = {};
+			data['phone_number'] = $('#checkout_phone_number').val();
+			console.log("phone_number :\n", data)
+			$.ajax({
+				type:'POST',
+				data: JSON.stringify(data),
+				contentType:'application/json',
+				url: '/send-verification-phone',
+				success: function(result) {
+					if(!result.success) {
+						console.log(result.message)
+						var errorTxt = "<div class='verification_fail text-thick'>위 번호로 등록된 핸드폰이 없습니다. 확인 후 다시 시도해주시기 바랍니다.</div>";
+						$('#verificationTxt').html(errorTxt);
+						$('#verificationBox').html("");
+					}
+
+					else {
+						console.log("send code successful");
+						var verificationTxt = "<div class='verification_success text-thick'>인증번호가 발송되었습니다. 10분 이내에 인증번호 6자리를 입력해주세요.</div>";
+						var verificationBox = '<div class="row"><div class="col s8" style="text-align: center"><span style="font-size: 20px">인증코드: </span><input style="width: 80px" id="checkout_verification_code" name="verification_code" type="text" maxlength="6"></div><div class="col s4" style="text-align: right"><button id="verification_btn" style="float: none" class="btn waves-effect waves-light accent-2">인증하기</button></div></div>'
+
+						$('#verificationTxt').html(verificationTxt);
+						$('#verificationBox').html(verificationBox);
+					}
+				},
+				error: function(err) {
+					console.log("ajax err");
+				}
+			});
+		});
+
+		$('body').on('click', '#verification_btn', function() {
+			var data = {};
+			data['phone_number'] = $('#checkout_phone_number').val();
+			data['verification_code'] = $('#checkout_verification_code').val();
+			console.log(data)
+			$.ajax({
+				type:'POST',
+				data: JSON.stringify(data),
+				contentType:'application/json',
+				url: '/verify-phone',
+				success: function(result) {
+					if(!result.success) {
+						console.log(result.message)
+
+						var errorTxt = "<div class='verification_fail text-thick'>인증번호가 올바르지 않습니다. 다시 시도해주세요.</div>";
+
+						$('#codeTxt').html(errorTxt);
+					}
+
+					else {
+						var successTxt = "<div class='verification_success text-thick'>성공적으로 인증되었습니다.</div>";
+						$('#codeTxt').html(successTxt);
+
+						setTimeout(function() {
+							$('#phone_modal').modal('close');
+							$('#phone_number_holder').val(data.phone_number);
+							$('#phone_number_holder').prop('disabled', true);
+							$('#phone_number_holder').closest('a').removeAttr('href');
+						}, 1200);
+					}
+				},
+				error: function(err) {
+					console.log("ajax err");
+				}
+			});
+		});
 	});
 	</script>
 
 
-    <!-- footer -->
+    <!-- footer  -->
     <%- include('footer') -%>
   </body>
 </html>

@@ -3,6 +3,8 @@ module.exports = function(app, passport) {
 
 	// GET login form
 	app.get('/login', function(req, res) {
+
+		console.log(req.query)
 		if (req.isAuthenticated()) {
 			res.redirect('/');
 		}
@@ -26,7 +28,14 @@ module.exports = function(app, passport) {
 			else {
 			  req.session.cookie.expires = false;
 			}
-			res.redirect('/');
+
+			if(req.session.returnTo) {
+				res.redirect(307, req.session.returnTo);
+				delete req.session.returnTo;				
+			}
+			else {
+				res.redirect("/");
+			}
 		}
 	);
 

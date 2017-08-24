@@ -21,6 +21,10 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
+// MQTT server
+// var mqtt_server = require('../mqtt_server').getServer();
+// mqtt_server.attachHttpServer(server)
+
 /**
  * Listen on provided port, on all network interfaces.
  */

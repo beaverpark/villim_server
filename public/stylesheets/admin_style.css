@@ -1,0 +1,68 @@
+html, body {
+	font-family: 'Roboto', 'Helvetica', sans-serif;
+}
+
+/* Admin page css */
+.admin-drawer-header {
+	text-align: center;
+}
+
+.admin-drawer-avatar {
+  width: 65px;
+  height: 65px;
+}
+
+.admin-drawer.mdl-layout__drawer {
+  border: none;
+}
+/* iOS Safari specific workaround */
+.admin-drawer .mdl-menu__container {
+  z-index: -1;
+}
+.admin-drawer .admin-navigation {
+  z-index: -2;
+}
+/* END iOS Safari specific workaround */
+
+
+.admin-layout .mdl-layout__header .mdl-layout__drawer-button {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+
+.admin-navigation {
+  flex-grow: 1;
+}
+
+.admin-layout .admin-navigation .mdl-navigation__link {
+  display: flex !important;
+  flex-direction: row;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.56) !important;
+  font-weight: 500;
+}
+
+.admin-layout .admin-navigation .mdl-navigation__link:hover {
+  background-color: lightcoral !important;
+  color: #37474F;
+}
+
+.admin-layout .admin-top-navigation .mdl-navigation__link {
+	font-size: 15px;
+	font-weight:600;
+	color: #424242;
+}
+
+.admin_content {
+	padding: 20px 0;
+}
+
+.admin_table_title {
+	font-size: 20px;
+	color: gray;
+	padding: 25px 10px 10px;
+}
+
+.admin_table_content {
+	overflow-x: scroll;
+}

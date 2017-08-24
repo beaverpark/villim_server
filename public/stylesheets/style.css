@@ -1,15 +1,25 @@
+html, body {
+	font-family: 'Roboto', 'Helvetica', sans-serif;
+}
+
+
 body {
 	background-color: white;
-	font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
 }
 
+hr .hr_light_shadow {
+
+}
+
+
+
 /* Overwrite materialize media query for nav size */
 nav .brand-logo.left{
-	left:0 !important;
+	/*left:0 !important;*/
 }
 
 nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
@@ -17,6 +27,11 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 	line-height: 64px !important;
 }
 
+.nav_light_shadow {
+	-webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.10);
+	-moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.10);
+	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.10);
+}
 
 .text_thick {
 	font-weight: 900 !important;
@@ -31,22 +46,42 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 	background-color: white;
 }
 
-.nav_logo {
+.nav_logo{
 	height: 64px;
 	width: auto;
 	/*padding: 15px;*/
 }
 
-.nav_text.nav_text > li > a {
+/*.nav_dropdown {
+	height: 64px;
+	width: auto;
+}*/
+
+.nav_text > li > a {
 	color: black;
 }
 
-.nav_text.nav_text > li > a:hover {
-	color: #ff5252;
+.nav_text > li > a:hover, .nav_text > li > a.active {
+	color: #D52B1E;
 	background-color: transparent;
 }
 
-.nav_btn {
+nav ul.dropdown-content {
+	min-width: 110px;
+}
+
+nav ul#dropdown > li > a {
+	color: gray;
+	font-size: 14px;
+}
+
+nav ul#dropdown > li > a:hover, nav ul#dropdown > li > a.active {
+	color: #D52B1E;
+	background-color: transparent;
+}
+
+
+/*.nav_btn {
 	border: black 1px solid !important;
 	padding: 0 20px !important;
 }
@@ -55,14 +90,262 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 	.nav_btn {
 		visibility: hidden; 
 	}		
+}*/
+
+
+
+
+/* dynamic index page */
+@media screen and (max-width: 600px) {
+
+	body nav li.nav_txt {
+		display: none;
+	}
+
+	body nav li#drop {
+		display: block !important;
+	}
+
+	body section#be_host_summary {
+		height: 880px;
+	}
+
+
+	body section#be_host_summary .card {
+		width: 320px;
+		float: none;
+		margin: 0 auto;
+		top: 70px;
+	}
+}
+
+@media screen and (max-width: 870px) {
+	body section#intro .card-text {
+		font-size: 24px;
+	}
+
+	body section#intro .card {
+		margin: 0 20px !important;
+		top: 100px;
+	}
+
+	body section#why_villim {
+		/*height: 1000px;*/
+		padding-top:100px;
+		/*padding: 100px 0;*/
+	}
+
+	body section#how_villim .image {
+		display:none;
+	}
+
+	body section#download .image {
+		display: none;
+	}
+
+  	section#house_summary, section#house_description, section#house_policy, section#house_amenities, section#house_refund_policy {
+  		width: 100%;
+  	}
+
+/*  	body section.detail_section {
+  		font-size: 12px;
+  	}
+*/
+	/*section#house_summary .capacity .capacity_item {*/
+		/*width: 54px;*/
+	/*}*/
+
+	/*section#house_summary .house_summary_content img {*/
+		/*height: 14px;*/
+	/*}	*/
+
+}
+
+@media screen and (min-width:870px) {
+	/*  fixed width card when over 850. 다른 content width 한 60프로   */
+	body section#intro .card {
+		width: 850px;
+	}
+
+	body .container.index_container {
+		width: 840px;
+	}
+
+	body .container.nav_container {
+		width: 90%;
+	}
+
+  	section#house_summary, section#house_description, section#house_policy, section#house_amenities, section#house_refund_policy {
+  		width: 62%;
+  	}
+
+}
+
+@media screen and (min-width:1030px) {
+	/*  fixed width card when over 850. 다른 content width 한 60프로   */
+	body section#intro .card {
+		width: 1000px;
+	}
+
+	body .container.index_container {
+		width: 960px;
+		/*width: 80%;*/
+	}
+
+	body .container.nav_container {
+		width: 90%;
+	}
+
+  	section#house_summary, section#house_description, section#house_policy, section#house_amenities, section#house_refund_policy {
+  		width: 66%;
+  	}
+
+}
+
+/* index page */
+.index_title_txt {
+	font-size: 26px;
+}
+
+.container.index_container .row {
+	margin: 0;
+}
+
+/* intro section */
+section#intro {
+	width: 100%;
+	height: 470px; 
+	background-image: url("/images/index/main_img.jpg");
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+}
+
+section#intro .card {
+	/*float: right;*/
+	text-align: center;
+	top: 300px;
+	/*max-height: 425px;*/
+	/*height: 350px;*/
+	/*width: 90%;*/
+	/*margin-right: 30px;*/
+}
+
+section#intro .card-text {
+	font-size: 34px;
+	/*padding-right: 50px;*/
+	/*margin-bottom: 30px;*/
+}
+
+section#intro .check_item {
+	text-align:left;
+	padding: 10px 0;
+}
+
+section#intro .check_item img {
+	width: 20px;
+	height: 15px;
+}
+
+
+/* why_villim section */
+
+section#why_villim {
+	/*height: 1000px;*/
+	padding-top: 350px;
+}	
+
+section#why_villim img {
+	width: auto;
+	height: 35px;
+}
+
+section#why_villim .title_txt {
+	color:#D52B1E;
+	font-size: 18px;
+	margin:0;
+	padding: 10px 0;
+}
+
+section#why_villim .content_txt {
+	font-size: 14px;
+	margin:0;
+	padding-bottom:20px;
+}
+
+section#why_villim .why_villim_item {
+	padding: 10px 0;
+}
+
+
+/* how_villim section */
+
+section#how_villim {
+	/*height: 1000px;*/
+	padding-top: 100px;
+	background-color: rgba(247, 244, 248, 1);
+}	
+
+section#how_villim .row {
+	margin: 30px 0 !important;
+}
+
+section#how_villim .title_number {
+	font-size: 18px;
+	margin-bottom: 5px;
+}
+
+section#how_villim .title_txt {
+	font-size: 16px;
+	margin: 10px 0 5px;
+}
+
+section#how_villim .content_txt {
+	font-size: 14px;
+	margin: 0;
+}
+
+section#how_villim .txt_container {
+	width: 250px;
+}
+ 
+
+/* download page */
+
+/* download section */
+section#download {
+	padding: 200px 0 260px;
+}
+
+ section#download .title_txt {
+  	font-size: 34px;
+  }
+
+section#download .content_txt {
+  	font-size: 28px;
+  }	  
+
+section#download p {
+	margin: 10px 0;
+}
+
+
+/* be_host page */
+.be_host_title_txt {
+	font-size: 32px;
+}
+
+.be_host_content_txt {
+	font-size: 18px;
 }
 
 
 
-.nav_btn:hover {
+/* OLDDDDDDD BELOWWWWWWWWW */
+/*.nav_btn:hover {
 	border: #ff5252 1px solid !important;
 }
-
+*/
 section#search {
 	margin: 70px 0;
 }
@@ -91,10 +374,10 @@ section#be_host .card-text {
 
 /* Card css */
 
-.card_btn {
+/*.card_btn {
 	width: 100%;
 }
-
+*/
 
 section#benefit {
 	height: 600px;
@@ -116,18 +399,87 @@ section#benefit .benefit_item {
 }
 
 footer#index_footer {
-	background-color: #222222;
-	color: rgba(255, 255, 255, 0.3);
+	background-color: rgba(42, 39, 48, 1);
+	color: white;
+	/*color: rgba(255, 255, 255, 0.3);*/
 	display: block;
-	padding: 25px 0;
-	font-size: 12px;
+	/*padding: 25px 0;*/
+	/*font-size: 12px;*/
+}
+
+footer#index_footer .footer_container {
+	padding: 90px 5px 50px;
+}
+
+footer#index_footer .company_description, footer#index_footer .links {
+	/*padding: 16px 12px;*/
+}
+
+footer#index_footer hr {
+	margin: 15px 12px;
 }
 
 footer#index_footer p {
+	margin: 5px 0;
+	font-size: 14px;
+}
+
+footer#index_footer .copyright {
+	color: rgb(143, 143, 143);
+	font-size: 12px;
+	padding-bottom: 100px;
+}
+
+footer#index_footer .links ul > li {
+	padding: 5px 0;
+}
+
+footer#index_footer .links ul > li > a {
+	color: white;
+}
+
+footer#index_footer .row {
 	margin: 0;
 }
 
+footer#index_footer ul.social_media_icons {
+	margin: 0;
+	text-align: right;
+}
 
+
+footer#index_footer .social_media_icons li {
+	display: inline;
+	padding-left: 10px;
+}
+
+footer#index_footer .social_media_icons img {
+	width: 22px;
+	height: 22px;
+}
+
+footer#index_footer .buttons {
+	text-align:center;
+	padding: 0 20px;
+}
+
+footer#index_footer .buttons .dropdown-button.btn {
+	margin: 5px 0;
+	width: 100%;
+	background-color: white;
+	color: black;
+	padding: 0;
+}
+
+footer#index_footer .btn i {
+	font-size: 2rem;
+}
+
+footer#index_footer .dropdown-content li > a {
+	color: rgba(64, 159, 197, 1);
+}
+
+/*
 footer#index_footer2 {
 	background-color: black;
 	padding: 25px 100px 25px 180px;
@@ -142,6 +494,7 @@ footer#index_footer2 ul, li {
 	padding: 3px 0;
 }
 
+*/
 /* dashboard css */
 
 .dashboard_row {
@@ -149,9 +502,8 @@ footer#index_footer2 ul, li {
 	border-bottom: 2px solid #e0e0e0;
 }
 
-.dashboard_content {
+/*.dashboard_content {
 	width: 100%;
-	/* height just for now */
 	height: 500px; 
 	padding: 30px 110px;
 }
@@ -177,7 +529,7 @@ footer#index_footer2 ul, li {
 	height: 120px;
 	border: 2px solid #bdbdbd;
 
-}
+}*/
 
 /* register css */
 
@@ -230,65 +582,77 @@ footer#index_footer2 ul, li {
 	color: #26a69a;
 }
 
-/* Admin page css */
 
-.admin_container {
-	width: 95% !important;
+/* search_bar */
+.search_bar {
+  padding: 30px 0;
 }
 
-.admin_content {
-	padding: 50px 0;
+.search_bar input {
+  height: 40px;
+  padding-left: 5px;
+  margin: 10px 0;
 }
 
-.admin_form_label {
-	font-size: 16px;
-	font-weight: 900;
+.search_bar input[type=text]:focus:not([readonly]), .search_bar input[type=text][readonly="readonly"] {
+  color: black;    
+  border: 1px solid rgb(80, 87, 95);
+  border-radius: 1px;
+  box-shadow: none;
 }
 
-.admin_table .name_row {
-	font-size: 14px;
-	font-weight: 900;
+.search_bar input[type=text] {
+  color: black;
+  border: 1px solid rgb(80, 87, 95);
+  border-radius: 1px;
 }
 
-.admin_table {
-	font-size: 12px;
+.search_bar .input-field {
+  margin: 0;
 }
 
-/* Search page css */
-.search_container {
-	width: 95% !important;
+.search_bar button {
+  height: 42px;
+  margin: 10px 0;
+  width: 80%;
+  padding: 0 10px;
 }
 
-.search_card {
-	border:0 !important;
-	box-shadow: none !important;
-}
+ /* Placeholder css */
+  ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color: black;
+    opacity: 0.5;
+  }
+  :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color: black;
+    opacity: 0.5;
+  }
+  ::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: black;
+    opacity: 0.5;
+  }
+  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: black;
+    opacity: 0.5;
+  }
+  ::-ms-input-placeholder { /* Microsoft Edge */
+    color: black;
+    opacity: 0.5;
+  }
 
-.search_card_content {
-	padding: 10px !important;
-	margin-bottom: 30px !important;
-}
+  .search_bar input#checkin_date_picker, .search_bar input#checkout_date_picker {
+    background-image: url('/images/icons/icon_calendar_black.png');
+    background-position: 95%;
+    background-size:18px 16px;
+    background-repeat: no-repeat;
 
-.search_card_rate {
-}
+    /*padding-right: 10px;*/
+  }
 
-.search_card_name {
-	font-size: 16px;
-}
 
-.search_card_addr {
-	font-size: 14px;
-}
 
-.search_card_rating {
 
-}
 
-.btn-floating.top_right_fab {
-	position: absolute;
-	right: 5px;
-	top: 5px;
-}
 
 
 

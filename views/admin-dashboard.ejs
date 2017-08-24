@@ -1,199 +1,196 @@
 <!DOCTYPE html>
 <html>
 	<!-- head -->
-	<%- include('header') -%>
-    
+  	<%- include('admin-header') -%>
 
-	<body>
-   	<%- include('navbar') -%>
+	<script>
+		$(document).ready(function() {
+			$("table td").not("[id*='id']").dblclick(function(event) {
+				if($(event.target).attr('class')!="newInput") {
+					var currElem = $(this);
+					var val = $(this).html();
+					var id = (currElem.attr('id'));
+				    updateVal(currElem, val, id);					
+				}
+			});
+			// $("table td [id*='id']").off('dblclick');
+		});
 
+		function updateVal(currElem, val, id) {
+			$(document).off('click');
 
-   	<div class="container admin_container">
-	    <div class="admin_content">
-			<div style="font-size:24px" class="center-align"> ALL TABLES </div>
+			// create input box with original value and focus on it
+			$(currElem).html('<input class="newInput" type="text" value="' + val + '"/>');
+			$(".newInput").focus();
 
-			<% if(all_users) { %>
-			<div class="admin_form_label"> User table </div><hr>
-			<div class="admin_table"> 
-				<div class="row name_row">
-					<div class="col s1">
-						<div>id</div>
-					</div>
-					<div class="col s2">
-						<div>email</div>
-					</div>
-					<div class="col s1">
-						<div>lastname</div>
-					</div>
-					<div class="col s1">
-						<div>firstname</div>
-					</div>
-					<div class="col s2">
-						<div>date_of_birth</div>
-					</div>
-					<div class="col s1">
-						<div>about</div>
-					</div>
-					<div class="col s1">
-						<div>is_host</div>
-					</div>
-					<div class="col s1">
-						<div>status</div>
-					</div>
-					<div class="col s1">
-						<div>created</div>
-					</div>
-				</div>
+	      	$(document).click(function () { 
+	      		// proceed when user clicks outside of the table cell
+	      		if($(event.target).attr('class')!="newInput") {
+	      			// if the value has changed, call ajax to update given table
+	      			if($(".newInput").val() != val) {
 
-				<% for (var i=0; i<all_users.length; i++) { %>
-				<div class="row">
-					<div class="col s1">
-						<div><%- all_users[i].id -%></div>
-					</div>
-					<div class="col s2">
-						<div><%- all_users[i].email -%></div>
-					</div>
-					<div class="col s1">
-						<div><%- all_users[i].lastname -%></div>
-					</div>
-					<div class="col s1">
-						<div><%- all_users[i].firstname -%></div>
-					</div>
-					<div class="col s2">
-						<div><%- all_users[i].date_of_birth -%></div>
-					</div>
-					<div class="col s1">
-						<div><%- all_users[i].about -%></div>
-					</div>
-					<div class="col s1">
-						<div><%- all_users[i].is_host.data -%></div>
-					</div>
-					<div class="col s1">
-						<div><%- all_users[i].status -%></div>
-					</div>
-					<div class="col s1">
-						<div><%- all_users[i].created -%></div>
-					</div>
-				</div>
-				<% } %>
-			</div>
-			<% } %>
+	      				var data = {};
+	      				data.new_val = $(".newInput").val();
+	      				data.id = id; 
+	      				$.ajax({
+	      					type: 'POST',
+	      					data: JSON.stringify(data),
+	      					contentType : 'application/json',
+	      					url: 'http://localhost:3000/admin/updateTable',
+	      					success: function() {
+	      						console.log('update success');
+	      					},
+	      					error: function(err) {
+	      						console.log("ajax error")
 
-			<br><br>
-			<% if(all_houses) { %>
-			<div class="admin_form_label"> House table </div><hr>
-			<div class="admin_table"> 
-				<% for (var i=0; i<all_houses.length; i++) { %>
-				<div class="row name_row">
-					<div class="col s1">
-						<div>id</div>
-					</div>
-					<div class="col s1">
-						<div>user_id</div>
-						<div>(집주인_id)</div>
-					</div>
-					<div class="col s2">
-						<div>name</div>
-					</div>
-					<div class="col s3">
-						<div>addr_full</div>
-						<div>(풀 주소)</div>
-					</div>
-					<div class="col s2">
-						<div>addr_summary</div>
-						<div>주소(시,구,동)</div>
-					</div>
-					<div class="col s3">
-						<div>addr_direction</div>
-						<div>(오시는 길)</div>
-					</div>
-				</div>				
-				<div class="row">
-					<div class="col s1">
-						<div><%- all_houses[i].id -%></div>
-					</div>
-					<div class="col s1">
-						<div><%- all_houses[i].user_id -%></div>
-					</div>
-					<div class="col s2">
-						<div><%- all_houses[i].name -%></div>
-					</div>
-					<div class="col s3">
-						<div><%- all_houses[i].addr_full -%></div>
-					</div>
-					<div class="col s2">
-						<div><%- all_houses[i].addr_summary -%></div>
-					</div>
-					<div class="col s3">
-						<div><%- all_houses[i].addr_direction -%></div>
-					</div>
-				</div>
-
-				<div class="row name_row">
-					<div class="col s2">
-						<div>description</div>
-					</div>
-					<div class="col s1">
-						<div>room_type</div>
-					</div>
-					<div class="col s1">
-						<div>num_guest</div>
-					</div>
-					<div class="col s2">
-						<div>num_bedroom</div>
-					</div>
-					<div class="col s1">
-						<div>num_bed</div>
-					</div>
-					<div class="col s2">
-						<div>num_bathroom</div>
-					</div>
-					<div class="col s2">
-						<div>monthly_rate</div>
-					</div>
-<!-- 					<div class="col s1">
-						<div>status</div>
-					</div> -->
-					<div class="col s1">
-						<div>created</div>
-					</div>
-				</div>
-				<div class="row" style="border-bottom: solid 1px black">
-					<div class="col s2">
-						<div><%- all_houses[i].description -%></div>
-					</div>
-					<div class="col s1">
-						<div><%- all_houses[i].room_type -%></div>
-					</div>
-					<div class="col s1">
-						<div><%- all_houses[i].num_guest -%></div>
-					</div>
-					<div class="col s2">
-						<div><%- all_houses[i].num_bedroom -%></div>
-					</div>
-					<div class="col s1">
-						<div><%- all_houses[i].num_bed -%></div>
-					</div>
-					<div class="col s2">
-						<div><%- all_houses[i].num_bathroom -%></div>
-					</div>
-					<div class="col s2">
-						<div><%- all_houses[i].monthly_rate -%></div>
-					</div>
-					<!-- <div class="col s1">
-						<div><%- /*all_houses[i].status*/ -%></div>
-					</div> -->
-					<div class="col s1">
-						<div><%- all_houses[i].created -%></div>
-					</div>
-				</div>
-				<% } %>
-			</div>
-			<% } %>
+	      						// var snackbarContainer = document.querySelector('#admin_toast');
+	      						// var data = {message: '입력 포맷이 잘못되었습니다. 다시 시도해 주세요.'}
+      						 //    snackbarContainer.MaterialSnackbar.showSnackbar(data);
+	      						alert("입력 포맷이 잘못되었습니다. 다른 예시들을 참고해주세요.\n날짜면 0000-00-00, true/false는 그대로 true 혹은 false를 입력해주시기 바랍니다.");
+	      						location.reload();
+	      					}
+	      				});
+	      			}
+	      			// remove input box and any white spaces
+	      			$(currElem).html($(".newInput").val().trim());
+	        		$(document).off('click');
+	      		}
+		  	});
+		}
 
 
+	</script>
+
+
+<body>
+   <div class="admin-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+      <header class="admin-header mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600">
+       
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title" style="color:black; font-weight:600">안녕하세요. <%-user.name-%> 어드민님</span>
+          <div class="mdl-layout-spacer"></div>
+		  <nav class="admin-top-navigation mdl-navigation">
+		  	<!-- TODO -->
+		    <a class="mdl-navigation__link" href="#">프로필</a>
+	  	    <a class="mdl-navigation__link" href="/logout">로그아웃 </a>
+		  </nav>
+        </div>
+      </header>
+      <div class="admin-drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
+        <header class="admin-drawer-header">
+          <img src="/images/logos/villim_logo.png" class="admin-drawer-avatar">
+        </header>
+        <nav class="admin-navigation mdl-navigation mdl-color--blue-grey-800">
+          <a class="mdl-navigation__link" href="/admin">Home</a>
+          <a class="mdl-navigation__link" href="#users">Users</a>
+          <a class="mdl-navigation__link" href="#houses">Houses</a>
+          <a class="mdl-navigation__link" href="#reservations">Reservations</a>
+          <a class="mdl-navigation__link" href="#visits">Visits</a>
+        </nav>
+      </div>
+
+	  <main class="mdl-layout__content mdl-color--grey-100">
+	  	<div class="admin_content">
+	 	  
+	 	  <div id="users" class="admin_table_title"> Users </div>
+		  <% if(all_users) { %>
+		    <div class="admin_table_content">
+		 	  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+			    <thead>
+		    	  <tr>
+				    <% for(var key in all_users[0]) { %>
+			          <th class="mdl-data-table__cell--non-numeric"><%-key-%></th>
+				    <% } %>
+			      </tr>
+				</thead>
+				<tbody>
+	  		      <% for(var i=0; i < all_users.length; i++) { %>
+				  <tr>
+				  	<% for(var key in all_users[i]) { %>
+			          <td id="user/<%-i+1-%>/<%-key-%>" class="mdl-data-table__cell--non-numeric"><%-all_users[i][key]-%></td>
+				    <% } %>
+	 		      </tr>
+				  <% } %>
+			    </tbody>
+			  </table>
+		    </div>
+		  <% } %>
+
+	 	  <div id="houses" class="admin_table_title"> Houses </div>
+		  <% if(all_houses) { %>
+		    <div class="admin_table_content">
+		 	  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+			    <thead>
+		    	  <tr>
+				    <% for(var key in all_houses[0]) { %>
+			          <th class="mdl-data-table__cell--non-numeric"><%-key-%></th>
+				    <% } %>
+			      </tr>
+				</thead>
+				<tbody>
+	  		      <% for(var i=0; i < all_houses.length; i++) { %>
+				  <tr>
+				  	<% for(var key in all_houses[i]) { %>
+			          <td id="house/<%-i+1-%>/<%-key-%>" class="mdl-data-table__cell--non-numeric"><%- all_houses[i][key]-%></td>
+				    <% } %>
+	 		      </tr>
+				  <% } %>
+			    </tbody>
+			  </table>
+		    </div>
+		  <% } %>
+
+	 	  <div id="reservations" class="admin_table_title"> Reservations </div>
+		  <% if(all_reservations) { %>
+		    <div class="admin_table_content">
+		 	  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+			    <thead>
+		    	  <tr>
+				    <% for(var key in all_reservations[0]) { %>
+			          <th class="mdl-data-table__cell--non-numeric"><%-key-%></th>
+				    <% } %>
+			      </tr>
+				</thead>
+				<tbody>
+	  		      <% for(var i=0; i < all_reservations.length; i++) { %>
+				  <tr>
+				  	<% for(var key in all_reservations[i]) { %>
+			          <td id="reservation/<%-i+1-%>/<%-key-%>" class="mdl-data-table__cell--non-numeric"><%- all_reservations[i][key]-%></td>
+				    <% } %>
+	 		      </tr>
+				  <% } %>
+			    </tbody>
+			  </table>
+		    </div>
+		  <% } %>
+
+	 	  <div id="visits" class="admin_table_title"> Visits </div>
+		  <% if(all_visits) { %>
+		    <div class="admin_table_content">
+		 	  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+			    <thead>
+		    	  <tr>
+				    <% for(var key in all_visits[0]) { %>
+			          <th class="mdl-data-table__cell--non-numeric"><%-key-%></th>
+				    <% } %>
+			      </tr>
+				</thead>
+				<tbody>
+	  		      <% for(var i=0; i < all_visits.length; i++) { %>
+				  <tr>
+				  	<% for(var key in all_visits[i]) { %>
+			          <td id="visit/<%-i+1-%>/<%-key-%>" class="mdl-data-table__cell--non-numeric"><%- all_visits[i][key]-%></td>
+				    <% } %>
+	 		      </tr>
+				  <% } %>
+			    </tbody>
+			  </table>
+		    </div>
+		  <% } %>
 
 		</div>
+	  </main>
 	</div>
 	</body>
 </html>
+	

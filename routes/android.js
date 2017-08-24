@@ -8,14 +8,14 @@ moment.tz.setDefault("Asia/Seoul");
 var async = require('async');
 var multer  = require('multer')
 
-var mqtt = require('mqtt')
-var client = mqtt.connect('mqtt://127.0.0.1:1883')
-client.on('connect', function () {
-	client.subscribe('doorlock');
-	client.subscribe('doorlock_pw_set');
-	client.subscribe("doorlock_success");
+// var mqtt = require('mqtt')
+// var client = mqtt.connect('mqtt://127.0.0.1:1883')
+// client.on('connect', function () {
+// 	client.subscribe('doorlock');
+// 	client.subscribe('doorlock_pw_set');
+// 	client.subscribe("doorlock_success");
 
-})
+// })
 
 
 var storage = multer.diskStorage({

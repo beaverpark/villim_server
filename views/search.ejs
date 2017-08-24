@@ -1,107 +1,390 @@
 <!DOCTYPE html>
 <html>
   <%- include('header') -%>
+
+  <!-- Star rating js, css -->
+  <script src="/jquery_rating/jquery.barrating.min.js"></script>
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jquery_rating/themes/fontawesome-stars-o.css">
+
+  <!-- Date picker js,css -->
+  <link rel="stylesheet" href="/flat_pickr/themes/material_red.css">
+  <script src="/flat_pickr/flatpickr.min.js"></script>
+
+
+
+<style>
+/* Search page css */
+
+.search_container {
+  width: 90% !important;
+}
+
+.search_container .row {
+  margin: 0;
+}
+
+.card.search_card {
+  border:0 ;
+  box-shadow: none;
+  margin: 0;
+  padding: 16px 0;
+  border-top: 1px solid rgb(205, 205, 209);
+}
+
+.card.search_card:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.card-content.search_card_content {
+  height: 280px;
+  padding: 0;
+  color: black;
+/*  padding: 10px !important;
+  margin-bottom: 30px !important;*/
+}
+
+.card.search_card .card-image_wrapper {
+}
+
+.card.search_card .card-image {
+
+}
+
+.card.search_card .card-image img {
+  height: 280px;
+}
+
+.search_card_name {
+  font-size: 20px;
+  color: crimson;
+}
+
+.search_card_addr {
+  font-size: 14px;
+}
+
+.search_card .capacity {
+  border-top: 1px solid rgb(205, 205, 209);
+  border-bottom: 1px solid rgb(205, 205, 209);
+  margin: 20px 0;
+  padding: 10px 0;
+}
+
+.search_card .capacity img {
+  height: 20px;
+}
+
+.capacity_item {
+  padding-right: 16px;
+}
+
+.search_card_rate {
+  font-size: 18px;
+  padding-bottom: 16px;
+}
+
+
+.btn-floating.top_right_fab {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+
+.br-theme-fontawesome-stars-o .br-widget a.br-fractional:after, 
+.br-theme-fontawesome-stars-o .br-widget a.br-selected:after 
+{
+  color: crimson !important;
+}
+
+.search_bar {
+  padding: 30px 0;
+}
+
+.search_bar input {
+  height: 40px;
+  padding-left: 5px;
+  margin: 10px 0;
+}
+
+.search_bar input[type=text]:focus:not([readonly]), .search_bar input[type=text][readonly="readonly"] {
+  color: black;    
+  border: 1px solid rgb(80, 87, 95);
+  border-radius: 1px;
+  box-shadow: none;
+}
+
+.search_bar input[type=text] {
+  color: black;
+  border: 1px solid rgb(80, 87, 95);
+  border-radius: 1px;
+}
+
+.search_bar .input-field {
+  margin: 0;
+}
+
+.search_bar button {
+  height: 42px;
+  margin: 10px 0;
+  width: 80%;
+  padding: 0 10px;
+}
+
+ /* Placeholder css */
+  ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color: black;
+    opacity: 0.5;
+  }
+  :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color: black;
+    opacity: 0.5;
+  }
+  ::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: black;
+    opacity: 0.5;
+  }
+  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: black;
+    opacity: 0.5;
+  }
+  ::-ms-input-placeholder { /* Microsoft Edge */
+    color: black;
+    opacity: 0.5;
+  }
+
+  .search_bar input#checkin_date_picker, .search_bar input#checkout_date_picker {
+    background-image: url('/images/icons/icon_calendar_black.png');
+    background-position: 95%;
+    background-size:18px 16px;
+    background-repeat: no-repeat;
+
+    /*padding-right: 10px;*/
+  }
+
+
+</style>
+
+
+
   <body>
     <!-- navbar -->
     <%- include('navbar') -%>
 
-
-    <div class="row">
-      <form action="/search" method="post">
-        <div class="input-field col s6">
-          <input placeholder="어디로 가세요?" name="location" type="text" class="validate" value="<%= location %>" required>
-        </div>
-        <div class="input-field col s2">
-          <input placeholder="시작일" name="from_date" type="text" class="validate" value="<%= from_date %>" required>
-        </div>
-        <div class="input-field col s2">
-          <input placeholder="종료일" name="to_date" type="text" class="validate" value="<%= to_date %>" required>
-        </div>
-        <div class="col s2" style="position: relative; margin-top: 1.5rem"> 
-          <button class="btn waves-effect waves-light red accent-2" type="submit" name="action">검색</button>
-        </div>
-      </form>
-    </div>
-
-
     <div class="container search_container">
+
+      <div class="search_bar">
+        <div class="row">
+          <form action="/s" method="get">
+            <div class="input-field col s12 m6 l6">
+                <input placeholder="어디로 가세요?" id="location" name="location" type="text" value="<%- location -%>">
+            </div>
+            <div class="input-field col s6 m2 l2">
+              <input placeholder="체크인" id="checkin_date_picker" name="checkin" type="text" value="<%- checkin -%>">
+            </div>
+            <div class="input-field col s6 m2 l2">
+              <input placeholder="체크아웃" id="checkout_date_picker" name="checkout" type="text" value="<%- checkout -%>">
+            </div>
+            <div class="col s12 m2 l2"> 
+              <button id="search_btn" class="btn waves-effect waves-light red accent-2" type="submit" disabled>검색</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
       <div class="row">
-        <div class="col s12 m6 l7">
+        <div class="col s12 m3 l3">
+          <!-- <img src="/images/logos/villim_logo.png" width="120px" style="position: fixed; top:204px; left: 44px"> -->
+        </div>
+
+
+        <div class="col s12 m9 l9">
           <div class="row">
             
-            <% if(house_name) { %>
-              <% for (var i=0; i<house_name.length; i++) { %>
-                <div class="col s12 m12 l6"> 
-                  <a href="#">
+            <% if(house_list[0]) { %>
+              <% for (var i=0; i<house_list.length; i++) { %>
+                <!-- <div class="col s12 m12 l6">  -->
+                  <a href="/homes/<%- house_list[i].name -%>/<%- house_list[i].id -%>" target="_blank">
                     <div class="card search_card">
-                      <div class="card-image">
-                        <img src="/images/index_room.jpeg">
-                        <a class="btn-floating top_right_fab waves-effect waves-light white">
-                          <img src="/images/icons/icon_heart.png" height="28px" style="width:70%; top:8px; left:6px">
-                        </a>
+                      <div class="row">
+                        <div class="col s12 m7 l7" style="padding-left: 0">
+                          <!-- TODO: remove card-image_wrapper if not needed -->
+                          <div class="card-image_wrapper">
+                            <div class="card-image">
+                              <img src="<%- house_list[i].main_image -%>">
+  <!--                             <a class="btn-floating top_right_fab waves-effect waves-light white">
+                                <img src="/images/icons/icon_heart.png" height="28px" style="width:70%; top:8px; left:6px">
+                              </a> -->
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col s12 m5 l5">
+                          <div class="card-content search_card_content valign-wrapper">
+                            <div class="content_wrapper" style="width: 100%">
+                              <div class="search_card_name"> <%- house_list[i].name -%> </div>
+                              <div class="search_card_addr"> <%- house_list[i].addr_summary -%> </div>
+                              <div class="capacity"> 
+                                <span class= "capacity_item">
+                                  <img class="icons" src="/images/icons/icon_man.png">
+                                  <span> <%- house_list[i].num_guest -%> </span>
+                                </span>
+                                <span class= "capacity_item">
+                                  <img class="icons" src="/images/icons/icon_door.png">
+                                  <span> <%- house_list[i].num_bedroom -%> </span>
+                                </span>                                
+                                <span class= "capacity_item">
+                                  <img class="icons" src="/images/icons/icon_bed.png">
+                                  <span> <%- house_list[i].num_bed -%> </span>
+                                </span>
+                                <span class= "capacity_item">
+                                  <img class="icons" src="/images/icons/icon_bath.png">
+                                  <span> <%- house_list[i].num_bathroom -%> </span>
+                                </span>
+                              </div>
+                              <script>
+                                var rating<%-i-%> = <%- house_list[i].rating_overall -%>
+                              </script>
+                              <select class="star_rating" id="star_rating_<%-i-%>">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                              </select>
+                              <div class="search_card_rate"> &#8361; <%- house_list[i].daily_rate -%> / 1박 </div>
+                              <div class="search_card_rate_per_room"> &#8361; <%- Math.round(house_list[i].daily_rate / house_list[i].num_bedroom) -%> / 방 </div>
+                            </div>                                                
+                          </div>
+                        </div>
                       </div>
-                      <div class="card-content search_card_content">
-                        <div class="search_card_rate text_thick"> &#8361; <%- house_monthly_rate[i].monthly_rate -%> / 1개월 </div>
-                        <div class="search_card_name"> <%- house_name[i].name -%> </div>
-                        <div class="search_card_addr"> <%- house_addr_summary[i].addr_summary -%> </div>
-                        <div class="search_card_rating">
-                          rating: <%- house_avg_rating[i].avg_rating -%> 
-                        </div>                   
-                      </div>       
                     </div>
                   </a>
-                </div>
-              <% } } %>
-
-
-
-
-           <!--  <div class="col s12 m12 l6">
-                <div class="card">
-
-                   <div class="card-image">
-                    <img src="/images/index_room.jpeg">
-                    <a class="btn-floating top_right_fab waves-effect waves-light white">
-                      <img src="/images/icons/icon_heart.png" height="28px" style="width:70%; top:8px; left:6px">
-                    </a>
-                  </div>
-                  <div class="card-content search_card_content">
-                    <div class="search_card_rate text_thick"> &#8361; 1,300,000 / 1개월 </div>
-                    <div class="search_card_addr"> 정자동 엠코 헤리츠 원룸 </div>
-                    <div class="search_card_rating">
-                      ~~~rating~~~
-                    </div>                   
-                  </div>    
-
-              </div>
-            </div> -->
-  <!--            <div class="col s12 m12 l6">
-                <div class="card">
-
-                   <div class="card-image">
-                    <img src="/images/index_room.jpeg">
-                    <a class="btn-floating top_right_fab waves-effect waves-light white">
-                      <img src="/images/icons/icon_heart.png" height="28px" style="width:70%; top:8px; left:6px">
-                    </a>
-                  </div>
-                  <div class="card-content search_card_content">
-                    <div class="search_card_rate text_thick"> &#8361; 1,300,000 / 1개월 </div>
-                    <div class="search_card_addr"> 정자동 엠코 헤리츠 원룸 </div>
-                    <div class="search_card_rating">
-                      ~~~rating~~~
-                    </div>                   
-                  </div>    
-
-              </div>
-            </div> -->
+            <% } } else { %>
+              <div style="text-align:center; height: 400px; padding: 150px 0; font-size: 20px">요청하신 검색 결과가 없습니다.</div>
+            <% } %>
           </div>
-        </div>
-        <div class="col s0 m6 l5">
-          Fixed Map
         </div>
       </div>
     </div>
+<script>
 
+$(function() {
+
+  // on load, update search button logic
+  // this is to enable button when searched with parameters
+  controlButton();
+
+    //TODO: sometimes, checkout date can be before checkin date. fix 
+
+
+  // datepickers initialization
+  var checkin = flatpickr("#checkin_date_picker", {
+    minDate: new Date(),
+    onValueUpdate: function(d) {
+      // sets the starting checkout date to the next date of checkin
+      if(checkout) {
+        checkout.set("minDate", d[0].fp_incr(1));
+        checkout.open();
+      }
+    }
+  });
+
+  var checkout = flatpickr("#checkout_date_picker", {
+    minDate: new Date()
+  });
+
+  // search button logic based on the three inputs 
+  // 1. location input
+  $('input#location').on('input', function() {   
+    controlButton();
+  })
+
+  // 2. checkin input 
+  $('input#checkin_date_picker').on('input dblclick keyup', function(e) {
+    if(e.type == "input") {
+      controlButton();
+    }
+
+    else if(e.type == 'dblclick' || (e.type == 'keyup' && (e.keyCode == 46 || e.keyCode == 8))) {
+      // checkin.clear();
+      $(this).val('');
+      $('#search_btn').prop("disabled", true);
+    }
+  });
+  
+  // 3. checkout input
+  $('input#checkout_date_picker').on('input dblclick keyup', function(e) {
+    if(e.type == "input") {
+      controlButton();
+    }
+
+    else if(e.type == 'dblclick' || (e.type == 'keyup' && (e.keyCode == 46 || e.keyCode == 8))) {
+      // checkout.clear();
+      $(this).val('');
+      $('#search_btn').prop("disabled", true);
+    }
+  });
+
+  // // only when both inputs have values, enable button 
+  // $('input#checkout_date_picker').on('input', function() {
+  //   if($('#checkin_date_picker').val() && $(this).val()) {
+  //     $('#search_btn').prop("disabled", false);
+  //   }
+
+  //   else {
+  //     $('#search_btn').prop("disabled", true);
+  //   }
+  // });
+
+  // $('input#checkin_date_picker').on('input', function() {
+  //   if($('#checkout_date_picker').val() && $(this).val()) {
+  //     $('#search_btn').prop("disabled", false);
+  //   }
+  //   else {
+  //     $('#search_btn').prop("disabled", true);
+  //   }
+  // });
+
+});
+
+// enable / disable search button accordingly
+function controlButton() {
+  // btn enable case 7: location & checkin & checkout
+  if($('input#location').val() && $('#checkin_date_picker').val() && $('#checkout_date_picker').val()) {
+    $('#search_btn').prop("disabled", false);
+  }
+
+  // btn enable case 6: !location & checkin & checkout
+  else if(!$('input#location').val() && $('#checkin_date_picker').val() && $('#checkout_date_picker').val()) {
+    $('#search_btn').prop("disabled", false);
+  }
+
+  // btn enable case 1: location & (!checkin & !checkout)
+  else if($('input#location').val() && !$('#checkin_date_picker').val() && !$('#checkout_date_picker').val()) {      
+    $('#search_btn').prop("disabled", false);
+  }
+
+  // else disable button
+  else {
+    $('#search_btn').prop("disabled", true);
+  }
+}
+
+</script>
+  <script>
+
+  $(function() {
+    var rating_count = $(".star_rating").length;
+
+    for(var i = 0; i < rating_count; i++) {
+      $('#star_rating_' + i).barrating({
+        theme: 'fontawesome-stars-o',
+        initialRating: eval('rating'+i),
+        readonly: true
+      });        
+    }
+  });
+  </script>
 
     <!-- footer -->
     <%- include('footer') -%>

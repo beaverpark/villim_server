@@ -1,25 +1,72 @@
+<script>
+$(document).ready(function(){
+
+  var url = window.location.href;
+
+  $('nav ul > li > a').filter(function() {
+      return this.href == url;
+  }).addClass('active');
+
+  // $('nav ul li a').click(function(){
+  //   $('li a').removeClass("active");
+  //   $(this).addClass("active");
+  // });
+});
+</script>
+
 <div class="navbar-fixed">
-  <nav class="nav_bg_color">
+  <nav class="nav_bg_color nav_light_shadow">
     <div class="nav-wrapper">
-      <% if(user && user.type == 'admin') { %>
-        <a href="/admin" class="brand-logo left" style="color: black">
-      <% } else { %>
-        <a href="/" class="brand-logo left" style="color: black">
-      <% } %>
-          <img class="nav_logo" src="/images/icons/villim_main_logo_lg.png">
+      <div class="container nav_container">
+
+        <!-- TODO restore later -->
+        <% if(false) { %>
+       <% if(user && user.type == 'admin') { %> 
+        <a href="/admin" class="brand-logo left" style="color: black"> 
+       <% } else { %> 
+         <a href="/" class="brand-logo left" style="color: black"> 
+       <% } } %> 
+
+        <a href="/index" class="brand-logo left" style="color: black">
+
+          <img class="nav_logo" src="/images/logos/straight_logo.png" style="padding: 16px 0">
         </a>
         <ul id="side_content" class="nav_text right">
-          <% if(!user) { %>
-            <li><a href="signup" class="waves-effect"> 회원가입 </a></li>
-            <li><a href="login" class="waves-effect"> 로그인 </a></li>
-          <% } else if(user.type == 'user') { %>
-            <li><a href="dashboard" class="waves-effect"> <%- user.username -%> 님</a></li>
-            <li><a href="/logout" class="waves-effect" style="color:red"> 로그아웃 </a></li>
-          <% } else {%>
-            <li><a href="/admin/profile" class="waves-effect"> <%- user.name -%> 어드민님</a></li>
-            <li><a href="/logout" class="waves-effect" style="color:red"> 로그아웃 </a></li>          
-          <% } %>    
+          <li class="nav_txt"><a href="/s" class="waves-effect waves-light"> 방 찾기 </a></li>
+          <li class="nav_txt"><a href="/be-host_kor" class="waves-effect waves-light"> 관리문의 </a></li>
+          <!-- <li class="nav_txt"><a href="#" class="waves-effect waves-light"> 소개 </a></li> -->
+          <!-- <li class="nav_txt"><a href="#" class="waves-effect waves-light"> 자주하는 질문 </a></li> -->
+          <!-- <li class="nav_txt"><div style="color:black;"><div style="width:1px;height: 12px;background-color:black; margin: 26px 15px"></div></div></li> -->
+          <!-- <li class="nav_txt"><a href="#" class="waves-effect waves-light"> English </a></li> -->
+
+          <li id="drop" style="display:none"><a class="dropdown-button" href="#!" data-activates="dropdown"><i class="material-icons">menu</i></a></li>
+
+          <!-- TODO restore later -->
+          <% if(false) { %>
+            <% if(!user) { %>
+              <li><a href="signup" class="waves-effect"> 회원가입 </a></li>
+              <li><a href="login" class="waves-effect"> 로그인 </a></li>
+            <% } else if(user.type == 'user') { %>
+              <li><a href="dashboard" class="waves-effect"> <%- user.username -%> 님</a></li>
+              <li><a href="/logout" class="waves-effect" style="color:red"> 로그아웃 </a></li>
+            <% } else {%>
+              <li><a href="/admin/profile" class="waves-effect"> <%- user.name -%> 어드민님</a></li>
+              <li><a href="/logout" class="waves-effect" style="color:red"> 로그아웃 </a></li>          
+            <% } }%>    
+        
         </ul>
+
+        <ul id="dropdown" class="dropdown-content">
+          <li><a href="/s">방 찾기</a></li>
+          <li><a href="/be-host_kor">관리문의</a></li>
+          <!-- <li><a href="#">소개</a></li> -->
+          <!-- <li><a href="#">자주하는 질문</a></li> -->
+          <!-- <li class="divider"></li> -->
+          <!-- <li><a href="#"> English </a></li> -->
+        </ul>
+
+      </div>
+
     </div>
   </nav>
 </div>

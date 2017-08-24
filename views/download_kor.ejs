@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <!-- head -->
+  <%- include('header') -%>
+
+  <style>
+
+	/* download_kor - download section */
+  	section#download {
+  		padding: 200px 0 260px;
+  	}
+
+	 section#download .title_txt {
+	  	font-size: 34px;
+	  }
+
+	section#download .content_txt {
+	  	font-size: 28px;
+	  }	  
+
+	section#download p {
+		margin: 10px 0;
+	}
+
+
+  </style>
+
+
+  <body>
+    <!-- navbar -->
+    <%- include('navbar') -%>
+
+	<!-- download section -->
+    <section id="download">
+		<div class="container index_container" style="position:relative">
+			<div class="txt_container">
+				<p class="title_txt text_thick">보증금 X 수수료 X</p>
+				<p class="content_txt">앱으로 편하게 방을 빌려보세요. </p>
+			</div>
+			<div>
+			</div>
+			<!-- download buttons -->
+			<div style="padding: 20px 0">
+				<a href="#" style="padding-right:5px">
+					<img src="/images/index/google_play_img.png" width="154" height="44">
+				</a>
+				<a href="#" style="padding-left:5px">
+					<img src="/images/index/app_store_img.png" width="154" height="44">
+				</a>
+			</div>
+	    	<img class="image" style="width:400px; height:520px; position:absolute;top:-120px;right:30px;" src="/images/index/download_img.png">
+		</div>
+    </section>
+
+	<!-- footer -->
+    <%- include('footer') -%>
+  
+  </body>
+</html>

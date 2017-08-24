@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+  <%- include('header') -%>
+  <link rel="stylesheet" href="/materialize_stepper/materialize-stepper.min.css">
+  <!-- TODO: make jquery validate node module -->
+  <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
+  <script src="/materialize_stepper/materialize-stepper.min.js"></script>
+
+  <!-- iamport payment -->
+  <script src="https://service.iamport.kr/js/iamport.payment-1.1.5.js" type="text/javascript"></script>
+
+<style>
+	.stepper input {
+
+	}
+
+	.container.index_container.checkout_container {
+		margin-top: 70px;
+		margin-bottom: 100px;
+	}
+
+	.checkout_review {
+		background-color: ;
+	}
+
+	.card.checkout_card {
+		box-shadow: none; 
+		/*border: 1px solid black;*/
+		background-color: black;
+		color: white;
+	}
+</style>
+
+  <body>
+    <!-- navbar -->
+    <%- include('navbar') -%>
+
+    <script>
+	$(function(){
+
+		// function autoHypenPhone(str){
+	 //        str = str.replace(/[^0-9]/g, '');
+	 //        var tmp = '';
+	 //        if( str.length < 4){
+	 //            return str;
+	 //        }else if(str.length < 7){
+	 //            tmp += str.substr(0, 3);
+	 //            tmp += '-';
+	 //            tmp += str.substr(3);
+	 //            return tmp;
+	 //        }else if(str.length < 11){
+	 //            tmp += str.substr(0, 3);
+	 //            tmp += '-';
+	 //            tmp += str.substr(3, 3);
+	 //            tmp += '-';
+	 //            tmp += str.substr(6);
+	 //            return tmp;
+	 //        }else{              
+	 //            tmp += str.substr(0, 3);
+	 //            tmp += '-';
+	 //            tmp += str.substr(3, 4);
+	 //            tmp += '-';
+	 //            tmp += str.substr(7);
+	 //            return tmp;
+	 //        }
+	 //        return str;
+	 //    }
+
+		// var cellphone = document.getElementById('cellphone');
+		// cellphone.onkeyup = function(event){
+	 //        event = event || window.event;
+	 //        var _val = this.value.trim();
+	 //        this.value = autoHypenPhone(_val) ;
+		// }
+
+		// var IMP = window.IMP; // 생략가능
+
+		// console.log(IMP)
+
+		IMP.init('imp55922869'); // 'iamport' 대신 부여받은 "가맹점 식별코드"를 사용
+
+
+		// $("#kakaopay_btn").click(function() {
+
+		// 	IMP.certification({
+		// 	    merchant_uid : 'merchant_' + new Date().getTime() //본인인증과 연관된 가맹점 내부 주문번호가 있다면 넘겨주세요
+		// 	}, function(rsp) {
+		// 	    if ( rsp.success ) {
+		// 	    	 // 인증성공
+		// 	        console.log(rsp.imp_uid);
+		// 	        console.log(rsp.merchant_uid);
+			        
+		// 	        $.ajax({
+		// 					type : 'POST',
+		// 					url : '/certifications/confirm',
+		// 					dataType : 'json',
+		// 					data : {
+		// 						imp_uid : rsp.imp_uid
+		// 					}
+		// 			 }).done(function(rsp) {
+		// 			 		// 이후 Business Logic 처리하시면 됩니다.
+		// 			 });
+			        	
+		// 	    } else {
+		// 	    	 // 인증취소 또는 인증실패
+		// 	        var msg = '인증에 실패하였습니다.';
+		// 	        msg += '에러내용 : ' + rsp.error_msg;
+
+		// 	        alert(msg);
+		// 	    }
+		// 		});
+		// });
+
+
+
+
+
+		$("#kakaopay_btn").click(function() {
+			IMP.request_pay({
+				pg : 'kakao',
+				pay_method : 'card',
+				merchant_uid : 'merchant_' + new Date().getTime(),
+				name : '주문명:결제테스트',
+				amount : 100,
+				buyer_email : 'iamport@siot.do',
+				buyer_name : '구매자이름',
+				buyer_tel : '01092694712',
+				buyer_addr : '서울특별시 강남구 삼성동',
+				buyer_postcode : '123-456',
+				// kakoOpenApp: true
+				// m_redirect_url : '/'
+			}, 
+			function(rsp) {
+				if ( rsp.success ) {
+				    var msg = '결제가 완료되었습니다.';
+				    msg += '고유ID : ' + rsp.imp_uid;
+				    msg += '상점 거래ID : ' + rsp.merchant_uid;
+				    msg += '결제 금액 : ' + rsp.paid_amount;
+				    msg += '카드 승인번호 : ' + rsp.apply_num;
+				} 
+				else {
+				    var msg = '결제에 실패하였습니다.';
+				    msg += '에러내용 : ' + rsp.error_msg;
+				}
+				alert(msg);
+			});
+		});
+
+	});
+
+
+    </script>
+
+<script>
+	$(function() {
+		$('#phone_btn').click(function() {
+			var data = {};
+			data['phone_number'] = $('#checkout_phone_number').val();
+			console.log("data:\n", data)
+			$.ajax({
+				type:'POST',
+				data: JSON.stringify(data),
+				contentType:'application/json',
+				url: '175.207.29.19/send-verification-phone',
+				success: function() {
+					console.log("send code successful")
+				},
+				error: function(err) {
+					console.log("ajax err")
+				}
+			});
+		});
+
+
+
+	});
+</script>
+
+
+	<div class="container index_container checkout_container">
+
+	  <div class="row">
+		<div class="checkout_review col s12 m6 l6">
+          <div class="card checkout_card">
+            <div class="card-image">
+              <img src="<%- house_info.main_image -%>">
+              <span class="card-title"><%- house_info.name -%></span>
+            </div>
+            <div class="card-content">
+			  	<div class="text_thick"><%- house_info.addr_summary -%></div>
+			  	<br>
+			  	<div>인원: <%- house_info.num_guest -%>명</div>
+			  	<div>침대: <%- house_info.num_bed -%>개</div>
+			  	<div>욕실: <%- house_info.num_bathroom -%>개</div>
+			  	<br>
+			  	<div>체크인: <%- checkin -%></div>
+			  	<div style="float:right"><a href="javascript:history.back()">날짜 수정 </a></div>
+			  	<div>체크아웃: <%- checkout -%></div>
+			  	<br>
+			  	<div>&#8361;<%- daily_rate -%> x <%- duration -%>박 </div>
+			  	<div>합계: &#8361;<%- total_rate -%></div>
+            </div>
+          </div>
+		</div>
+
+		<div class="col s12 m6 l6">
+		<form action="#" method="post">
+			<ul class="stepper linear">
+<!-- 				<li class="step active">
+				  <div class="step-title waves-effect">예약 세부 정보 </div>
+				  <div class="step-content">
+
+				     <div class="row">
+				        <div class="input-field col s12">
+				           <input id="password" name="password" type="password" class="validate" required>
+				           <label for="password">Your password</label>
+				        </div>
+				     </div>
+				     <div class="step-actions">
+				        <button class="waves-effect waves-dark btn next-step">다음</button>
+				     </div>
+				  </div>
+				</li> -->
+
+				<li class="step active">
+				  <div class="step-title waves-effect">본인 인증 </div>
+				  <div class="step-content">
+				     <div class="row">
+
+
+
+				        <!-- <div class="input-field"> -->
+	 	        		<!-- <a class="waves-effect waves-light btn modal-trigger" href="#phone_modal"> -->
+				           <input id="checkout_phone_number" name="phone_number" type="text" >
+				           <label for="cellphone">전화번호 </label>
+				        <!-- </a> -->
+
+				        <!-- </div> -->
+				        <div>
+					      <button id="phone_btn" class="btn waves-effect waves-light red accent-2">인증번호 받기</button>
+				        </div>
+  <!-- <a class="waves-effect waves-light btn modal-trigger" href="#phone_modal">Modal</a> -->
+
+
+
+
+				     </div>
+				     <div class="step-actions">
+				        <button class="waves-effect waves-dark btn next-step">다음 </button>
+				     </div>
+				  </div>
+				</li>
+				<li class="step">
+				  <div class="step-title waves-effect"> 결제 방식 선택 </div>
+				  <div class="step-content">
+				  	<div class="row">
+				  		<div class="col s4">
+				  			<div class="payment_item">
+								<a href="#" role="button" id="kakaopay_btn">
+									<img src="/images/icons/payment_icon_yellow_medium.png" style="width: 100%; height: 100%">
+								</a>
+				  			</div>
+				  		</div>
+				  		<div class="col s4">
+				  			<div class="payment_item">
+								<a href="#" role="button" id="">
+									<img src="/images/icons/kginicis.png" style="width: 100%; height: 100%">
+								</a>
+							</div>
+				  		</div>
+				  		<div class="col s4">
+
+				  		</div>
+				  	</div>
+
+<!-- 
+				  	<div style="width: 100px; height: 50px; padding: 5px 0">
+						<a href="#" role="button" id="kakaopay_btn">
+							<img src="/images/icons/payment_icon_yellow_medium.png" style="width: 100%; height: 100%">
+						</a>
+					</div>
+
+				  	<div style="width: 100px; height: 50px; padding: 5px 0">
+						<a href="#" role="button" id="kakaopay_btn">
+							<img src="/images/icons/kginicis.png" style="width: 100%; height: 100%">
+						</a>
+					</div> -->
+
+				     <div class="step-actions">
+				        <button style="background-color: teal" class="waves-effect waves-dark btn previous-step">이전 </button>
+				        <button style="background-color: teal"class="waves-effect waves-dark btn next-step">다음 </button>
+
+<!-- 					     <div class="step-actions">
+					        <button class="waves-effect waves-dark btn" type="submit">예약하기 </button>
+					     </div> -->
+
+				     </div>
+				  </div>
+				</li>
+			</ul>
+		</form>
+
+		</div>
+	  </div>
+
+		<!-- Phone Modal --><!-- 
+		<div id="phone_modal" class="modal">
+		<div class="modal-content">
+		  <h4>Modal Header</h4>
+		  <p>A bunch of text</p>
+		</div>
+		<div class="modal-footer">
+		  <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+		</div>
+		</div> -->
+
+	</div>
+
+
+	<script>
+	$(function(){
+	   $('.stepper').activateStepper();
+	});
+	</script>
+
+
+    <!-- footer -->
+    <%- include('footer') -%>
+  </body>
+</html>

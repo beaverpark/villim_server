@@ -14,6 +14,17 @@ var MySQLStore = require('express-mysql-session')(session);
 var connection = require('./connection');
 
 
+// import React from "react";
+// import ReactDOM from "react-dom";
+// import App from "components/app";
+
+// ReactDOM.render(<App />, document.getElementById("content"));
+
+
+
+
+
+
 /**************/
 /*** Routers ***/
 /**************/
@@ -21,7 +32,6 @@ var webapp = require('./routes/webapp');
 var android = require('./routes/android');
 var admin = require('./routes/admin');
 // var ios = require('./routes/ios');
-
 
 
 /*************************/
@@ -48,6 +58,12 @@ app.use('/js', express.static(__dirname + '/node_modules/materialize-css/dist/js
 app.use('/css', express.static(__dirname + '/node_modules/materialize-css/dist/css'));
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist'));
 app.use('/jquery_validate', express.static(__dirname + '/node_modules/jquery-form-validator/form-validator/'));
+app.use('/jquery_rating', express.static(__dirname + '/node_modules/jquery-bar-rating/dist'));
+app.use('/flat_pickr', express.static(__dirname + '/node_modules/flatpickr/dist'));
+app.use('/swiper', express.static(__dirname + '/node_modules/swiper/dist'));
+app.use('/moment', express.static(__dirname + '/node_modules/moment/min'));
+app.use('/materialize_stepper', express.static(__dirname + '/node_modules/materialize-stepper'));
+
 
 /**************************************/
 /*** other npm downloaded libraries ***/

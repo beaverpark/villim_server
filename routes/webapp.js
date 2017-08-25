@@ -48,18 +48,18 @@ var googleMaps = require("@google/maps").createClient({
 
 
 // GET index page
-router.get('/', function(req, res, next) {
-	if(req.isAuthenticated()) {
-		var user = req.user;
-		user['username'] = req.user.lastname + req.user.firstname;
-	}
-	// client.publish('abc', 'client opened broser')
+// router.get('/', function(req, res, next) {
+// 	if(req.isAuthenticated()) {
+// 		var user = req.user;
+// 		user['username'] = req.user.lastname + req.user.firstname;
+// 	}
+// 	// client.publish('abc', 'client opened broser')
 
-	res.render('index', {user: user});
-});
+// 	res.render('index', {user: user});
+// });
 
 // GET index page
-router.get('/index', function(req, res, next) {
+router.get('/', function(req, res, next) {
 	if(req.isAuthenticated()) {
 		var user = req.user;
 		user['username'] = req.user.lastname + req.user.firstname;

@@ -150,7 +150,7 @@ function getUserInfo(req, result) {
 
 	// Adding tasks 
 	// if user is host to one or more houses, add task 1 to task pool 
-	if(req.user.is_host) {
+	if(req.user.is_host == 2) {
 		tasks['task1'] = selectHosingHouses_task;
 	}
 	else user_info['house_id_hosting'] = [];

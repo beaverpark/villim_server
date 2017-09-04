@@ -7,7 +7,11 @@
   <script src="/materialize_stepper/materialize-stepper.min.js"></script>
 
   <!-- iamport payment -->
-  <script src="https://service.iamport.kr/js/iamport.payment-1.1.5.js" type="text/javascript"></script>
+  <!-- // <script src="https://service.iamport.kr/js/iamport.payment-1.1.5.js" type="text/javascript"></script> -->
+
+  <!-- kakaopay -->
+  <!-- // <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script> -->
+
 
 <style>
 	.stepper input {
@@ -73,11 +77,9 @@
 	        this.value = autoHypenPhone(_val) ;
 		}
 
-		// var IMP = window.IMP; // 생략가능
+		//  IMPORT MODULE
 
-		// console.log(IMP)
-
-		IMP.init('imp55922869'); // 'iamport' 대신 부여받은 "가맹점 식별코드"를 사용
+		// IMP.init('imp55922869'); // 'iamport' 대신 부여받은 "가맹점 식별코드"를 사용
 
 
 		// $("#kakaopay_btn").click(function() {
@@ -111,44 +113,69 @@
 		// 		});
 		// });
 
+		// $("#kakaopay_btn").click(function() {
+		// 	IMP.request_pay({
+		// 		pg : 'kakao',
+		// 		pay_method : 'card',
+		// 		merchant_uid : 'merchant_' + new Date().getTime(),
+		// 		name : '주문명:결제테스트',
+		// 		amount : 1000,
+		// 		buyer_email : 'iamport@siot.do',
+		// 		buyer_name : '구매자이름',
+		// 		buyer_tel : '',
+		// 		buyer_addr : '서울특별시 강남구 삼성동',
+		// 		buyer_postcode : '123-456',
+		// 		// kakoOpenApp: true
+		// 		// m_redirect_url : '/'
+		// 	}, 
+		// 	function(rsp) {
+		// 		if ( rsp.success ) {
+		// 		    var msg = '결제가 완료되었습니다.';
+		// 		    msg += '고유ID : ' + rsp.imp_uid;
+		// 		    msg += '상점 거래ID : ' + rsp.merchant_uid;
+		// 		    msg += '결제 금액 : ' + rsp.paid_amount;
+		// 		    msg += '카드 승인번호 : ' + rsp.apply_num;
+		// 		} 
+		// 		else {
+		// 		    var msg = '결제에 실패하였습니다.';
+		// 		    msg += '에러내용 : ' + rsp.error_msg;
+		// 		}
+		// 		console.log(msg)
+		// 		// alert(msg);
+		// 	});
+		// });
 
 
+		// KAKAO PAY API 
+		// $("#kakaopay_btn").click(function() {
+		// 	$.ajax({
+		// 		type:'POST',
+		// 		beforeSend: function(req) {
+		// 			req.setRequestHeader('Authorization', "KakaoAK")
+		// 		},
+		// 		data: JSON.stringify(data),
+		// 		contentType:'application/json',
+		// 		url: '/send-verification-phone',
+		// 		success: function(result) {
+				
+		// 		},
+		// 		error: function(err) {
+		// 			console.log("ajax err");
+		// 		}
+		// 	});
+		// });
 
 
-		$("#kakaopay_btn").click(function() {
-			IMP.request_pay({
-				pg : 'kakao',
-				pay_method : 'card',
-				merchant_uid : 'merchant_' + new Date().getTime(),
-				name : '주문명:결제테스트',
-				amount : 1000,
-				buyer_email : 'iamport@siot.do',
-				buyer_name : '구매자이름',
-				buyer_tel : '',
-				buyer_addr : '서울특별시 강남구 삼성동',
-				buyer_postcode : '123-456',
-				// kakoOpenApp: true
-				// m_redirect_url : '/'
-			}, 
-			function(rsp) {
-				if ( rsp.success ) {
-				    var msg = '결제가 완료되었습니다.';
-				    msg += '고유ID : ' + rsp.imp_uid;
-				    msg += '상점 거래ID : ' + rsp.merchant_uid;
-				    msg += '결제 금액 : ' + rsp.paid_amount;
-				    msg += '카드 승인번호 : ' + rsp.apply_num;
-				} 
-				else {
-				    var msg = '결제에 실패하였습니다.';
-				    msg += '에러내용 : ' + rsp.error_msg;
-				}
-				console.log(msg)
-				// alert(msg);
-			});
-		});
 
 	});
 
+	function goBack() {
+		window.history.back();
+	}
+
+	function goBackTwice() {
+		window.history.go(-2);
+	}
 
     </script>
 
@@ -170,7 +197,13 @@
 			  	<div>욕실: <%- house_info.num_bathroom -%>개</div>
 			  	<br>
 			  	<div>체크인: <%- checkin -%></div>
-			  	<div style="float:right"><a href="javascript:history.back()">날짜 수정 </a></div>
+			  	<div style="float:right">
+			  		<% if(from_login) { %>
+			  			<button onclick="goBackTwice()" class="btn" style='background-color:#2F6D81'>날짜 수정 </button>
+			  		<% } else { %>
+				  		<button onclick="goBack()" class="btn" style='background-color:#2F6D81'>날짜 수정 </button>
+			  		<% } %>
+			  	</div>
 			  	<div>체크아웃: <%- checkout -%></div>
 			  	<br>
 			  	<div>&#8361;<%- daily_rate -%> x <%- duration -%>박 </div>
@@ -180,8 +213,21 @@
 		</div>
 
 		<div class="col s12 m6 l6">
-		<form action="#" method="post">
-			<ul class="stepper linear">
+		<form action="/reservation_confirm" method="post">
+
+	        <div style="padding: 20px">
+			    <div class="text_thick" style="font-size: 20px"> 간편 본인 인증 </div>
+			    <div id="main_btn1_container" style="padding: 10px 0">
+					<a id="main_btn1" class="waves-effect waves-light btn modal-trigger" href="#phone_modal" style="background-color: #2F6D81"><i class="material-icons right">smartphone</i>핸드폰 인증하기</a>
+				</div>
+			    <div style="padding: 30px 0">
+					<button type='submit' id="main_btn2" class="waves-effect waves-light btn" style="background-color: #2F6D81" disabled="disabled">예약 문의하기</button>
+				</div>
+			</div>
+
+
+			<!-- <ul class="stepper linear"> -->
+
 <!-- 				<li class="step active">
 				  <div class="step-title waves-effect">예약 세부 정보 </div>
 				  <div class="step-content">
@@ -198,7 +244,7 @@
 				  </div>
 				</li> -->
 
-				<li class="step active">
+<!-- 				<li class="step active">
 				  <div class="step-title waves-effect">본인 인증 </div>
 				  <div class="step-content">
 				     <div class="row">
@@ -206,32 +252,20 @@
 	 	        		<a class="modal-trigger" href="#phone_modal">
 				           <input id="phone_number_holder" name="phone_number" placeholder="전화번호" type="text">
 				        </a>
-<!-- 				        <div>
-					      <button id="phone_btn" class="btn waves-effect waves-light red accent-2">인증번호 받기</button>
-				        </div> -->
-  <!-- <a class="waves-effect waves-light btn modal-trigger" href="#phone_modal">Modal</a> -->
-
-
-
 				     </div>
 				     <div class="step-actions">
-				        <button class="waves-effect waves-dark btn next-step">다음 </button>
+				        <button class="waves-effect waves-dark btn next-step">예약문의하기 </button>
 				     </div>
 				  </div>
-				</li>
-				<li class="step">
+				</li> -->
+<!-- 				<li class="step">
 				  <div class="step-title waves-effect"> 결제 방식 선택 </div>
 				  <div class="step-content">
-<!-- 				  	<div class="row">
-				  		<div class="col s4"> -->
 					<a href="#" role="button" id="kakaopay_btn">
 		  			<div class="payment_item">
 						<img src="/images/icons/payment_icon_yellow_medium.png">
 		  			</div>
 					</a>
-
-<!-- 				  		</div>
-				  		<div class="col s4"> -->
 					<a href="#" role="button" id="">
 		  			<div class="payment_item">
 						<img src="/images/icons/kginicis.png">
@@ -242,8 +276,8 @@
 					        <button style="background-color: teal" class="waves-effect waves-dark btn previous-step">이전 </button>
 					        <button style="background-color: teal"class="waves-effect waves-dark btn next-step">다음 </button>
 			    	</div>
-				</li>
-			</ul>
+				</li> -->
+			<!-- </ul> -->
 		</form>
 
 		</div>
@@ -261,7 +295,7 @@
 				        </div>
 			        </div>
 			 		<div class="col s12 m5 l4" style="margin-top: 16px; height: 64px">
-				        <button id="phone_btn" style="vertical-align: bottom" class="btn waves-effect waves-light accent-2">인증번호 받기</button>
+				        <button id="phone_btn" style="vertical-align: bottom; background-color: #2F6D81" class="btn waves-effect waves-light accent-2">인증번호 받기</button>
 			        </div>
 		   	 	</div>
 		   	 	<div id="verificationTxt"></div>
@@ -351,21 +385,21 @@ input#checkout_verification_code {
 				contentType:'application/json',
 				url: '/send-verification-phone',
 				success: function(result) {
-					if(!result.success) {
-						console.log(result.message)
-						var errorTxt = "<div class='verification_fail text-thick'>위 번호로 등록된 핸드폰이 없습니다. 확인 후 다시 시도해주시기 바랍니다.</div>";
-						$('#verificationTxt').html(errorTxt);
-						$('#verificationBox').html("");
-					}
+					// if(!result.success) {
+					// 	console.log(result.message)
+					// 	var errorTxt = "<div class='verification_fail text-thick'>위 번호로 등록된 핸드폰이 없습니다. 확인 후 다시 시도해주시기 바랍니다.</div>";
+					// 	$('#verificationTxt').html(errorTxt);
+					// 	$('#verificationBox').html("");
+					// }
 
-					else {
+					// else {
 						console.log("send code successful");
 						var verificationTxt = "<div class='verification_success text-thick'>인증번호가 발송되었습니다. 10분 이내에 인증번호 6자리를 입력해주세요.</div>";
-						var verificationBox = '<div class="row"><div class="col s8" style="text-align: center"><span style="font-size: 20px">인증코드: </span><input style="width: 80px" id="checkout_verification_code" name="verification_code" type="text" maxlength="6"></div><div class="col s4" style="text-align: right"><button id="verification_btn" style="float: none" class="btn waves-effect waves-light accent-2">인증하기</button></div></div>'
+						var verificationBox = '<div class="row"><div class="col s8" style="text-align: center"><span style="font-size: 20px">인증코드: </span><input style="width: 80px" id="checkout_verification_code" name="verification_code" type="text" maxlength="6"></div><div class="col s4" style="text-align: right"><button id="verification_btn" style="float:none; background-color:#2F6D81" class="btn waves-effect waves-light accent-2">인증하기</button></div></div>'
 
 						$('#verificationTxt').html(verificationTxt);
 						$('#verificationBox').html(verificationBox);
-					}
+					// }
 				},
 				error: function(err) {
 					console.log("ajax err");
@@ -384,25 +418,34 @@ input#checkout_verification_code {
 				contentType:'application/json',
 				url: '/verify-phone',
 				success: function(result) {
-					if(!result.success) {
-						console.log(result.message)
+					// if(!result.success) {
+					// 	console.log(result.message)
 
-						var errorTxt = "<div class='verification_fail text-thick'>인증번호가 올바르지 않습니다. 다시 시도해주세요.</div>";
+					// 	var errorTxt = "<div class='verification_fail text-thick'>인증번호가 올바르지 않습니다. 다시 시도해주세요.</div>";
 
-						$('#codeTxt').html(errorTxt);
-					}
+					// 	$('#codeTxt').html(errorTxt);
+					// }
 
-					else {
+					// else {
 						var successTxt = "<div class='verification_success text-thick'>성공적으로 인증되었습니다.</div>";
 						$('#codeTxt').html(successTxt);
 
 						setTimeout(function() {
 							$('#phone_modal').modal('close');
-							$('#phone_number_holder').val(data.phone_number);
-							$('#phone_number_holder').prop('disabled', true);
-							$('#phone_number_holder').closest('a').removeAttr('href');
+							// $('#phone_number_holder').val(data.phone_number);
+							// $('#phone_number_holder').prop('disabled', true);
+							// $('#phone_number_holder').closest('a').removeAttr('href');
+							$('#main_btn1').addClass('disabled');
+
+							// $('#main_btn1').prop('disabled', true);
+							// $('#main_btn1_container').append("<span style='color:blue;font-size:16px'>인증완료</span>");
+							$('#main_btn1_container').append("<img style='width:36px;vertical-align:middle' src='/images/icons/phone_verification_icon.png'>");
+
+							$('#main_btn2').prop('disabled', false);
+
+							// $('#main_btn2').removeAttr('disabled');
 						}, 1200);
-					}
+					// }
 				},
 				error: function(err) {
 					console.log("ajax err");

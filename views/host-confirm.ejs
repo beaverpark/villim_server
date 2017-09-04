@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <%- include('header') -%>
+
+
+  <style>
+  /*duplicate */
+	.container.index_container.confirm_container {
+		margin-top: 70px;
+		margin-bottom: 300px;
+	}
+
+	/*duplicate*/
+	.confirm_txt {
+		font-size: 18px;
+		font-weight: 600;
+		color: #2F6D81;
+		/*color: #3c763d;*/
+	}
+
+
+  </style>
+
+  <body>
+    <!-- navbar -->
+    <%- include('navbar') -%>
+
+	<div class="container index_container confirm_container">
+		<div class="confirm_txt">
+			<div>안녕하세요 <%- name -%>님. 빌림에 문의해주셔서 감사합니다.</div>
+			<div>빌림에서 48시간 내에 고객님의 핸드폰으로 연락이 갈 예정입니다.</div>
+			<div>감사합니다.</div>
+		</div>
+	</div>
+
+    <!-- footer  -->
+    <%- include('footer') -%>
+  </body>
+</html>

@@ -12,6 +12,13 @@
   <script src="/flat_pickr/flatpickr.min.js"></script>
 
 
+  <!-- // <script src='/javascripts/materialize-pagination/materialize-pagination.js'></script> -->
+
+  <script src='/javascripts/paginationjs/pagination.min.js'></script>
+
+  <link rel="stylesheet" href="/javascripts/paginationjs/pagination.css">
+  <!-- <link rel="stylesheet" href="/javascripts/paginationjs/pagination.less"> -->
+
 
 <style>
 /* Search page css */
@@ -162,7 +169,6 @@
     /*padding-right: 10px;*/
   }
 
-
 </style>
 
 
@@ -194,14 +200,17 @@
 
       <div class="row">
         <div class="col s12 m3 l3">
+          <div id="map" style="height: 310px; width: 100%; border: 1px solid rgb(205, 205, 209)"></div>
+
           <!-- <img src="/images/logos/villim_logo.png" width="120px" style="position: fixed; top:204px; left: 44px"> -->
         </div>
 
 
         <div class="col s12 m9 l9">
-          <div class="row">
+          <div id='data_container' class="row">
             
-            <% if(house_list[0]) { %>
+           <% if (false ) { %>
+            <% if(typeof house_list !== 'undefined' && house_list[0]) { %>
               <% for (var i=0; i<house_list.length; i++) { %>
                 <!-- <div class="col s12 m12 l6">  -->
                   <a href="/homes/<%- house_list[i].name -%>/<%- house_list[i].id -%>" target="_blank">
@@ -251,8 +260,7 @@
                                 <option value="4">4</option>
                                 <option value="5">5</option>
                               </select>
-                              <div class="search_card_rate"> &#8361; <%- house_list[i].daily_rate -%> / 1박 </div>
-                              <div class="search_card_rate_per_room"> &#8361; <%- Math.round(house_list[i].daily_rate / house_list[i].num_bedroom) -%> / 방 </div>
+                              <div class="search_card_rate"> &#8361; <%- house_list[i].monthly_rate -%> / 월 </div>
                             </div>                                                
                           </div>
                         </div>
@@ -261,11 +269,153 @@
                   </a>
             <% } } else { %>
               <div style="text-align:center; height: 400px; padding: 150px 0; font-size: 20px">요청하신 검색 결과가 없습니다.</div>
-            <% } %>
+            <% } } %>
+          </div>
+
+          <div style="text-align: center">
+            <div id="pagination-container" style="display: inline-block; padding: 20px 0"></div>
           </div>
         </div>
       </div>
     </div>
+
+<script>
+var ratings = [];
+
+var map;
+var home_icon;
+var markersArray = [];
+
+function initMap() {
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: 37.5665, lng: 126.9780},
+    zoom: 10,
+    minZoom: 10,
+    maxZoom: 17,
+    disableDefaultUI: true
+  });
+
+  home_icon = {
+    url: "/images/icons/red_home_icon.png",
+    scaledSize: new google.maps.Size(20,20),
+    anchor: new google.maps.Point(10, 12),
+  }
+
+}
+
+$(function() {
+
+function clearOverlays() {
+  for (var i = 0; i < markersArray.length; i++ ) {
+    markersArray[i].setMap(null);
+  }
+  markersArray.length = 0;
+}
+
+
+function template(data) {
+  var houses_html = '';
+
+  clearOverlays();
+
+  for (var i=0; i<data.length; i++) {
+    ratings[i] = data[i].rating_overall;
+
+    map.setCenter({lat: data[i].latitude, lng: data[i].longitude});
+
+    var marker = new google.maps.Marker({
+      map:map,
+      icon: home_icon,
+      position: {lat: data[i].latitude, lng: data[i].longitude}
+    });
+    markersArray.push(marker);
+
+
+    houses_html += '<a href="/homes/'+ data[i].name +'/'+ data[i].id +'" target="_blank"> \
+              <div class="card search_card"> \
+                <div class="row"> \
+                  <div class="col s12 m7 l7" style="padding-left: 0"> \
+                    <div class="card-image_wrapper"> \
+                      <div class="card-image"> \
+                        <img src="' + data[i].main_image + '"> \
+                      </div> \
+                    </div> \
+                  </div> \
+                  <div class="col s12 m5 l5"> \
+                    <div class="card-content search_card_content valign-wrapper"> \
+                      <div class="content_wrapper" style="width: 100%"> \
+                        <div class="search_card_name">' + data[i].name + '</div> \
+                        <div class="search_card_addr">' + data[i].addr_summary + '</div> \
+                        <div class="capacity"> \
+                          <span class= "capacity_item"> \
+                            <img class="icons" src="/images/icons/icon_man.png"> \
+                            <span>' + data[i].num_guest + '</span> \
+                          </span> \
+                          <span class= "capacity_item"> \
+                            <img class="icons" src="/images/icons/icon_door.png"> \
+                            <span>' + data[i].num_bedroom + '</span> \
+                          </span> \
+                          <span class= "capacity_item"> \
+                            <img class="icons" src="/images/icons/icon_bed.png"> \
+                            <span>' + data[i].num_bed + '</span> \
+                          </span> \
+                          <span class= "capacity_item"> \
+                            <img class="icons" src="/images/icons/icon_bath.png"> \
+                            <span>' + data[i].num_bathroom + '</span> \
+                          </span> \
+                        </div> \
+                        <select class="star_rating" id="star_rating_' + i + '"> \
+                          <option value="1">1</option> \
+                          <option value="2">2</option> \
+                          <option value="3">3</option> \
+                          <option value="4">4</option> \
+                          <option value="5">5</option> \
+                        </select> \
+                        <div class="search_card_rate"> &#8361; ' + data[i].monthly_rate + ' / 월 </div> \
+                      </div> \
+                    </div> \
+                  </div> \
+                </div> \
+              </div> \
+            </a>';
+  }
+
+    return houses_html;
+}
+
+  $('#pagination-container').pagination({
+      dataSource: function(done) {
+
+        var data = {};
+        data['location'] = $('input#location').val();
+        data['checkin'] = $('input#checkin_date_picker').val();
+        data['checkout'] = $('input#checkout_date_picker').val();
+
+        $.ajax({
+          type: 'get',
+          data: data,
+          url: '/s_houses',
+          success: function(response) {
+            console.log(response)
+            done(response);
+          }
+        });
+      },
+      locator: 'house_list',
+      pageSize: 5,
+      callback: function(data, pagination) {
+        console.log(data)
+
+        var houses_html = template(data);
+        $('#data_container').html(houses_html);
+      }
+  })
+});
+</script>
+
+
+
+
 <script>
 
 $(function() {
@@ -379,7 +529,8 @@ function controlButton() {
     for(var i = 0; i < rating_count; i++) {
       $('#star_rating_' + i).barrating({
         theme: 'fontawesome-stars-o',
-        initialRating: eval('rating'+i),
+        // initialRating: eval('rating'+i),
+        initialRating: ratings[i],
         readonly: true
       });        
     }
@@ -388,5 +539,8 @@ function controlButton() {
 
     <!-- footer -->
     <%- include('footer') -%>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDIKYpr3qNxWm2lC6VlVhoIFt3r1xy8dns&callback=initMap" async defer>
+  </script>
   </body>
 </html>

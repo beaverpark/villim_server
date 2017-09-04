@@ -20,12 +20,6 @@
   <script src="/moment/moment.min.js"></script> 
 
   <style>
-	  @font-face {
-	  	font-family: "nanum_myeongjo";
-	  	src: url('/fonts/NanumMyeongjo-Regular.ttf');
-	  }
-
-
   </style>
 
 
@@ -401,6 +395,8 @@
 
 	$(function() {
 
+		console.log("loaded")
+
 		var checkin = flatpickr("#checkin_date_picker", {
 			minDate: new Date(),
 			// mode: "range", 
@@ -412,7 +408,6 @@
 			},
 			onValueUpdate: function(dateObj, dateStr) {
 				if(checkout) {
-					checkout.set("minDate", dateObj[0].fp_incr(1));
 			        checkout.open();
 				}
 			}
@@ -424,6 +419,12 @@
 			// altInput: true,
 			// altFormat: 'Y-m-d',
 			allowInput: true, 
+			onOpen: function() {
+				var checkinDate = moment(checkin.input.value);
+
+				var checkout_min = checkinDate.add(1, 'd').format("YYYY-MM-DD");
+				this.set("minDate", checkout_min);
+			},
 			onValueUpdate: function(dateObj, dateStr) {
 				// TODO: on input value gone, remove the price div 
 				if(checkin.input.value) {

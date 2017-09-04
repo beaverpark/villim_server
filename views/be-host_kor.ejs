@@ -73,6 +73,28 @@
 
     	/*<img style="width:100%; height: auto; position:absolute; bottom:0" src="/images/index/buildings_img.png">*/
 
+    	 /* Placeholder css */
+  ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color: black;
+    opacity: 0.5;
+  }
+  :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color: black;
+    opacity: 0.5;
+  }
+  ::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: black;
+    opacity: 0.5;
+  }
+  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: black;
+    opacity: 0.5;
+  }
+  ::-ms-input-placeholder { /* Microsoft Edge */
+    color: black;
+    opacity: 0.5;
+  }
+
   </style>
 
 
@@ -171,13 +193,10 @@
 			<div class="txt_container">
 		  		<div class="be_host_title_txt"> 빌림 관리서비스 문의</div>
 
-				<form action="#" method="post">
+				<form action="/host_confirm" method="post">
 					<div class="row">
 						<div class="input-field col s12 m2 l2">
 							<input placeholder="성명" name="name" type="text" class="validate" required>
-						</div>
-						<div class="input-field col s12 m2 l2">
-							<input placeholder="+82" name="location_code" type="text" class="validate" required>
 						</div>
 						<div class="input-field col s12 m3 l3">
 							<input placeholder="전화번호" name="phone_number" type="text" class="validate" required>

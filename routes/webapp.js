@@ -6,6 +6,7 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../connection');
+var async = require('async');
 
 var moment = require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul");
@@ -58,15 +59,27 @@ var googleMaps = require("@google/maps").createClient({
 // 	res.render('index', {user: user});
 // });
 
-// GET index page
-router.get('/', function(req, res, next) {
+router.get('/index3', function(req, res, next) {
+	var user;
 	if(req.isAuthenticated()) {
-		var user = req.user;
+		user = req.user;
 		user['username'] = req.user.lastname + req.user.firstname;
 	}
-	// client.publish('abc', 'client opened broser')
+	console.log(req.session)
+	res.render('index3', {user: user});
+});
 
-	res.render('index2', {user: user});
+
+
+// GET index page
+router.get('/', function(req, res, next) {
+	var user;
+	if(req.isAuthenticated()) {
+		user = req.user;
+		user['username'] = req.user.lastname + req.user.firstname;
+	}
+	console.log(req.session)
+	res.render('index3', {user: user});
 });
 
 router.get('/download_kor', function(req, res, next) {
@@ -82,8 +95,16 @@ router.get('/download_en', function(req, res, next) {
 });
 
 router.get('/be-host_kor', function(req, res, next) {
+	var user;
+	if(req.isAuthenticated()) {
+		user = req.user;
+		user['username'] = req.user.lastname + req.user.firstname;
+	}
+	var	context = {};
+	context['user'] = user; 
 
-	res.render('be-host_kor');
+
+	res.render('be-host_kor', context);
 
 });
 
@@ -108,41 +129,216 @@ router.get('/be-host_en', function(req, res, next) {
 
 //
 
-router.post('/checkout', function(req, res) {
+// GET user's dashboard
+router.get('/dashboard', isLoggedIn, function(req, res) {
 	if(!req.isAuthenticated()) {
-		req.session.returnTo = req.path;
-		req.session.checkin = req.body.checkin;
-		req.session.checkout = req.body.checkout;
-		req.session.house_id = req.body.house_id; 
-		res.redirect('/login');
+		return res.redirect('/');
+	}
+	var user = req.user;
+	user['username'] = req.user.lastname + req.user.firstname;
+
+	console.log(user)
+
+	context = {};
+	context['user'] = user;
+
+
+	var getHostingHs_task = function(callback) {
+
+		getHostingHs(user.id, function(err, rows) {
+			if(err) console.log(err);
+			console.log('1')
+			context['hostingHs'] = JSON.parse(JSON.stringify(rows));
+			// console.log(hostingHs)
+			callback();
+		});
+	};
+
+
+	var getPendingR_task = function(callback) {
+		getPendingRs(user.id, function(err, rows) {
+			if(err) console.log(err);
+
+			console.log('2')
+			context['pendingRs'] = JSON.parse(JSON.stringify(rows));
+			callback();
+		});
+	};
+
+	var getConfirmedR_task = function(callback) {
+		getConfirmedRs(user.id, function(err, rows) {
+			if(err) console.log(err);
+
+			console.log('3')
+			context['confirmedRs'] = JSON.parse(JSON.stringify(rows));
+			callback();
+		});
+	};
+
+	var tasks = {};
+
+	// add tasks
+	if(user.is_host == 2) {
+		tasks['task1'] = getHostingHs_task;
 	}
 
-	// console.log(req.body)
-	// console.log(req.session)
+	if(!user.r_newcomer && user.r_active) {
+		tasks['task2'] = getPendingR_task;
+		tasks['task3'] = getConfirmedR_task;
+	}
+
+
+	// call query tasks in parallel 
+	async.parallel(tasks, function(err) {
+		if(err) console.log(err);
+
+		console.log(context)		
+		return res.render('dashboard', context);
+	});
+});
+
+function getHostingHs(user_id, callback) {
+	var selectQuery = "select id, name, addr_full, addr_summary, addr_direction, description, num_guest, num_bedroom, num_bed, num_bathroom, monthly_rate, deposit, cleaning_fee, utility_fee, main_image, house_policy, latitude, longitude, status, created from house where user_id = ?";
+	return db.query(selectQuery, [user_id], callback);
+}
+
+function getPendingRs(user_id, callback) {
+	var selectQuery = "select r.checkin, r.checkout, format(r.price_total, 0) as price_total, r.created, h.id, h.name, h.addr_summary, h.main_image from reservation r inner join house h on r.house_id = h.id where r.status = 0 and r.user_id = ?";
+	return db.query(selectQuery, [user_id], callback);
+}
+
+function getConfirmedRs(user_id, callback) {
+	var selectQuery = "select r.checkin, r.checkout, format(r.price_total, 0) as price_total, r.created, h.id, h.name, h.addr_summary, h.main_image from reservation r inner join house h on r.house_id = h.id where r.status = 1 and r.user_id = ?";
+	return db.query(selectQuery, [user_id], callback);
+}
+
+
+router.post('/host_confirm', function(req, res) {
+	var user;
+	if(req.isAuthenticated()) {
+		user = req.user;
+		user['username'] = req.user.lastname + req.user.firstname;
+	}
 
 	var context = {};
 
-	var checkin_date = (req.body.checkin) ? req.body.checkin : req.session.checkin;
-	var checkout_date = (req.body.checkout) ? req.body.checkout : req.session.checkout;
-	var house_id = (req.body.house_id) ? req.body.house_id : req.session.house_id;
+	context['user'] = user; 
 
-	var checkin = moment(checkin_date);
-	var checkout = moment(checkout_date);
+	var name = req.body.name;
+	var email = req.body.email;
+	var phone_num = req.body.phone_number;
 
-	var date_diff = checkout.diff(checkin, 'days');
+	context['name'] = name;
 
-	context['checkin'] = checkin_date;
-	context['checkout'] = checkout_date;
+	makeInquiry(name, email, phone_num, function(err, rows) {
+		if(err) console.log(err);
+
+		else {
+			// later if i wanna get inquiry id
+			// console.log(rows.insertId)
+
+			res.render('host-confirm', context);
+		}
+	});
+
+});
+
+function makeInquiry(name, email, phone_num, callback) {
+	var insertQuery = "insert into inquiry (name, email, phone_number) values (?,?,?);";
+
+	return db.query(insertQuery, [name, email, phone_num], callback);
+}
+
+
+router.post('/reservation_confirm', function(req, res) {
+	// user must be logged in
+	var user = req.user;
+	user['username'] = req.user.lastname + req.user.firstname;
+
+	var context = {};
+	context['user'] = user;
+
+	var	r_context = {};
+	r_context['user_id'] = user.id;
+	r_context['checkin'] = req.session.checkin;
+	r_context['checkout'] = req.session.checkout;
+	r_context['house_id'] = req.session.house_id;
+	r_context['total_rate'] = req.session.total_rate;
+	var created = moment().format("YYYY-MM-DD HH:MM:SS");
+	r_context['created'] = created;
+
+	makeReservationRequest(r_context, function(err, rows) {
+		if(err) console.log(err);
+
+		else {
+			// later if i wanna get reservation id
+			// console.log(rows[0].insertId)
+
+			res.render('reservation-confirm', context);
+		}
+	});
+
+});
+
+
+// 1. reservation.status = 0 (pending)
+// 2. user.r_newcomer = 0
+// 3. user.r_active = 1 
+function makeReservationRequest(r_context, callback) {
+	var insertQuery = "insert into reservation (house_id, user_id, checkin, checkout, price_total, created) values (?,?,?,?,?,?);";
+	var updateUser = "update user set r_newcomer = 0, r_active = 1 where id = ?";
+
+	return db.query(insertQuery + updateUser, [r_context.house_id, r_context.user_id, r_context.checkin, r_context.checkout, r_context.total_rate, r_context.created, r_context.user_id], callback);
+}
+
+
+router.post('/checkout', function(req, res) {
+	var context = {};
+
+	// if req body is not empty, assign body params to session
+	if(req.body.checkin && req.body.checkout && req.body.house_id) {
+		req.session.checkin = req.body.checkin;
+		req.session.checkout = req.body.checkout;
+		req.session.house_id = req.body.house_id; 
+	}
+
+	// if user is not logged in, save current path into session and redirect to login
+	if(!req.isAuthenticated()) {
+		req.session.returnTo = req.path;
+		return res.redirect('/login');
+	}
+
+	// set from_login based on previous page (logic for back button)
+	if(req.session.from_login) {
+		context['from_login'] = true;
+		delete req.session.from_login;
+	}
+
+	else {
+		context['from_login'] = false;
+	} 
+
+	var user = req.user;
+	user['username'] = req.user.lastname + req.user.firstname;
+	context['user'] = user;
+
+	var checkin_m = moment(req.session.checkin);
+	var checkout_m = moment(req.session.checkout);
+	var date_diff = checkout_m.diff(checkin_m, 'days');
+
+	context['house_id'] = req.session.house_id;
+	context['checkin'] = req.session.checkin;
+	context['checkout'] = req.session.checkout;
 	context['duration'] = date_diff;
 
-	getHouseInfoForCheckout(house_id, function(err, rows) {
+	getHouseInfoForCheckout(req.session.house_id, function(err, rows) {
 		if(err) console.log(err);
 
 		else {
 			context['house_info'] = JSON.parse(JSON.stringify(rows))[0];
 			context['daily_rate'] = intToStringWithCommas(context.house_info.daily_rate);
-			context['total_rate'] = intToStringWithCommas(context.house_info.daily_rate * date_diff);
-
+			req.session.total_rate = context.house_info.daily_rate * date_diff; // save total_rate to session
+			context['total_rate'] = intToStringWithCommas(context.house_info.daily_rate * date_diff);;
 			res.render('checkout', context);
 		}
 	});
@@ -158,13 +354,15 @@ function intToStringWithCommas(num) {
 }
 
 router.get('/homes/:name/:id', function(req, res) {
-
-	if("해방촌 2인실 - 1" == req.params.name) {
-		console.log("same")
+	var user;
+	if(req.isAuthenticated()) {
+		user = req.user;
+		user['username'] = req.user.lastname + req.user.firstname;
 	}
+
 	var context = {};
-	console.log(req.params.name)
-	console.log(req.params.id)
+
+	context['user'] = user; 
 	context['house_id'] = req.params.id;
 
 	selectHouseById(req.params.id, function(err, rows) {
@@ -174,9 +372,6 @@ router.get('/homes/:name/:id', function(req, res) {
 			context['house_info'] = JSON.parse(JSON.stringify(rows))[0][0];
 			context['amenities_list'] = JSON.parse(JSON.stringify(rows))[1];
 			context['house_pics_list'] = JSON.parse(JSON.stringify(rows))[2];
-
-			console.log(context)
-
 
 			res.render('house_detail', context);
 		}
@@ -192,20 +387,9 @@ function selectHouseById(house_id, callback) {
 };
 
 
-// GET search houses
-router.get('/s', function(req, res) {
+// ajax
+router.get('/s_houses', function(req, res) {
 	var	context = {};
-
-	// var location = req.params.location;
-	// console.log(location)
-	
-	if(req.isAuthenticated()) {
-		var user = req.user;
-		user['username'] = req.user.lastname + req.user.firstname;
-	}
-
-
-	context['user'] = user; 
 
 	var location = req.query.location; 
 	var checkin = req.query.checkin;
@@ -214,11 +398,7 @@ router.get('/s', function(req, res) {
 	context['location'] = location;
 	context['checkin'] = checkin;
 	context['checkout'] = checkout;
-	// context['preferred_currency'] = req.params.curr;
 
-	console.log(context);
-
-	// query rooms
 	selectHouse_search(location, checkin, checkout, function(err, rows) {
 		if(err) console.log(err);
 
@@ -238,46 +418,93 @@ router.get('/s', function(req, res) {
 			// context['house_name'] = JSON.parse(JSON.stringify(rows[4]));
 
 			// console.log(context)
-			res.render('search', context);
+			res.json(context);
 		}
 	});
-	
+});
 
+
+// GET search houses
+router.get('/s', function(req, res) {
+	var user;
+	if(req.isAuthenticated()) {
+		user = req.user;
+		user['username'] = req.user.lastname + req.user.firstname;
+	}
+	var	context = {};
+	context['user'] = user; 
+
+	var location = req.query.location; 
+	var checkin = req.query.checkin;
+	var checkout = req.query.checkout;
+
+	context['location'] = location;
+	context['checkin'] = checkin;
+	context['checkout'] = checkout;
+	// context['preferred_currency'] = req.params.curr;
+
+	// console.log(context);
+	res.render('search', context);
+
+	// query rooms
+	// selectHouse_search(location, checkin, checkout, function(err, rows) {
+	// 	if(err) console.log(err);
+
+	// 	else {
+	// 		console.log("select houses successful");
+	// 		context["house_list"] = JSON.parse(JSON.stringify(rows));
+
+	// 		// console.log()
+	// 		// console.log(JSON.parse(JSON.stringify(rows)))
+
+	// 		// context['house_main_image'] = JSON.parse(JSON.stringify(rows[0]));
+
+	// 		// // TODO: process monthly rate with commas ex-  150,000,000
+	// 		// context['house_monthly_rate'] = JSON.parse(JSON.stringify(rows[1]));
+	// 		// context['house_addr_summary'] = JSON.parse(JSON.stringify(rows[2]));
+	// 		// context['house_avg_rating'] = JSON.parse(JSON.stringify(rows[3]));
+	// 		// context['house_name'] = JSON.parse(JSON.stringify(rows[4]));
+
+	// 		// console.log(context)
+	// 		res.render('search', context);
+	// 	}
+	// });
+	
 });
 
 
 function selectHouse_search(location, checkin, checkout, callback) {
 
-	console.log(location + " , " + checkin + " , " + checkout);
+	// console.log(location + " , " + checkin + " , " + checkout);
 
 	var location_1 = (!(location == '' || typeof location === 'undefined')) ? 1 : 0; 
 	var checkin_2 = (!(checkin == '' || typeof checkin === 'undefined')) ? 2 : 0;
 	var checkout_4 = (!(checkout == '' || typeof checkout === 'undefined')) ? 4 : 0;
 
-	console.log(location_1 + " , " + checkin_2 + " , " + checkout_4);
+	// console.log(location_1 + " , " + checkin_2 + " , " + checkout_4);
 
 	switch(location_1 | checkin_2 | checkout_4) {
 		case 0:
-			console.log("0")
+			// console.log("0")
 			// no params
-			return db.query("select h.id, h.name, h.main_image, h.daily_rate, h.num_guest, h.num_bedroom, h.num_bed, h.num_bathroom, h.addr_summary, r.rating_overall from house h inner join house_rating r on h.id = r.house_id", callback);
+			return db.query("select h.id, h.name, h.latitude, h.longitude, h.main_image, format(h.monthly_rate, 0) as monthly_rate, h.num_guest, h.num_bedroom, h.num_bed, h.num_bathroom, h.addr_summary, r.rating_overall from house h inner join house_rating r on h.id = r.house_id", callback);
 		case 1: 
-			console.log("1")
+			// console.log("1")
 			// only location
-			var selectQuery = "select h.id, h.name, h.main_image, h.daily_rate, h.num_guest, h.num_bedroom, h.num_bed, h.num_bathroom, h.addr_summary, r.rating_overall from house h inner join house_rating r on h.id = r.house_id where h.name like ? or h.addr_summary like ?";
+			var selectQuery = "select h.id, h.name, h.latitude, h.longitude, h.main_image, format(h.monthly_rate, 0) as monthly_rate, h.num_guest, h.num_bedroom, h.num_bed, h.num_bathroom, h.addr_summary, r.rating_overall from house h inner join house_rating r on h.id = r.house_id where h.name like ? or h.addr_summary like ?";
 			return db.query(selectQuery, ['%' + location + '%', '%' + location + '%'], callback);
 		case 6:
-			console.log("6")
+			// console.log("6")
 			// only checkin, checkout
-			var selectQuery = "select distinct h.id, h.name, h.main_image, h.daily_rate, h.num_guest, h.num_bedroom, h.num_bed, h.num_bathroom, h.addr_summary, hr.rating_overall from house h inner join house_rating hr on h.id = hr.house_id INNER JOIN reservation re on h.id = re.house_id where h.id not in (select re.house_id from reservation re where (re.checkin >= ? and re.checkout <= ?) or (re.checkin < ? and re.checkout >= ?) or (re.checkin <= ? and re.checkout > ?)) order by h.id asc";
+			var selectQuery = "select distinct h.id, h.name, h.latitude, h.longitude, h.main_image, format(h.monthly_rate, 0) as monthly_rate, h.num_guest, h.num_bedroom, h.num_bed, h.num_bathroom, h.addr_summary, hr.rating_overall from house h inner join house_rating hr on h.id = hr.house_id INNER JOIN reservation re on h.id = re.house_id where h.id not in (select re.house_id from reservation re where (re.checkin >= ? and re.checkout <= ?) or (re.checkin < ? and re.checkout >= ?) or (re.checkin <= ? and re.checkout > ?)) order by h.id asc";
 			return db.query(selectQuery, [checkin, checkout, checkout, checkout, checkin, checkin], callback);
 		case 7:
-			console.log("7")
+			// console.log("7")
 			// all (location, checkin, checkout)
-			var selectQuery = "select distinct h.id, h.name, h.main_image, h.daily_rate, h.num_guest, h.num_bedroom, h.num_bed, h.num_bathroom, h.addr_summary, hr.rating_overall from house h inner join house_rating hr on h.id = hr.house_id INNER JOIN reservation re on h.id = re.house_id where h.id not in (select re.house_id from reservation re where (re.checkin >= ? and re.checkout <= ?) or (re.checkin < ? and re.checkout >= ?) or (re.checkin <= ? and re.checkout > ?)) and (h.name like ? or h.addr_summary like ?) order by h.id asc";
+			var selectQuery = "select distinct h.id, h.name, h.latitude, h.longitude, h.main_image, format(h.monthly_rate, 0) as monthly_rate, h.num_guest, h.num_bedroom, h.num_bed, h.num_bathroom, h.addr_summary, hr.rating_overall from house h inner join house_rating hr on h.id = hr.house_id INNER JOIN reservation re on h.id = re.house_id where h.id not in (select re.house_id from reservation re where (re.checkin >= ? and re.checkout <= ?) or (re.checkin < ? and re.checkout >= ?) or (re.checkin <= ? and re.checkout > ?)) and (h.name like ? or h.addr_summary like ?) order by h.id asc";
 			return db.query(selectQuery, [checkin, checkout, checkout, checkout, checkin, checkin,'%' + location + '%', '%' + location + '%'], callback);
 		default: 
-			console.log("switch default. this is probably error")
+			// console.log("switch default. this is probably error")
 			break;			
 	}
 
@@ -302,17 +529,6 @@ function selectHouse_search(location, checkin, checkout, callback) {
 	// return db.query("select h.id, h.name, h.main_image, h.daily_rate, h.num_guest, h.num_bedroom, h.num_bed, h.num_bathroom, h.addr_summary, r.rating_overall from house h inner join house_rating r on h.id = r.house_id", callback);
 	// return db.query("select main_image from house; select monthly_rate from house; select addr_summary from house; select rating_overall from house_rating; select name from house", callback);
 }
-
-
-
-// GET current user's profile
-router.get('/dashboard', isLoggedIn, function(req, res) {
-	var user = req.user;
-	user['username'] = req.user.lastname + req.user.firstname;
-
-	res.render('dashboard', {user: user});
-});
-
 
 
 // GET house register page

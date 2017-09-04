@@ -1,0 +1,187 @@
+	<div class="container admin_container">
+	    <div class="admin_content">
+			<div style="font-size:24px" class="center-align"> ALL TABLES </div>
+
+			<% if(all_users) { %>
+			<div class="admin_form_label"> User table </div><hr>
+			<div class="admin_table"> 
+				<div class="row name_row">
+					<div class="col s1">
+						<div>id</div>
+					</div>
+					<div class="col s2">
+						<div>email</div>
+					</div>
+					<div class="col s1">
+						<div>lastname</div>
+					</div>
+					<div class="col s1">
+						<div>firstname</div>
+					</div>
+					<div class="col s2">
+						<div>date_of_birth</div>
+					</div>
+					<div class="col s1">
+						<div>about</div>
+					</div>
+					<div class="col s1">
+						<div>is_host</div>
+					</div>
+					<div class="col s1">
+						<div>status</div>
+					</div>
+					<div class="col s1">
+						<div>created</div>
+					</div>
+				</div>
+
+				<% for (var i=0; i<all_users.length; i++) { %>
+				<div class="row">
+					<div class="col s1">
+						<div><%- all_users[i].id -%></div>
+					</div>
+					<div class="col s2">
+						<div><%- all_users[i].email -%></div>
+					</div>
+					<div class="col s1">
+						<div><%- all_users[i].lastname -%></div>
+					</div>
+					<div class="col s1">
+						<div><%- all_users[i].firstname -%></div>
+					</div>
+					<div class="col s2">
+						<div><%- all_users[i].date_of_birth -%></div>
+					</div>
+					<div class="col s1">
+						<div><%- all_users[i].about -%></div>
+					</div>
+					<div class="col s1">
+						<div><%- all_users[i].is_host.data -%></div>
+					</div>
+					<div class="col s1">
+						<div><%- all_users[i].status -%></div>
+					</div>
+					<div class="col s1">
+						<div><%- all_users[i].created -%></div>
+					</div>
+				</div>
+				<% } %>
+			</div>
+			<% } %>
+
+			<br><br>
+			<% if(all_houses) { %>
+			<div class="admin_form_label"> House table </div><hr>
+			<div class="admin_table"> 
+				<% for (var i=0; i<all_houses.length; i++) { %>
+				<div class="row name_row">
+					<div class="col s1">
+						<div>id</div>
+					</div>
+					<div class="col s1">
+						<div>user_id</div>
+						<div>(집주인_id)</div>
+					</div>
+					<div class="col s2">
+						<div>name</div>
+					</div>
+					<div class="col s3">
+						<div>addr_full</div>
+						<div>(풀 주소)</div>
+					</div>
+					<div class="col s2">
+						<div>addr_summary</div>
+						<div>주소(시,구,동)</div>
+					</div>
+					<div class="col s3">
+						<div>addr_direction</div>
+						<div>(오시는 길)</div>
+					</div>
+				</div>				
+				<div class="row">
+					<div class="col s1">
+						<div><%- all_houses[i].id -%></div>
+					</div>
+					<div class="col s1">
+						<div><%- all_houses[i].user_id -%></div>
+					</div>
+					<div class="col s2">
+						<div><%- all_houses[i].name -%></div>
+					</div>
+					<div class="col s3">
+						<div><%- all_houses[i].addr_full -%></div>
+					</div>
+					<div class="col s2">
+						<div><%- all_houses[i].addr_summary -%></div>
+					</div>
+					<div class="col s3">
+						<div><%- all_houses[i].addr_direction -%></div>
+					</div>
+				</div>
+
+				<div class="row name_row">
+					<div class="col s2">
+						<div>description</div>
+					</div>
+					<div class="col s1">
+						<div>room_type</div>
+					</div>
+					<div class="col s1">
+						<div>num_guest</div>
+					</div>
+					<div class="col s2">
+						<div>num_bedroom</div>
+					</div>
+					<div class="col s1">
+						<div>num_bed</div>
+					</div>
+					<div class="col s2">
+						<div>num_bathroom</div>
+					</div>
+					<div class="col s2">
+						<div>monthly_rate</div>
+					</div>
+<!-- 					<div class="col s1">
+						<div>status</div>
+					</div> -->
+					<div class="col s1">
+						<div>created</div>
+					</div>
+				</div>
+				<div class="row" style="border-bottom: solid 1px black">
+					<div class="col s2">
+						<div><%- all_houses[i].description -%></div>
+					</div>
+					<div class="col s1">
+						<div><%- all_houses[i].room_type -%></div>
+					</div>
+					<div class="col s1">
+						<div><%- all_houses[i].num_guest -%></div>
+					</div>
+					<div class="col s2">
+						<div><%- all_houses[i].num_bedroom -%></div>
+					</div>
+					<div class="col s1">
+						<div><%- all_houses[i].num_bed -%></div>
+					</div>
+					<div class="col s2">
+						<div><%- all_houses[i].num_bathroom -%></div>
+					</div>
+					<div class="col s2">
+						<div><%- all_houses[i].monthly_rate -%></div>
+					</div>
+					<!-- <div class="col s1">
+						<div><%- /*all_houses[i].status*/ -%></div>
+					</div> -->
+					<div class="col s1">
+						<div><%- all_houses[i].created -%></div>
+					</div>
+				</div>
+				<% } %>
+			</div>
+			<% } %>
+
+
+
+		</div>
+	</div>

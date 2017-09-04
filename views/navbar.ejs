@@ -14,10 +14,37 @@ $(document).ready(function(){
 });
 </script>
 
+
+<style>
+  .chip.navbar_chip, .navbar_chip_dropdown {
+    background-color: white;
+    font-size: 15px;
+    color: #2F6D81;
+    /*color: rgba(0,0,0,0.7);*/
+  }
+
+  .chip.navbar_chip>img {
+    width: 36px;
+    height: 36px;
+  }
+
+  nav .nav-wrapper i {
+
+  }
+
+  nav .nav-wrapper i.dropdown_icons {
+    height: auto !important;
+    line-height: 22px !important;
+    float: right;
+    margin: 0;
+  }
+
+</style>
+
 <div class="navbar-fixed">
   <nav class="nav_bg_color nav_light_shadow">
     <div class="nav-wrapper">
-      <div class="container nav_container">
+      <!-- <div class="container nav_container"> -->
 
         <!-- TODO restore later -->
         <% if(false) { %>
@@ -29,25 +56,49 @@ $(document).ready(function(){
 
         <a href="/" class="brand-logo left" style="color: black">
 
-          <img class="nav_logo" src="/images/logos/straight_logo.png" style="padding: 16px 0">
+          <img class="nav_logo" src="/images/logos/villim_logo2_black.png" style="padding: 16px 0">
         </a>
         <ul id="side_content" class="nav_text right">
-          <li class="nav_txt"><a href="/s" class="waves-effect waves-light"> 방 찾기 </a></li>
-          <li class="nav_txt"><a href="/be-host_kor" class="waves-effect waves-light"> 관리문의 </a></li>
-          <!-- <li class="nav_txt"><a href="#" class="waves-effect waves-light"> 소개 </a></li> -->
-          <!-- <li class="nav_txt"><a href="#" class="waves-effect waves-light"> 자주하는 질문 </a></li> -->
+            <li class="nav_txt"><a href="/s" class="waves-effect waves-light"> 방 찾기 </a></li>
+            <li class="nav_txt"><a href="/be-host_kor" class="waves-effect waves-light"> 방 등록하기 </a></li>
+          <!-- <li class="nav_txt"><a href="/login" class="waves-effect waves-light"> 로그인 </a></li> -->
+
+          <% if(!user) { %>
+            <li class="nav_txt"><a href="/login" class="waves-effect"> 로그인 </a></li>
+          <% } else if(user.type == 'user') { %>
+            <li id="profile_drop">
+              <a class="dropdown-button" href="#!" data-beloworigin="true" data-activates="profile_dropdown">
+                <div class="chip navbar_chip">
+
+                  <% if (user.profile_pic_url) { %>
+                  <img src=" <%- user.profile_pic_url -%>">                  
+                  <% } else {%>
+                  <img src="/images/icons/default_profile.png">
+                  <% } %>
+                  <%- user.username -%>님
+                </div>
+              </a>
+            </li>
+
+            <!-- <li><a href="dashboard" class="waves-effect"> <%- user.username -%> 님</a></li> -->
+            <!-- <li><a href="/logout" class="waves-effect" style="color:red"> 로그아웃 </a></li> -->
+          <% } %>    
+
+
           <!-- <li class="nav_txt"><div style="color:black;"><div style="width:1px;height: 12px;background-color:black; margin: 26px 15px"></div></div></li> -->
           <!-- <li class="nav_txt"><a href="#" class="waves-effect waves-light"> English </a></li> -->
 
-          <li id="drop" style="display:none"><a class="dropdown-button" href="#!" data-activates="dropdown"><i class="material-icons">menu</i></a></li>
+          <li id="drop" style="display:none"><a class="dropdown-button" href="#!" data-beloworigin="true" data-activates="dropdown"><i class="material-icons">menu</i></a></li>
 
+<!--           <li id="profile_drop"><a class="dropdown-button" href="#!" data-activates="profile_dropdown"><i class="material-icons">menu</i></a></li>
+ -->
           <!-- TODO restore later -->
           <% if(false) { %>
             <% if(!user) { %>
-              <li><a href="signup" class="waves-effect"> 회원가입 </a></li>
-              <li><a href="login" class="waves-effect"> 로그인 </a></li>
+              <li><a href="/signup" class="waves-effect"> 회원가입 </a></li>
+              <li><a href="/login" class="waves-effect"> 로그인 </a></li>
             <% } else if(user.type == 'user') { %>
-              <li><a href="dashboard" class="waves-effect"> <%- user.username -%> 님</a></li>
+              <li><a href="/dashboard" class="waves-effect"> <%- user.username -%> 님</a></li>
               <li><a href="/logout" class="waves-effect" style="color:red"> 로그아웃 </a></li>
             <% } else {%>
               <li><a href="/admin/profile" class="waves-effect"> <%- user.name -%> 어드민님</a></li>
@@ -56,16 +107,42 @@ $(document).ready(function(){
         
         </ul>
 
-        <ul id="dropdown" class="dropdown-content">
-          <li><a href="/s">방 찾기</a></li>
-          <li><a href="/be-host_kor">관리문의</a></li>
-          <!-- <li><a href="#">소개</a></li> -->
-          <!-- <li><a href="#">자주하는 질문</a></li> -->
+        <ul id="profile_dropdown" class="dropdown-content">
+          <li><a href="/dashboard">내 페이지 <i class="material-icons dropdown_icons">home</i></a></li>
+          <li><a href="/logout">로그아웃 <i class="material-icons dropdown_icons">person_outline</i></a></li>
           <!-- <li class="divider"></li> -->
           <!-- <li><a href="#"> English </a></li> -->
         </ul>
 
-      </div>
+        <ul id="dropdown" class="dropdown-content">
+  
+          <% if(!user) { %>
+            <li><a href="/login"> 로그인 </a></li>
+
+          <% } else if(user.type == 'user') { %>
+            <li style="text-align: center">
+              <div class="chip navbar_chip">
+                  <% if (user.profile_pic_url) { %>
+                  <img style="margin: 0" src=" <%- user.profile_pic_url -%>">                  
+                  <% } else {%>
+                  <img style="margin: 0" src="/images/icons/default_profile.png">
+                  <% } %>
+              </div>
+              <div class="navbar_chip_dropdown">
+                 <%- user.username -%>님
+              </div>
+            </li>
+            <li class="divider" style="margin-top:10px"></li>
+            <li><a href="/dashboard">내 페이지</a></li>
+            <li><a href="/logout">로그아웃</a></li>
+          <% } %>
+            <li><a href="/s">방 찾기</a></li>
+            <li><a href="/be-host_kor">관리문의</a></li>
+
+          <!-- <li><a href="#"> English </a></li> -->
+        </ul>
+
+      <!-- </div> -->
 
     </div>
   </nav>

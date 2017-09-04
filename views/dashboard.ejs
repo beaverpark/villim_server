@@ -1,31 +1,231 @@
 <!DOCTYPE html>
 <script>
 
-
 </script>
+	<style>
+		.dashboard_tab_row {
+			border-top: 2px solid #e0e0e0;
+			border-bottom: 2px solid #e0e0e0;
+		}
 
+		.dashboard_tab_row li.tab > a {
+			padding: 0;
+		}
+
+		.dashboard_content {
+			width: 100%;
+			height: 500px; 
+			padding: 20px 110px;
+		}
+
+
+		.dashboard_content .title_txt {
+			font-size: 18px;
+		}
+
+		.dashboard_content .main_txt {
+			font-size: 14px; 
+			/*margin-bottom: 20px;*/
+		}
+
+		.dashboard_content .sub_txt {
+			font-size: 12px; 
+			/*margin-bottom: 20px;*/
+		}
+
+		.dashboard_content#reservation .card-content {
+			padding: 20px 10px;
+			/*height: 120px;*/
+		}
+
+		.dashboard_content#my_houses .collapsible-header {
+			color:#2F6D81;
+		} 
+
+
+		.dashboard_content#my_houses .collapsible-item {
+			padding: 3px 0;
+		}
+
+	</style>
 
 <html>
   <!-- head -->
   <%- include('header') -%>
-
 <body>
     <%- include('navbar') -%>
     <div style="height:10px"></div>
-	<div class="row dashboard_row">
+	<div class="row dashboard_tab_row">
 		<div class="col s12">
 			<ul class="tabs">
 			<li class="col s1"></li>
-			<li class="tab col s1"><a href="#home" class="active">홈</a></li>
-			<li class="tab col s1"><a href="#room_list">방 목록</a></li>
-			<li class="tab col s1"><a href="#reservation">입주관리</a></li>
-			<li class="tab col s1"><a href="#key">내 열쇠</a></li>
-			<li class="tab col s1"><a href="#visit">방문예정 </a></li>
-			<li class="tab col s1"><a href="#profile">프로필</a></li>
+			<!-- <li class="tab col s1"><a href="#home" class="active">알림판</a></li> -->
+			<!-- <li class="tab col s1"><a href="#room_list">방 목록</a></li> -->
+			<li class="tab col s2"><a href="#reservation">예약 현황</a></li>
+			<li class="tab col s2"><a href="#my_houses">내 집 목록</a></li>
+			
+			<li class="tab col s2"><a href="#profile">프로필</a></li>
+			<li class="tab col s2"><a href="#setting">환경 설정</a></li>
 			</ul>
 		</div>
 	</div>
-	<div id="home" class="dashboard_content">
+
+	<div id="reservation" class="dashboard_content" style="overflow:scroll">
+		<div class='row'>
+			<div class='col s12 m6 l6'>
+				<div class="text_thick title_txt"> 예약 요청 목록 </div>
+				<div style="">
+					<% if(typeof pendingRs !== 'undefined' && pendingRs.length > 0) { %>
+						<!-- <ul class="collapsible" data-collapsible="accordion"> -->
+						<% for(var i=0; i <pendingRs.length; i++) { %>
+
+						  <div class="card horizontal">
+						    	<div class="card-image">
+    								<a href="/homes/<%-pendingRs[i].name-%>/<%-pendingRs[i].id-%>">
+							    		<img src='<%- pendingRs[i].main_image -%>' style="width: 140px; height: 140px">
+							    	</a>
+						    	</div>
+
+
+						    <div class="card-content">
+						    	<!-- <div class='row'> -->
+						    	<!-- <div class='col s12 m6 l4'> -->
+						    	<div>
+						    	<!-- <div class='col s12 m6 l8 main_txt' style=""> -->
+    								<a href="/homes/<%-pendingRs[i].name-%>/<%-pendingRs[i].id-%>">
+						    			<div class="text_thick" style="color:#2F6D81"><%- pendingRs[i].name -%></div>
+							    	</a>
+						    		<div class="sub_txt text_thick"><%- pendingRs[i].addr_summary -%></div>
+
+						    		<div class="sub_txt">
+							    		<div class="">
+							    			체크인: <%- pendingRs[i].checkin -%>
+							    		</div>
+							    		<div class="">
+									    	체크아웃: <%- pendingRs[i].checkout -%>
+							    		</div>
+							    		<div style="color:#F14132">&#8361;<%- pendingRs[i].price_total -%></div>
+							    	</div>
+						    	</div>
+						    	<!-- </div> -->
+						    </div>
+						  </div>
+						<% } %>
+						<!-- </ul> -->
+					<% } else { %>
+						<div style="padding: 10px 0">
+							<div class="main_txt"> 현재 예약 요청된 방이 없습니다.</div>
+							<div class="main_txt text_thick"><a href="/s" style="color:#2F6D81">방 둘러보기</a></div>
+						</div>
+					<% } %>
+				</div>
+			</div>
+			<div class='col s12 m6 l6'>
+				<div class="text_thick title_txt"> 예약 확정 목록 </div>
+				<div style="">
+					<% if(typeof confirmedRs !== 'undefined' && confirmedRs.length > 0) { %>
+						<!-- <ul class="collapsible" data-collapsible="accordion"> -->
+						<% for(var i=0; i <confirmedRs.length; i++) { %>
+
+						  <div class="card horizontal">
+						    	<div class="card-image">
+    								<a href="/homes/<%-confirmedRs[i].name-%>/<%-confirmedRs[i].id-%>">
+							    		<img src='<%- confirmedRs[i].main_image -%>' style="width: 140px; height: 140px">
+							    	</a>
+						    	</div>
+
+
+						    <div class="card-content">
+						    	<!-- <div class='row'> -->
+						    	<!-- <div class='col s12 m6 l4'> -->
+						    	<div>
+						    	<!-- <div class='col s12 m6 l8 main_txt' style=""> -->
+    								<a href="/homes/<%-confirmedRs[i].name-%>/<%-confirmedRs[i].id-%>">
+						    			<div class="text_thick" style="color:#2F6D81"><%- confirmedRs[i].name -%></div>
+							    	</a>
+						    		<div class="sub_txt text_thick"><%- confirmedRs[i].addr_summary -%></div>
+
+						    		<div class="sub_txt">
+							    		<div class="">
+							    			체크인: <%- confirmedRs[i].checkin -%>
+							    		</div>
+							    		<div class="">
+									    	체크아웃: <%- confirmedRs[i].checkout -%>
+							    		</div>
+							    		<div style="color:#F14132">&#8361;<%- confirmedRs[i].price_total -%></div>
+							    	</div>
+						    	</div>
+						    	<!-- </div> -->
+						    </div>
+						  </div>
+						<% } %>
+						<!-- </ul> -->
+					<% } else { %>
+						<div style="padding: 10px 0">
+							<div class="main_txt"> 현재 예약 확정된 방이 없습니다.</div>
+						</div>
+					<% } %>
+				</div>
+			</div>			
+		</div>
+
+
+	</div>
+	
+	<div id="my_houses" class="dashboard_content" style="overflow:scroll">
+		<% if(typeof hostingHs !== 'undefined' && hostingHs.length > 0) { %>
+			<ul class="collapsible" data-collapsible="accordion">
+				<% for(var i=0; i <hostingHs.length; i++) { %>
+			    <li>
+			      <div class="collapsible-header"><i class="material-icons">home</i><%- hostingHs[i].name -%></div>
+			      <div class="collapsible-body">
+			      		<div class='collapsible-item'>
+							<a href="/homes/<%-hostingHs[i].name-%>/<%-hostingHs[i].id-%>"> 집 포스팅 링크</a>
+						</div>
+			      		<div class='collapsible-item' style='float:right'>
+				    		<img src='<%- hostingHs[i].main_image -%>' style="width: 110px; height: 110px">
+						</div>
+
+				    	<div class='collapsible-item'>주소: <%-hostingHs[i].addr_summary-%></div>
+				    	<div class='collapsible-item'>상세 주소: <%-hostingHs[i].addr_full-%></div>
+				    	<div class='collapsible-item'>오시는길: <%-hostingHs[i].addr_direction-%></div>
+				    	<div class='collapsible-item'>설명: <%-hostingHs[i].description-%></div>
+				    	<div class='collapsible-item'>숙박 인원: <%-hostingHs[i].num_guest-%></div>
+				    	<div class='collapsible-item'>침실 수: <%-hostingHs[i].num_bedroom-%></div>
+				    	<div class='collapsible-item'>침대 수: <%-hostingHs[i].num_bed-%></div>
+				    	<div class='collapsible-item'>욕실 수: <%-hostingHs[i].num_bathroom-%></div>
+				    	<div class='collapsible-item'>월세: <%-hostingHs[i].monthly_rate-%></div>
+				    	<div class='collapsible-item'>보증금: <%-hostingHs[i].deposit-%></div>
+				    	<div class='collapsible-item'>청소비: <%-hostingHs[i].cleaning_fee-%></div>
+				    	<div class='collapsible-item'>공과금(관리비): <%-hostingHs[i].utility_fee-%></div>
+				    	<div class='collapsible-item'>이용 규칙: <%-hostingHs[i].house_policy-%></div>
+
+
+<!-- id, name, addr_full, addr_summary, addr_direction, description, num_guest, num_bedroom, num_bed, num_bathroom, monthly_rate, deposit, cleaning_fee, utility_fee, main_image, house_policy, latitude, longitude, status, -->
+
+			      </div>
+			    </li>
+			<% } %>
+		</ul>
+		<% } else { %>
+				<div class="title_txt"> 현재 등록하신 방이 없습니다.</div>
+				<div class="title_txt"> 방 등록을 원하시면 빌림에 문의해주시기 바랍니다.</div>
+				<div class="title_txt text_thick"><a href="/be-host_kor" style="color:#2F6D81">관리문의하기</a></div>
+		<% } %>
+	</div>
+
+
+	<div id="profile" class="dashboard_content">
+		<div class="title_txt"> 준비중입니다.</div>
+	</div>
+
+	<div id="setting" class="dashboard_content">
+		<div class="title_txt"> 준비중입니다.</div>
+	</div>
+
+
+	<!-- OLD 알림판 -->
+<!-- 	<div id="home" class="dashboard_content">
 		<div>
 			<div class="text_thick dashboard_main_text"> <%- user.username -%> 님 알림판 </div>
 			<div class="text_thick dashboard_sub_text">업데이트 된 현황을 읽어보세요. </div>
@@ -44,9 +244,9 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div> -->
 
-	<div id="room_list" class="dashboard_content">
+	<!-- <div id="room_list" class="dashboard_content">
 		<div class="text_thick dashboard_main_text"> <%- user.username -%> 님 안녕하세요? </div>
 		<div class="text_thick dashboard_sub_text"><%- user.username -%>님의 현재 운영중인 방은...</div>
 		<div class="row room_frame">
@@ -65,23 +265,7 @@
 				프루지오 911
 			</div>
 		</div>
-	</div>
-	
-	<div id="reservation" class="dashboard_content">
-
-	</div>
-	
-	<div id="key" class="dashboard_content">
-
-	</div>
-
-	<div id="visit" class="dashboard_content">
-
-	</div>
-
-	<div id="profile" class="dashboard_content">
-
-	</div>
+	</div> -->
 
     <!-- footer -->
 	<%- include('footer') -%>

@@ -4,9 +4,9 @@ module.exports = function(app, passport) {
 	// GET login form
 	app.get('/login', function(req, res) {
 
-		console.log(req.query)
+		console.log(req.session)
 		if (req.isAuthenticated()) {
-			res.redirect('/');
+			return res.redirect('/');
 		}
 
 		res.render('login', {message: req.flash('loginMessage')});
@@ -29,9 +29,14 @@ module.exports = function(app, passport) {
 			  req.session.cookie.expires = false;
 			}
 
+			console.log("------in login-----")
+			console.log(req.session)
+
 			if(req.session.returnTo) {
-				res.redirect(307, req.session.returnTo);
-				delete req.session.returnTo;				
+				var returnTo = req.session.returnTo;
+				delete req.session.returnTo;
+				req.session.from_login = true;
+				res.redirect(307, returnTo);
 			}
 			else {
 				res.redirect("/");

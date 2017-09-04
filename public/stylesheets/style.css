@@ -2,7 +2,6 @@ html, body {
 	font-family: 'Roboto', 'Helvetica', sans-serif;
 }
 
-
 body {
 	background-color: white;
 }
@@ -15,11 +14,18 @@ hr .hr_light_shadow {
 
 }
 
+/* FONTS */
+@font-face {
+	font-family: "nanum_myeongjo";
+	src: url('/fonts/NanumMyeongjo-Regular.ttf');
+}
+
 
 
 /* Overwrite materialize media query for nav size */
 nav .brand-logo.left{
-	/*left:0 !important;*/
+	left:0.5rem !important;
+	height: 64px !important;
 }
 
 nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
@@ -70,12 +76,12 @@ nav ul.dropdown-content {
 	min-width: 110px;
 }
 
-nav ul#dropdown > li > a {
-	color: gray;
+nav ul.dropdown-content > li > a {
+	color: #2F6D81;
 	font-size: 14px;
 }
 
-nav ul#dropdown > li > a:hover, nav ul#dropdown > li > a.active {
+nav ul.dropdown-content > li > a:hover, nav ul.dropdown-content > li > a.active {
 	color: #D52B1E;
 	background-color: transparent;
 }
@@ -98,7 +104,7 @@ nav ul#dropdown > li > a:hover, nav ul#dropdown > li > a.active {
 /* dynamic index page */
 @media screen and (max-width: 600px) {
 
-	body nav li.nav_txt {
+	body nav li.nav_txt, body nav li#profile_drop {
 		display: none;
 	}
 
@@ -120,14 +126,14 @@ nav ul#dropdown > li > a:hover, nav ul#dropdown > li > a.active {
 }
 
 @media screen and (max-width: 870px) {
-	body section#intro .card-text {
+/*	body section#intro .card-text {
 		font-size: 24px;
 	}
 
 	body section#intro .card {
 		margin: 0 20px !important;
 		top: 100px;
-	}
+	}*/
 
 	body section#why_villim {
 		/*height: 1000px;*/
@@ -163,10 +169,10 @@ nav ul#dropdown > li > a:hover, nav ul#dropdown > li > a.active {
 
 @media screen and (min-width:870px) {
 	/*  fixed width card when over 850. 다른 content width 한 60프로   */
-	body section#intro .card {
+/*	body section#intro .card {
 		width: 850px;
 	}
-
+*/
 	body .container.index_container {
 		width: 840px;
 	}
@@ -183,9 +189,9 @@ nav ul#dropdown > li > a:hover, nav ul#dropdown > li > a.active {
 
 @media screen and (min-width:1030px) {
 	/*  fixed width card when over 850. 다른 content width 한 60프로   */
-	body section#intro .card {
+/*	body section#intro .card {
 		width: 1000px;
-	}
+	}*/
 
 	body .container.index_container {
 		width: 960px;
@@ -203,9 +209,7 @@ nav ul#dropdown > li > a:hover, nav ul#dropdown > li > a.active {
 }
 
 /* index page */
-.index_title_txt {
-	font-size: 26px;
-}
+
 
 .container.index_container .row {
 	margin: 0;
@@ -214,27 +218,20 @@ nav ul#dropdown > li > a:hover, nav ul#dropdown > li > a.active {
 /* intro section */
 section#intro {
 	width: 100%;
-	height: 470px; 
+	height: 500px; 
 	background-image: url("/images/index/main_img.jpg");
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: cover;
 }
 
-section#intro .card {
-	/*float: right;*/
+/*section#intro .card {
 	text-align: center;
 	top: 300px;
-	/*max-height: 425px;*/
-	/*height: 350px;*/
-	/*width: 90%;*/
-	/*margin-right: 30px;*/
 }
 
 section#intro .card-text {
 	font-size: 34px;
-	/*padding-right: 50px;*/
-	/*margin-bottom: 30px;*/
 }
 
 section#intro .check_item {
@@ -245,7 +242,7 @@ section#intro .check_item {
 section#intro .check_item img {
 	width: 20px;
 	height: 15px;
-}
+}*/
 
 
 /* why_villim section */

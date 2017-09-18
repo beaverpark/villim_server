@@ -1,0 +1,388 @@
+
+<!DOCTYPE html>
+<html>
+	<!-- head -->
+	<%- include('header') -%>
+
+<style>
+
+	.dashboard_content.admin_dashboard_content {
+		padding: 10px 30px;
+		height: 100%;
+	}
+
+	.dashboard_content .collapsible-body {
+		padding: 30px 10px;
+	}
+
+	.dashboard_content .collapsible_item {
+		padding: 5px 0;
+	}
+
+	.dashboard_content .collapsible_item span.value {
+		color: teal;
+		font-weight: 600;
+	}
+
+	.dashboard_content .collapsible_item.checkbox .input-field {
+		margin: 0;
+		padding-bottom: 20px;
+	}
+
+
+
+	#toast-container {
+	  top: 10% !important;
+	  right: auto !important;
+	  bottom: auto !important;
+	  left: 40% !important;
+	}
+
+
+</style>
+
+
+<body>
+<div class="navbar-fixed">
+  <nav class="nav_bg_color nav_light_shadow admin_nav">
+    <div class="nav-wrapper">
+        <ul class="nav_text right">
+			<li class="nav_txt"><a href="/admin" class="waves-effect"> 어드민 페이지로 돌아가기 </a></li>
+		</ul>
+    </div>
+  </nav>
+</div>
+
+
+<div class="row dashboard_tab_row">
+	<div class="col s12">
+		<ul class="tabs">
+			<li class="col s1"></li>
+			<li class="tab col s4"><a href="#house_list">집 목록</a></li>
+			<li class="tab col s4"><a href="#profile">empty</a></li>		
+		</ul>
+		<!-- <input type="button" value="refresh" onClick="window.location.reload()"> -->
+	</div>
+</div>
+
+<div id="house_list" class="dashboard_content admin_dashboard_content" style="overflow:scroll">
+	<% if(typeof house_list !== 'undefined' && house_list.length > 0) { %>
+		<ul class="collapsible" data-collapsible="accordion">
+			<% for(var i=0; i <house_list.length; i++) { %>
+		    <li>
+		      	<div class="collapsible-header" id="<%- house_list[i].id -%>"><i class="material-icons">home</i> [<%- house_list[i].id -%>] <%- house_list[i].name -%></div>
+		      	<div class="collapsible-body">
+		      		<div class='collapsible_item' style="margin-bottom: 20px;">
+						<a href="/homes/<%-house_list[i].name-%>/<%-house_list[i].id-%>" target="_blank">집 포스팅 링크 </a>
+						<% if (house_list[i].status) { %>
+		    				<div>현재 상태: <span style="color: red">사용중</span></div>
+		    			<% } else { %>
+		    				<div>현재 상태: <span style="color: green">미사용</span></div>
+		    			<% } %>
+						<div style="text-align:right" >
+							<button class="edit btn waves-effect waves-light teal_btn_color">정보 수정</button>
+							<button id="<%- house_list[i].id -%>" class="save btn waves-effect waves-light red" disabled>저장</button>
+							<!-- <button class="cancel save btn waves-effect waves-light red">취소</button> -->
+						</div>
+					</div>
+
+					<form class="edit_form" method="post" enctype="multipart/form-data">
+						<input type="hidden" name="id" value="<%-house_list[i].id-%>" />
+					<div class="row">
+						<div class="col s12">
+			    		<div class='collapsible_item txt'><span class="name">집 이름:</span> <span class="value"><%-house_list[i].name-%></span></div>
+				    	</div>
+				    	<hr>
+						<div class="col s12 m6 l6">
+			    		<div class='collapsible_item txt'><span class="addr_summary">주소:</span> <span class="value"><%-house_list[i].addr_summary-%></span></div>
+				    	</div>
+						<div class="col s12 m6 l6">
+				    	<div class='collapsible_item txt'><span class="addr_full">상세 주소:</span> <span class="value"><%-house_list[i].addr_full-%></span></div>
+				    	</div>
+				    	<hr>
+						<div class="col s12">
+				    	<div class='collapsible_item txt'><span class="addr_direction">오시는길:</span> <span class="value"><%-house_list[i].addr_direction-%></span></div>
+				    	</div>
+				    	<hr>
+						<div class="col s12">
+				    	<div class='collapsible_item txt'><span class="description">설명:</span> <span class="value"><%-house_list[i].description-%></span></div>
+				    	</div>
+				    	<hr>
+						<div class="col s3">
+				    	<div class='collapsible_item txt'><span class="num_guest">인원:</span> <span class="value"><%-house_list[i].num_guest-%></span></div>
+				    	</div>
+						<div class="col s3">
+				    	<div class='collapsible_item txt'><span class="num_bedroom">침실 수:</span> <span class="value"><%-house_list[i].num_bedroom-%></span></div>
+				    	</div>
+						<div class="col s3">
+				    	<div class='collapsible_item txt'><span class="num_bed">침대 수:</span> <span class="value"><%-house_list[i].num_bed-%></span></div>
+				    	</div>
+						<div class="col s3">
+				    	<div class='collapsible_item txt'><span class="num_bathroom">욕실 수:</span> <span class="value"><%-house_list[i].num_bathroom-%></span></div>
+				    	</div>
+				    	<hr>
+						<div class="col s12 m6 l6">
+				    	<div class='collapsible_item txt'><span class="monthly_rate">월세:</span> <span class="value"><%-house_list[i].monthly_rate-%></span></div>
+				    	</div>
+						<div class="col s12 m6 l6">
+				    	<div class='collapsible_item txt'><span class="deposit">보증금:</span> <span class="value"><%-house_list[i].deposit-%></span></div>
+				    	</div>
+						<div class="col s12 m6 l6">
+				    	<div class='collapsible_item txt'><span class="cleaning_fee">청소비:</span> <span class="value"><%-house_list[i].cleaning_fee-%></span></div>
+				    	</div>
+						<div class="col s12 m6 l6">
+				    	<div class='collapsible_item txt'><span class="utility_fee">공과금(관리비):</span> <span class="value"><%-house_list[i].utility_fee-%></span></div>
+				    	</div>
+				    	<hr>
+						<div class="col s12">
+				    	<div class='collapsible_item txt'><span class="house_policy">이용 규칙:</span> <span class="value"><%-house_list[i].house_policy-%></span></div>
+				    	</div>
+				    	<hr>
+						<div class="col s12">
+							편의시설:
+
+						<% if (typeof(house_amenities[house_list[i].id]) != 'undefined') { %>
+							<div class="collapsible_item checkbox">
+			                <% for (var k=0; k<amenities.length; k++) { %>
+				                <div class="input-field col s6 m4 l3 xl2"> 
+									<input disabled class="collapsible_input" type="checkbox" name="amenities<%- k+1 -%>" id="check<%- k+1 -%>"
+						    			<% if(house_amenities[house_list[i].id].indexOf((k+1).toString()) >= 0) { %>
+						    				checked
+						    			<% } %>
+						    		/>
+				   					<label for="check<%- k+1 -%>"> <%- amenities[k].name -%> </label>
+								</div>
+							<% } %>
+							</div>
+						<% } %>
+				    	</div>
+				    	<hr>
+						<div class="col s12 m3 l2">
+			      		<div class='collapsible_item img'>메인 이미지: 
+				    		<div class="main_img_container">
+				    			<% if(house_list[i].main_image) { %>
+					    			<img src='<%- house_list[i].main_image -%>' style="width: 110px; height: 110px">
+			    				<% } else { %>
+			    					<div style="font-size: 13px" class="text_thick teal_txt_color"> 업로드한 이미지가 아직 없습니다.</div>
+			    				<% } %>
+				    		</div>
+						</div>
+						</div>
+						<div class="col s12 m9 l10">
+						<div class='collapsible_item img'>내부 이미지: 
+				    		<div class="other_img_container">
+				    			<% if(typeof house_images[house_list[i].id] !== "undefined") { %>
+				    				<% for(var j=0; j < house_images[house_list[i].id].length; j++) { %>
+				    					<img src='<%- house_images[house_list[i].id][j] -%>' style="width: 110px; height: 110px">
+			    				<% } } else { %>
+			    					<div style="font-size: 13px" class="text_thick teal_txt_color"> 업로드한 이미지가 아직 없습니다.</div>
+			    				<% } %>
+				    		</div>
+						</div>
+						</div>
+					</div>
+					</form>
+<!-- id, name, addr_full, addr_summary, addr_direction, description, num_guest, num_bedroom, num_bed, num_bathroom, monthly_rate, deposit, cleaning_fee, utility_fee, main_image, house_policy, latitude, longitude, status, -->
+
+		      	</div>
+		    </li>
+		<% } %>
+	</ul>
+	<% } else { %>
+			<div class="title_txt"> 현재 등록 방이 없습니다.</div>
+	<% } %>
+</div>
+
+<style>
+input.collapsible_input {
+	/*width: 50%;*/
+}
+
+#house_list .upload_btn, form.other_img .upload_btn {
+	color: white;
+	background-color: #2F6D81;
+	width:110px;
+}
+
+.main_img_container .file-path-wrapper {
+	width: 110px;
+	overflow: visible;
+	padding: 0;
+}
+
+.other_img_container .file-path-wrapper {
+	width: 100%;
+	padding: 0;
+}
+
+
+
+</style>
+
+<script>
+
+// form values list
+var data_json = {};
+
+$(document).ready(function() {
+	$("div.collapsible-header").click(function(event) {
+		if(!$(this).hasClass("active")) {
+			var header_div = $(this);
+			var house_id = header_div.attr('id');
+
+			var txt_item = header_div.next().find(".collapsible_item.txt span.value");
+			var main_img_item = header_div.next().find(".collapsible_item.img .main_img_container");
+			var other_img_item = header_div.next().find(".collapsible_item.img .other_img_container");
+			var checkbox_item = header_div.next().find(".collapsible_item.checkbox");
+			var checked_list = [];
+
+			var edit_btn = header_div.next().find("button.edit");
+			var save_btn = header_div.next().find("button.save");
+			var form = header_div.next().find("form.edit_form");
+
+			// on click edit button, toggle creating input fields & undo-ing
+			edit_btn.off('click');
+			edit_btn.click(function() {
+
+				var i2 = $(this).data('i2') || 1; 
+				switch(i2) {
+
+					// create input field mode
+					case 1:
+						// var img_item = header_div.next().find(".collapsible_item.img img");
+
+						// for each data value, create input field around it
+						var data_list = [];
+						txt_item.each(function(i) {
+							data_list.push($(this).html()); // put each form values to the list 
+							$(this).html('<input class="collapsible_input" type="text" name="'+ $(this).prev().attr('class') + '" value="' + $(this).html() + '"/>');
+						});
+
+						data_json[house_id] = data_list;
+
+						main_img_item.append('<div class="file-field input-field"><div class="btn upload_btn">업로드<input class="collapsible_input" type="file" name="main_image"/></div><div class="file-path-wrapper"><input class="file-path validate" type="text" placeholder=""></div></div>');
+
+
+						other_img_item.append('<div class="file-field input-field"><div class="btn upload_btn">추가<input class="collapsible_input" type="file" name="other_images" multiple /></div><div class="file-path-wrapper"><input class="file-path validate" type="text" placeholder="파일 선택시 원하시는 파일들을 한꺼번에 선택해주세요."></div></div>');
+     
+
+						checkbox_item.find("input").prop('disabled', false);
+
+						// hide hr 
+						var hrs = header_div.next().find("hr");
+						hrs.hide();
+
+						break;
+
+					// undo mode
+					case 2:
+						// for each data value, remove input, restore original value
+						var data_list = data_json[house_id];
+						txt_item.each(function(i) {
+							var values = data_list[i];
+							$(this).html(values);
+						});
+
+
+						main_img_item.find(".file-field.input-field").remove();
+						other_img_item.find(".file-field.input-field").remove();
+
+						checkbox_item.find("input").prop('disabled', true);
+
+						// show hr
+						var hrs = header_div.next().find("hr");
+						hrs.show();
+						save_btn.prop("disabled", true); // make save button back to disabled
+
+						break;
+				}
+
+				// to toggle edit button click
+				i2++;
+				if(i2>2) i2=1;
+				$(this).data('i2',i2);
+
+				// on text input, re-able save button
+				$("input.collapsible_input").on('input change', function() {
+					save_btn.prop("disabled", false);
+				});
+			});
+
+			// save button onclick -> ajax update house
+			save_btn.off('click');
+			save_btn.click(function() {
+				// var data = {};
+
+				// data['house_id'] = house_id;
+				// txt_item.each(function(i) {
+				// 	var values = $(this).find("input").val();
+				// 	data[i] = values;
+				// });
+
+				// var main_img_file = main_img_item.find("input.main_img").prop('files');
+				// console.log(main_img_file)
+
+				var form_data = new FormData(form[0]);
+
+				// var form = $("form#" + house_id + ".edit_form");
+				// console.log(form);
+
+				// var formData = new FormData(form);
+
+				// console.log(formData)
+
+				$.ajax({
+					type: 'POST',
+					data: form_data,
+					contentType: false,
+					processData: false,
+					// TODO: change this to actual URL
+					url: 'http://localhost:3000/admin/updateHouse',
+					success: function() {
+						Materialize.toast('성공적으로 업데이트 되었습니다.', 2000, 'blue rounded');
+
+						save_btn.prop("disabled", true);
+						setTimeout(function() {
+							window.location.reload();
+						}, 1000);
+					},
+					error: function(err) {
+						console.log(err);
+						Materialize.toast('업데이트에 문제가 생겼습니다. 관리자에게 문의해주세요.', 2000, 'red rounded');
+						setTimeout(function() {
+							window.location.reload();
+						}, 1000);					
+					}
+				});
+
+				// $.ajax({
+				// 	type: 'POST',
+				// 	data: JSON.stringify(data),
+				// 	contentType : 'application/json',
+				// 	// TODO: change this to actual URL
+				// 	url: 'http://localhost:3000/admin/updateHouse',
+				// 	success: function() {
+				// 		Materialize.toast('성공적으로 업데이트 되었습니다.', 2000, 'blue rounded');
+
+				// 		save_btn.prop("disabled", true);
+				// 		setTimeout(function() {
+				// 			window.location.reload();
+				// 		}, 1000);
+				// 	},
+				// 	error: function(err) {
+				// 		console.log(err);
+				// 		Materialize.toast('업데이트에 문제가 생겼습니다. 관리자에게 문의해주세요.', 2000, 'red rounded');
+				// 		setTimeout(function() {
+				// 			window.location.reload();
+				// 		}, 1000);
+				// 	}
+				// });	
+			});
+		}
+	});
+});
+
+</script>
+
+</body>
+</html>

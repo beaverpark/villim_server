@@ -3,7 +3,7 @@
 
 </script>
 	<style>
-		.dashboard_tab_row {
+/*		.dashboard_tab_row {
 			border-top: 2px solid #e0e0e0;
 			border-bottom: 2px solid #e0e0e0;
 		}
@@ -25,17 +25,14 @@
 
 		.dashboard_content .main_txt {
 			font-size: 14px; 
-			/*margin-bottom: 20px;*/
 		}
 
 		.dashboard_content .sub_txt {
 			font-size: 12px; 
-			/*margin-bottom: 20px;*/
 		}
 
 		.dashboard_content#reservation .card-content {
 			padding: 20px 10px;
-			/*height: 120px;*/
 		}
 
 		.dashboard_content#my_houses .collapsible-header {
@@ -45,7 +42,7 @@
 
 		.dashboard_content#my_houses .collapsible-item {
 			padding: 3px 0;
-		}
+		}*/
 
 	</style>
 
@@ -62,7 +59,7 @@
 			<!-- <li class="tab col s1"><a href="#home" class="active">알림판</a></li> -->
 			<!-- <li class="tab col s1"><a href="#room_list">방 목록</a></li> -->
 			<li class="tab col s2"><a href="#reservation">예약 현황</a></li>
-			<li class="tab col s2"><a href="#my_houses">내 집 목록</a></li>
+			<!-- <li class="tab col s2"><a href="#my_houses">내 집 목록</a></li> -->
 			
 			<li class="tab col s2"><a href="#profile">프로필</a></li>
 			<li class="tab col s2"><a href="#setting">환경 설정</a></li>
@@ -171,7 +168,8 @@
 
 
 	</div>
-	
+
+	<% if(false) { %>	
 	<div id="my_houses" class="dashboard_content" style="overflow:scroll">
 		<% if(typeof hostingHs !== 'undefined' && hostingHs.length > 0) { %>
 			<ul class="collapsible" data-collapsible="accordion">
@@ -213,7 +211,7 @@
 				<div class="title_txt text_thick"><a href="/be-host_kor" style="color:#2F6D81">관리문의하기</a></div>
 		<% } %>
 	</div>
-
+	<% } %>
 
 	<div id="profile" class="dashboard_content">
 		<div class="title_txt"> 준비중입니다.</div>

@@ -4,12 +4,7 @@
   <%- include('header') -%>
 
   <body>
-    <!-- navbar -->
-
-    <a href="/" class="">
-        <img class="nav_logo" src="/images/logos/villim_main_logo_lg.png">
-    </a>
-
+      <%- include('navbar') -%>
     <div class="container form_container">
         <h4 class="text_thick"> 
           <% if (typeof admin !== 'undefined') { %> 관리자 <% } %> 로그인

@@ -1,0 +1,14 @@
+<nav class="breadcrumbs">
+<div class="nav-wrapper">
+
+    <a href="/" class="breadcrumb">모든 지역</a>
+
+    <% if(typeof dong != 'undefined' && dong) { %>
+        <a href="#!" class="breadcrumb"><%-dong-%></a>
+    <% }%>
+
+    <% if(typeof complex != 'undefined' && complex) {%>
+   		<a href="#!" class="breadcrumb"><%-complex-%></a>
+    <% } %>
+</div>
+</nav>

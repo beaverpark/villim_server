@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+  <%- include('header') -%>
+
+  <!-- swiper js,css -->
+  <link rel="stylesheet" href="/swiper/css/swiper.min.css">
+  <script src="/swiper/js/swiper.jquery.min.js"></script>
+
+  <style>
+
+  section#house_pics {
+  	position: relative;
+  }
+
+  	section#house_pics .swiper-slide {
+  		background-position: center;
+  		background-size: cover;
+  		background-repeat: no-repeat;
+  	}
+
+  	section#house_pics .swiper-container {
+  		height: 400px;
+  	}
+
+  	section#house_pics .card_container {
+/*  		z-index: 1; */
+/*/  		display: flex;*/
+  		/*justify-content: center;*/
+  	}
+
+  	section#house_pics .card.inquiry_card{
+		box-shadow: none;
+  		border: 1px solid #cdcdd1;
+		border-radius: 1px;
+		margin: 0;
+  	}
+
+ 	section#house_pics .inquiry_card .card-content{
+ 		padding: 42px 30px;
+  	}
+
+
+	section#house_pics .inquiry_card .logo img {
+ 		height: 20px;
+ 	}
+
+	section#house_pics .inquiry_card .title_txt {
+ 		font-size: 32px;
+ 	}
+
+	section#house_pics .inquiry_card .monthly_rate {
+		font-size: 17px;
+ 	}
+
+	section#house_pics  .inquiry_card .form_section input {
+		margin: 16px 0;
+	}
+
+	section#house_pics  .inquiry_card .form_section button {
+		width: 100%;
+		margin: 16px 0;
+	}
+
+	.container.complex_detail_container section {
+		padding: 30px 0;
+		font-size: 16px;
+	}
+
+	.container.complex_detail_container .title_txt {
+		font-size: 24px;
+		font-weight: 600;
+	}
+
+	.container.complex_detail_container .divider {
+		border-bottom: 3px solid rgba(0, 0, 0, 0.48); 
+		margin: 10px 0 26px;
+	}
+
+	section#amenities .amenities_container {
+		display: flex;
+		flex-flow: row wrap;
+	}
+
+	section#amenities .amenity_item {
+		flex-basis: 50%;
+		display: flex;
+		padding: 10px 0;
+	}
+
+	section#amenities .amenity_item .img {
+		margin-right: 24px;
+	}
+
+	section#amenities .amenity_item img {
+		height: 40px;
+		width: 50px;
+	}
+
+	section#amenities .amenity_item .name {
+		line-height: 40px;
+	}
+
+
+	section#policy p {
+		margin: 0;
+	}
+
+	section#policy .price_container {
+		padding: 14px 20px;
+		margin-bottom: 20px;
+  		background-color: rgba(0,0,0,0.05);
+  		border-top: 1px solid black;
+  		border-bottom: 1px solid black;
+  		display: flex;
+  		justify-content: space-between;
+	}
+
+	section#policy .price_item {
+		padding: 14px 0;
+	}
+
+
+  </style>
+
+  <body>
+    <!-- navbar -->
+    <%- include('navbar') -%>
+
+    <div class="container nav_container">
+	    <%- include('breadcrumbs') -%>
+    </div>
+	<section id="house_pics" class="detail_section" style="padding: 0">
+		<div class="swiper-container">
+			<div class="swiper-wrapper">
+				<% for(var i = 0; i < main_images_list.length; i++) { %>
+				<div class="swiper-slide" style="background-image:url(<%-main_images_list[i].main_image-%>)"></div>
+				<% } %>
+			</div>
+			<!-- pagination -->
+			<div class="swiper-pagination"></div>
+			<!-- arrows -->
+			<div class="swiper-button-next"></div>
+			<div class="swiper-button-prev"></div>
+		</div>
+	    <div class="container nav_container">
+			<!-- <div class="card_container"> -->
+				<div class="card inquiry_card">
+		            <div class="card-content">
+		            	<div class="name_section">
+		            		<div class="logo">
+					          <img src="/images/logos/villim_logo2_black.png">
+		            		</div>
+		            		<div class="title_txt text_thick"> <%- complex -%></div>
+		            		<div style="display:flex; justify-content: space-between">
+			            		<div class="addr main_txt"> <%- addr -%></div>
+			            		<div class="monthly_rate"> &#8361; <%- house_info.monthly_rate -%> / 월 부터</div>
+							</div>
+		            	</div>
+
+		            	<div style="border-bottom: 3px solid rgba(0, 0, 0, 0.48); margin: 12px 0"></div>
+		            	<div class="form_section">
+		            		<div class="main_txt" style="padding:8px 0">방을 직접 방문하여 둘러보세요. 귀하의 정보를 기입하여 방문 요청해보세요.</div>
+		    				<form action="/inquiry" method="post">
+								<input placeholder="성명" name="name" type="text" class="validate" required>
+								<input placeholder="전화번호" name="phone_number" type="text" class="validate" required>
+								<input placeholder="이메일" name="email" type="text" class="validate" required>
+								<button class="btn red_btn_color" type="submit" name="action">방문 요청하기</button>
+							</form>
+		            	</div>
+					</div>
+				</div>
+			<!-- </div> -->
+	    </div>
+	</section>
+
+    <div class="container nav_container complex_detail_container">
+		<!-- <section id="empty" style="height: 400px"></section> -->
+
+		<section id="description">
+			<div class="title_txt"><%- dong -%> <%- complex -%>에 대하여</div>
+        	<div class="divider"></div>
+        	<div>
+        		<!-- TODO change this after textarea fixed -->
+        		<% var paragraph = house_info.description.split("  ") %>
+        		<% for (i in paragraph) { %>
+        			<p><%- paragraph[i] -%></p>
+        		<% } %>
+        	</div>
+		</section>
+
+		<section id="amenities">
+			<div class="title_txt">편의 및 안전</div>
+        	<div class="divider"></div>
+        	<div class="amenities_container">
+			<% for(var i=0; i< amenities_list.length;i++) { %> 
+				<div class="amenity_item">
+					<div class="img"><img class="icons" src="<%- amenities_list[i].icon_image -%>"></div>
+					<div class="name"><%- amenities_list[i].name -%></div>
+				</div>
+			<% } %>
+        	</div>
+		</section>
+
+		<section id="policy">
+			<div class="title_txt">가격 정책</div>
+        	<div class="divider"></div>
+        	<div class="rate">
+        		<div class="text_thick">방 타입</div>
+        		<div class="price_container">
+        			<div>
+        			<% if(house_info.type == '0') { %>
+        				원룸
+        			<% } %>
+	        		</div>
+	        		<div>&#8361; <%- house_info.monthly_rate -%> / 월 </div>
+        		</div>
+        	</div>
+        	<div class="price_policy">
+        		<div class="price_item">
+	        		<div>- 임대료 (일시불 선불)</div>
+	        		<div>
+	        			<p>시작일과 종료일은 빌:림 앱 혹은 웹사이트에서 설정 및 예약하실 수 있습니다.</p>
+						<p>입주기간은 언제나 자유롭게 일, 주, 월 단위로 연장이 가능합니다.</p>
+						<p>만약 연장을 원하신다면 고객 서비스 센터로 연락주시기 바랍니다.</p>
+	        		</div>
+        		</div>
+
+        		<div class="price_item">
+        			<div>- 공과금 (일시불 선불)</div>
+	        		<div>
+	        			<p>사용금액 정산하여 퇴실 후 청구</p>
+						<p>* 공과금 포함 목록: 기본 관리비, 전기, 수도, 난방, 냉방, 주차, 통신 (IPTV 및 WIFI)</p>
+	        		</div>
+        		</div>
+        		<div class="price_item">
+        			<div>- 퇴실 청소비 (일시불 선불)</div>
+	        		<div>
+						<p>&#8361; <%- house_info.cleaning_fee -%></p>
+	        		</div>
+        		</div>
+        		
+        	</div>
+		</section>
+
+		<section id="direction">
+			<div class="title_txt">오시는 길</div>
+        	<div class="divider"></div>
+        	<div class="direction_item">
+	        		지하철: 정자역 분당선 + 신분당선
+        	</div>
+        	<div class="direction_item">
+	        		주차: 가능
+        	</div>
+	
+		    <div class="map_container">
+				<div id="map" style="width: 100%; height: 300px; border: 1px solid rgb(205, 205, 209)"></div>
+			</div>
+		</section>
+
+		<section id="manager">
+			<div class="title_txt">지역 매니저</div>
+        	<div class="divider"></div>
+        	<div class="manager_container">
+        		<div>
+
+        		</div>
+        	</div>
+		</section>
+	</div>
+
+<style >
+	section#direction {
+
+	}
+
+	section#direction .direction_item img {
+	}
+
+</style>
+
+
+<script>
+var map;
+var home_icon;
+var markersArray = [];
+
+function initMap() {
+
+  map = new google.maps.Map(document.getElementById('map'), {
+	center: {lat: <%- house_info.latitude -%>, lng: <%- house_info.longitude -%>},
+	zoom: 14,
+    minZoom: 10,
+    maxZoom: 16,
+    // disableDefaultUI: true
+  });
+ 
+  home_icon = {
+    url: "/images/icons/red_home_icon.png",
+    scaledSize: new google.maps.Size(30,30),
+    anchor: new google.maps.Point(10, 12),
+  }
+
+  var marker = new google.maps.Marker({
+    map:map,
+    icon: home_icon,
+    position: {lat: <%- house_info.latitude -%> , lng: <%- house_info.longitude -%>}
+  });
+  markersArray.push(marker);
+ 
+}
+
+
+$(function() {  
+	var swpier = new Swiper('.swiper-container', {
+	  	pagination: '.swiper-pagination',
+	  	paginationClickable:true,
+	  	loop:true,
+	  	centeredSlides:true,
+	  	initialSlide:0,
+	  	slidesPerView:1,
+	  	// spaceBetween:6,
+	  	keyboardControl:true,
+	  	nextButton: '.swiper-button-next',
+	  	prevButton: '.swiper-button-prev',
+	});
+});
+</script>
+
+	<!-- footer -->
+	<%- include('footer') -%>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDIKYpr3qNxWm2lC6VlVhoIFt3r1xy8dns&callback=initMap" async defer>
+  </script>
+
+  </body>
+</html>

@@ -22,17 +22,6 @@ hr .hr_light_shadow {
 
 
 
-/* Overwrite materialize media query for nav size */
-nav .brand-logo.left{
-	left:0.5rem !important;
-	height: 64px !important;
-}
-
-nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
-	height: 64px !important;
-	line-height: 64px !important;
-}
-
 .nav_light_shadow {
 	-webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.10);
 	-moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.10);
@@ -53,15 +42,9 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 }
 
 .nav_logo{
-	height: 64px;
-	width: auto;
-	/*padding: 15px;*/
+	height: 58px;
+	padding: 16px 0;
 }
-
-/*.nav_dropdown {
-	height: 64px;
-	width: auto;
-}*/
 
 .nav_text > li > a {
 	color: black;
@@ -86,124 +69,28 @@ nav ul.dropdown-content > li > a:hover, nav ul.dropdown-content > li > a.active 
 	background-color: transparent;
 }
 
-
-/*.nav_btn {
-	border: black 1px solid !important;
-	padding: 0 20px !important;
-}
-
-@media only screen and (max-width: 550px) {
-	.nav_btn {
-		visibility: hidden; 
-	}		
-}*/
-
-
-
-
-/* dynamic index page */
-@media screen and (max-width: 600px) {
-
-	body nav li.nav_txt, body nav li#profile_drop {
-		display: none;
-	}
-
-	body nav li#drop {
-		display: block !important;
-	}
-
-	body section#be_host_inquiry {
-		padding: 50px 30px;
-	}
-
-
-
-}
-
-@media screen and (max-width: 870px) {
-/*	body section#intro .card-text {
-		font-size: 24px;
-	}
-
-	body section#intro .card {
-		margin: 0 20px !important;
-		top: 100px;
-	}*/
-
-	body section#why_villim {
-		/*height: 1000px;*/
-		padding-top:100px;
-		/*padding: 100px 0;*/
-	}
-
-	body section#how_villim .image {
-		display:none;
-	}
-
-	body section#download .image {
-		display: none;
-	}
-
-  	section#house_summary, section#house_description, section#house_policy, section#house_amenities, section#house_refund_policy {
-  		width: 100%;
-  	}
-
-/*  	body section.detail_section {
-  		font-size: 12px;
-  	}
-*/
-	/*section#house_summary .capacity .capacity_item {*/
-		/*width: 54px;*/
-	/*}*/
-
-	/*section#house_summary .house_summary_content img {*/
-		/*height: 14px;*/
-	/*}	*/
-
-}
-
-@media screen and (min-width:870px) {
-	/*  fixed width card when over 850. 다른 content width 한 60프로   */
-/*	body section#intro .card {
-		width: 850px;
-	}
-*/
-	body .container.index_container {
-		width: 840px;
-	}
-
-	body .container.nav_container {
-		width: 90%;
-	}
-
-  	section#house_summary, section#house_description, section#house_policy, section#house_amenities, section#house_refund_policy {
-  		width: 62%;
-  	}
-
-}
-
-@media screen and (min-width:1030px) {
-	/*  fixed width card when over 850. 다른 content width 한 60프로   */
-/*	body section#intro .card {
-		width: 1000px;
-	}*/
-
-	body .container.index_container {
-		width: 960px;
-		/*width: 80%;*/
-	}
-
-	body .container.nav_container {
-		width: 90%;
-	}
-
-  	section#house_summary, section#house_description, section#house_policy, section#house_amenities, section#house_refund_policy {
-  		width: 66%;
-  	}
-
+nav.admin_nav li.nav_txt {
+	display: block !important;
 }
 
 
+/* breadcrumbs */
+nav.breadcrumbs {
+	background-color: white;
+	box-shadow: none;
+}
+
+nav.breadcrumbs a {
+	font-size: 13px;
+}
+
+.breadcrumb, .breadcrumb:before {
+	color: black !important;
+}
+
+
+/**** MEDIA ****/
+/**** 1. nav, index, be-host page media ****/
 /* for mobile screen */
 @media screen and (max-width: 375px) {
 	html body section#intro .title_txt {
@@ -243,9 +130,7 @@ nav ul.dropdown-content > li > a:hover, nav ul.dropdown-content > li > a.active 
 	html body section#be_host_inquiry .main_txt {
 		font-size: 12px;
 	}
-
 }
-
 @media screen and (max-width: 560px) {
 	body section#intro .title_txt {
 		font-size: 26px;
@@ -276,8 +161,7 @@ nav ul.dropdown-content > li > a:hover, nav ul.dropdown-content > li > a.active 
 		font-size: 20px;
 	}
 }
-
-/* table is 768px */
+/* tablet is 768px */
 @media screen and (max-width: 800px) {
 
 	body section.villim_intro {
@@ -288,7 +172,6 @@ nav ul.dropdown-content > li > a:hover, nav ul.dropdown-content > li > a.active 
 	body section.villim_intro.txt_left_section {
 		flex-wrap: wrap-reverse;
 	}
-
 
 	body section.villim_intro .txt_container {
 		display: flex;
@@ -323,8 +206,125 @@ nav ul.dropdown-content > li > a:hover, nav ul.dropdown-content > li > a.active 
 		height: 180px;
 		margin-bottom: 10px;
 	}
+}
 
+/* nav media */
+@media screen and (max-width: 600px) {
+	body nav li.nav_txt, body nav li#profile_drop {
+		display: none;
+	}
 
+	body nav li#drop {
+		display: block !important;
+	}
+
+	body section#be_host_inquiry {
+		padding: 50px 30px;
+	}
+}
+@media screen and (min-width: 601px) {
+	/* override materialize nav height */
+	body nav, body nav .nav-wrapper i, body nav a, body nav a.button-collapse, body nav a.button-collapse i {
+		height: 100px;
+		line-height: 100px;
+	}
+
+	body .navbar-fixed {
+		height: 100px;
+	}
+
+	.nav_logo{
+		height: 100px;
+		padding: 24px 0 36px;
+	}
+
+	body section#house_pics .swiper-container {
+		height: 500px;
+	}
+
+}
+
+/**** 2. container, house_detail media ****/
+@media screen and (max-width: 768px) {
+  	body .container.nav_container.search_container {
+  		width: 85%;
+  		margin: 0 auto;
+  	}
+
+  	body #search_wrapper .complex_list_container {
+  		width: 100%;
+  	}
+
+ 	body #search_wrapper .map_container {
+  		display: none;
+  	}
+
+  	body #search_wrapper .dong_list {
+  		margin-right: 0;
+  	}
+}
+
+@media screen and (max-width: 870px) {
+/*	body section#download .image {
+		display: none;
+	}*/
+  	section#house_summary, section#house_description, section#house_policy, section#house_amenities, section#house_refund_policy {
+  		width: 100%;
+  	}
+}
+
+@media screen and (min-width:871px) {
+	body .container.index_container {
+		width: 840px;
+	}
+  	section#house_summary, section#house_description, section#house_policy, section#house_amenities, section#house_refund_policy {
+  		width: 62%;
+  	}
+}
+
+@media screen and (min-width:993px) {
+	body .container.nav_container {
+		width: 85%;
+		max-width: none;
+	}
+
+	body section#house_pics .swiper-container {
+		height: 580px;
+	}
+}
+
+@media screen and (min-width:1030px) {
+	body .container.index_container {
+		width: 960px;
+	}
+  	section#house_summary, section#house_description, section#house_policy, section#house_amenities, section#house_refund_policy {
+  		width: 66%;
+  	}
+}
+
+@media screen and (min-width:1201px) {
+  	body #search_wrapper .complex_list_container {
+  		width: 65%;
+  	}
+
+  	body #search_wrapper .map_container {
+  		width: 35%;
+  	}
+
+  	body #search_wrapper .dong_list {
+  		display:flex;
+
+	    flex-flow: row wrap;
+  	}
+
+	body #search_wrapper .complex_card {
+		flex-basis: 48%;
+		margin-right: auto;
+	}
+
+	body section#house_pics .swiper-container {
+		height: 660px;
+	}
 }
 
 
@@ -353,6 +353,14 @@ p {
 	margin: 5px 0;
 }
 
+.teal_txt_color {
+	color: #2F6D81;
+}
+
+.red_txt_color {
+	color: #D52B1E;
+}
+
 .btn.teal_btn_color {
 	background-color: #2F6D81;
 }
@@ -368,13 +376,13 @@ p {
 /* intro section */
 section#intro {
 	width: 100%;
-	height: 500px; 
+	height: 650px; 
 	background-image: url("/images/index/main_img.jpg");
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: cover;
 	color: white;
-	text-align: center;
+	/*text-align: center;*/
 	padding: 200px 0;
 }
 
@@ -392,7 +400,7 @@ section#intro .sub_txt {
 section#meet_villim {
 	padding: 50px;
 	text-align: center;
-	background-color: #E8E8E8;
+	/*background-color: #E8E8E8;*/
 }
 
 section#meet_villim div {
@@ -733,89 +741,78 @@ footer#index_footer2 ul, li {
 	border-bottom: 2px solid #e0e0e0;
 }
 
-/*.dashboard_content {
-	width: 100%;
-	height: 500px; 
-	padding: 30px 110px;
+		.dashboard_tab_row {
+			border-top: 2px solid #e0e0e0;
+			border-bottom: 2px solid #e0e0e0;
+		}
+
+		.dashboard_tab_row li.tab > a {
+			padding: 0;
+		}
+
+		.dashboard_content {
+			width: 100%;
+			height: 500px; 
+			padding: 20px 110px;
+		}
+
+
+		.dashboard_content .title_txt {
+			font-size: 18px;
+		}
+
+		.dashboard_content .main_txt {
+			font-size: 14px; 
+		}
+
+		.dashboard_content .sub_txt {
+			font-size: 12px; 
+		}
+
+		.dashboard_content#reservation .card-content {
+			padding: 20px 10px;
+		}
+
+		.dashboard_content#my_houses .collapsible-header {
+			color:#2F6D81;
+		} 
+
+
+		.dashboard_content#my_houses .collapsible-item {
+			padding: 3px 0;
+		}
+
+
+/* general input css */
+body input[type=text] {
+  /*color: black;*/
+  background-color: white;
+  border: 1px solid rgb(80, 87, 95);
+  border-radius: 1px;
+  padding: 0 10px;
+  box-sizing: border-box;
 }
 
-.dashboard_main_text {
-	font-size: 28px;
+/* override input bottom green line css */
+input:not([type]).valid, input:not([type]):focus.valid, input[type=text].valid, input[type=text]:focus.valid, input[type=password].valid, input[type=password]:focus.valid, input[type=email].valid, input[type=email]:focus.valid, input[type=url].valid, input[type=url]:focus.valid, input[type=time].valid, input[type=time]:focus.valid, input[type=date].valid, input[type=date]:focus.valid, input[type=datetime].valid, input[type=datetime]:focus.valid, input[type=datetime-local].valid, input[type=datetime-local]:focus.valid, input[type=tel].valid, input[type=tel]:focus.valid, input[type=number].valid, input[type=number]:focus.valid, input[type=search].valid, input[type=search]:focus.valid, textarea.materialize-textarea.valid, textarea.materialize-textarea:focus.valid {
+	border-bottom: 1px solid black !important;
+	box-shadow: none !important;
 }
 
-.dashboard_sub_text {
-	font-size: 24px; 
-	margin-bottom: 20px;
+input[type=text]:focus {
+	border: 1px solid rgb(80, 87, 95) !important;
+	box-shadow: none !important;
 }
 
-#home .board_frame {
-	width: 100%;
-	height: 350px;
-	border: 4px solid #bdbdbd;
-	padding: 20px;
-}
-
-#room_list .room_frame {
-	width: 100%;
-	height: 120px;
-	border: 2px solid #bdbdbd;
-
-}*/
-
-/* register css */
-
-.register_content {
-	padding-top: 50px;
-	padding-bottom: 80px;
-}
-
-.register_main_text {
-	font-size: 24px;
-}
-
-.register_sub_text {
-	font-size: 20px;
-}
-
-.register_form_content {
-	padding-left: 40px !important;
-	padding-right: 80px !important;
-}
-
-.register_form_label {
-	font-size: 16px;
-	font-weight: 900;
-	padding-left: 10px;
-	padding-bottom: 10px;
-}
-
-#register_form .input-field {
-	margin-top: 0;
-	margin-bottom: 35px;
-}
-
-.register_file_wrapper {
-	border: 1px solid black;
-	width: 100%;
-	height:250px;
-	display: inline-flex;
-	margin-left: 10px;
-	/*text-align: center;*/
-	/*padding: 60px;*/
-	/*margin: 0 10px 15px;*/
-}
-
-.register_error {
-	color: #FF0000;
-}
-
-.register_valid {
-	color: #26a69a;
+body .select-wrapper input.select-dropdown {
+	background-color: white;
+	padding: 0 10px;
+	box-sizing: border-box;
 }
 
 
 /* search_bar */
-.search_bar {
+/*.search_bar {
   padding: 30px 0;
 }
 
@@ -826,7 +823,7 @@ footer#index_footer2 ul, li {
 }
 
 .search_bar input[type=text]:focus:not([readonly]), .search_bar input[type=text][readonly="readonly"] {
-  color: black;    
+  color: black;
   border: 1px solid rgb(80, 87, 95);
   border-radius: 1px;
   box-shadow: none;
@@ -855,9 +852,7 @@ footer#index_footer2 ul, li {
     background-position: 95%;
     background-size:18px 16px;
     background-repeat: no-repeat;
-
-    /*padding-right: 10px;*/
-  }
+  }*/
 
 
 

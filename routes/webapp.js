@@ -59,28 +59,174 @@ var googleMaps = require("@google/maps").createClient({
 // 	res.render('index', {user: user});
 // });
 
-router.get('/index3', function(req, res, next) {
-	var user;
-	if(req.isAuthenticated()) {
-		user = req.user;
-		user['username'] = req.user.lastname + req.user.firstname;
-	}
-	console.log(req.session)
-	res.render('index3', {user: user});
-});
-
-
-
-// GET index page
 router.get('/', function(req, res, next) {
 	var user;
 	if(req.isAuthenticated()) {
 		user = req.user;
 		user['username'] = req.user.lastname + req.user.firstname;
 	}
-	console.log(req.session)
-	res.render('index3', {user: user});
+
+	var context = {};
+	context['user'] = user; 
+
+	// get list of existing dongs
+	// TODO: change to district if necessary
+	selectDongs(function(err, rows) {
+		if(err) console.log(err);
+
+		var dong_list = [];
+
+		var d_list = (JSON.parse(JSON.stringify(rows)));
+		console.log(d_list)
+		for(i in d_list) {
+			if(d_list[i].addr_dong != "") {
+				dong_list.push(d_list[i].addr_dong);
+			}			
+		}
+		context["dong_list"] = dong_list; 
+		console.log(context)
+
+		res.render('index3', context);
+	});
 });
+
+function selectDongs(callback) {
+	var selectQuery = "select addr_dong from house group by addr_dong";
+	return db.query(selectQuery, callback);
+};
+
+// TEMPORARY
+// locations page
+router.get('/locations', function(req, res) {
+	var user;
+	if(req.isAuthenticated()) {
+		user = req.user;
+		user['username'] = req.user.lastname + req.user.firstname;
+	}
+	var	context = {};
+	context['user'] = user; 
+
+	// console.log(req.query)
+	// console.log(req.params)
+	// console.log(req.body)
+
+	res.render('index3', context);	
+});
+
+
+
+router.get('/s/:dong/:complex', function(req, res) {
+	var user;
+	if(req.isAuthenticated()) {
+		user = req.user;
+		user['username'] = req.user.lastname + req.user.firstname;
+	}
+	var	context = {};
+	context['user'] = user; 
+
+	var dong = req.params.dong;
+	context['dong'] = dong;
+
+	var complex = req.params.complex;
+	context['complex'] = complex;
+	// console.log(context)
+
+	selectComplexInfo(dong, complex, function(err, rows) {
+		if(err) console.log(err);
+
+		else {
+			var house_info = JSON.parse(JSON.stringify(rows))[0][0];
+			var main_images_list = JSON.parse(JSON.stringify(rows))[1];
+			var amenities_list = JSON.parse(JSON.stringify(rows))[2];
+
+			context['house_info'] = house_info;
+			context['main_images_list'] = main_images_list;
+			context['amenities_list'] = amenities_list;
+
+			context['addr'] = house_info.addr_province + " " + house_info.addr_city + " " + house_info.addr_district + " " + house_info.addr_dong;
+
+			console.log(context)
+			res.render('complex_detail', context);	
+		}
+	});
+});
+
+
+function selectComplexInfo(dong, complex, callback) {
+	var houseQuery = "select addr_province, addr_city, addr_district, addr_dong, addr_summary, description, format(monthly_rate,0) as monthly_rate, format(deposit, 0) as deposit, format(cleaning_fee, 0) as cleaning_fee, format(utility_fee, 0) as utility_fee, type, latitude, longitude from house where addr_dong like ? and addr_complex like ? order by monthly_rate asc limit 1;";
+	var houseQuery2 = "select main_image from house where addr_dong like ? and addr_complex like ?;";
+	var amenitiesQuery = "select distinct a.name, a.icon_image from amenities a inner join house_amenities ha on a.id = ha.amenities_id inner join house h on ha.house_id = h.id where h.addr_dong like ? and h.addr_complex like ?";
+
+
+	return db.query(houseQuery + houseQuery2 + amenitiesQuery, ['%'+dong+'%', '%'+complex+'%', '%'+dong+'%', '%'+complex+'%', '%'+dong+'%', '%'+complex+'%'], callback);
+};
+
+
+
+
+
+// search page 
+router.get('/s/:dong', function(req, res) {
+	var user;
+	if(req.isAuthenticated()) {
+		user = req.user;
+		user['username'] = req.user.lastname + req.user.firstname;
+	}
+	var	context = {};
+	context['user'] = user; 
+
+	var dong = req.params.dong;
+	context['dong'] = dong;
+
+	selectComplexes(dong, function(err, rows) {
+		if(err) console.log(err);
+
+		var complex_list = (JSON.parse(JSON.stringify(rows)));
+		context['complex_list'] = complex_list;
+
+		var addr = complex_list[0].addr_province + " " + complex_list[0].addr_city + " "; 
+		addr += complex_list[0].addr_district + " " + complex_list[0].addr_dong;
+		context['addr'] = addr;
+
+		console.log(context)
+		res.render('search2', context);	
+	});
+});
+
+
+function selectComplexes(dong, callback) {
+	var selectQuery = "select addr_province, addr_city, addr_district, addr_dong, format(monthly_rate,0) as monthly_rate, addr_complex, main_image, latitude, longitude from house where addr_dong like ? and id = (select id from house as alt where alt.addr_complex = house.addr_complex order by monthly_rate asc limit 1)";
+	return db.query(selectQuery, ['%'+dong+'%'], callback);
+};
+
+
+// Original search page
+// GET search houses
+// router.get('/s', function(req, res) {
+// 	var user;
+// 	if(req.isAuthenticated()) {
+// 		user = req.user;
+// 		user['username'] = req.user.lastname + req.user.firstname;
+// 	}
+// 	var	context = {};
+// 	context['user'] = user; 
+
+// 	var location = req.query.location; 
+// 	var checkin = req.query.checkin;
+// 	var checkout = req.query.checkout;
+
+// 	context['location'] = location;
+// 	context['checkin'] = checkin;
+// 	context['checkout'] = checkout;
+// 	// context['preferred_currency'] = req.params.curr;
+
+// 	// console.log(context);
+// 	res.render('search', context);	
+// });
+
+
+
+
 
 router.get('/download_kor', function(req, res, next) {
 
@@ -94,7 +240,8 @@ router.get('/download_en', function(req, res, next) {
 
 });
 
-router.get('/be-host_kor', function(req, res, next) {
+
+router.get('/about', function(req, res, next) {
 	var user;
 	if(req.isAuthenticated()) {
 		user = req.user;
@@ -104,7 +251,7 @@ router.get('/be-host_kor', function(req, res, next) {
 	context['user'] = user; 
 
 
-	res.render('be-host_kor', context);
+	res.render('about', context);
 
 });
 
@@ -213,7 +360,7 @@ function getConfirmedRs(user_id, callback) {
 }
 
 
-router.post('/host_confirm', function(req, res) {
+router.post('/inquiry', function(req, res) {
 	var user;
 	if(req.isAuthenticated()) {
 		user = req.user;
@@ -379,7 +526,7 @@ router.get('/homes/:name/:id', function(req, res) {
 });
 
 function selectHouseById(house_id, callback) {
-	var houseQuery = "select distinct house.id as house_id, name as house_name, addr_full, addr_summary, addr_direction, description, type as house_type, num_guest, num_bedroom, num_bed, num_bathroom, monthly_rate, daily_rate, format(utility_fee,0) as utility_fee, format(cleaning_fee,0) as cleaning_fee, latitude, longitude, house_policy, cancellation_policy, main_image, rating_overall as house_rating, review_count as house_review_count from house inner join house_rating on house.id = house_rating.house_id inner join house_images on house.id = house_images.house_id where house.id = ?;";
+	var houseQuery = "select distinct house.id as house_id, name as house_name, addr_full, addr_summary, addr_direction, description, type as house_type, num_guest, num_bedroom, num_bed, num_bathroom, monthly_rate, daily_rate, format(utility_fee,0) as utility_fee, format(cleaning_fee,0) as cleaning_fee, latitude, longitude, house_policy, cancellation_policy, main_image, rating_overall as house_rating, review_count as house_review_count from house left join house_rating on house.id = house_rating.house_id where house.id = ?;";
 	var amenitiesQuery = "select name, icon_image from amenities inner join house_amenities on amenities.id = house_amenities.amenities_id where house_id = ?;";
 	var imageQuery = "select image from house_images where house_id = ?";
 
@@ -424,55 +571,6 @@ router.get('/s_houses', function(req, res) {
 });
 
 
-// GET search houses
-router.get('/s', function(req, res) {
-	var user;
-	if(req.isAuthenticated()) {
-		user = req.user;
-		user['username'] = req.user.lastname + req.user.firstname;
-	}
-	var	context = {};
-	context['user'] = user; 
-
-	var location = req.query.location; 
-	var checkin = req.query.checkin;
-	var checkout = req.query.checkout;
-
-	context['location'] = location;
-	context['checkin'] = checkin;
-	context['checkout'] = checkout;
-	// context['preferred_currency'] = req.params.curr;
-
-	// console.log(context);
-	res.render('search', context);
-
-	// query rooms
-	// selectHouse_search(location, checkin, checkout, function(err, rows) {
-	// 	if(err) console.log(err);
-
-	// 	else {
-	// 		console.log("select houses successful");
-	// 		context["house_list"] = JSON.parse(JSON.stringify(rows));
-
-	// 		// console.log()
-	// 		// console.log(JSON.parse(JSON.stringify(rows)))
-
-	// 		// context['house_main_image'] = JSON.parse(JSON.stringify(rows[0]));
-
-	// 		// // TODO: process monthly rate with commas ex-  150,000,000
-	// 		// context['house_monthly_rate'] = JSON.parse(JSON.stringify(rows[1]));
-	// 		// context['house_addr_summary'] = JSON.parse(JSON.stringify(rows[2]));
-	// 		// context['house_avg_rating'] = JSON.parse(JSON.stringify(rows[3]));
-	// 		// context['house_name'] = JSON.parse(JSON.stringify(rows[4]));
-
-	// 		// console.log(context)
-	// 		res.render('search', context);
-	// 	}
-	// });
-	
-});
-
-
 function selectHouse_search(location, checkin, checkout, callback) {
 
 	// console.log(location + " , " + checkin + " , " + checkout);
@@ -487,145 +585,28 @@ function selectHouse_search(location, checkin, checkout, callback) {
 		case 0:
 			// console.log("0")
 			// no params
-			return db.query("select h.id, h.name, h.latitude, h.longitude, h.main_image, format(h.monthly_rate, 0) as monthly_rate, h.num_guest, h.num_bedroom, h.num_bed, h.num_bathroom, h.addr_summary, r.rating_overall from house h inner join house_rating r on h.id = r.house_id", callback);
+			return db.query("select h.id, h.name, h.latitude, h.longitude, h.main_image, format(h.monthly_rate, 0) as monthly_rate, h.num_guest, h.num_bedroom, h.num_bed, h.num_bathroom, h.addr_summary, r.rating_overall from house h left join house_rating r on h.id = r.house_id", callback);
 		case 1: 
 			// console.log("1")
 			// only location
-			var selectQuery = "select h.id, h.name, h.latitude, h.longitude, h.main_image, format(h.monthly_rate, 0) as monthly_rate, h.num_guest, h.num_bedroom, h.num_bed, h.num_bathroom, h.addr_summary, r.rating_overall from house h inner join house_rating r on h.id = r.house_id where h.name like ? or h.addr_summary like ?";
+			var selectQuery = "select h.id, h.name, h.latitude, h.longitude, h.main_image, format(h.monthly_rate, 0) as monthly_rate, h.num_guest, h.num_bedroom, h.num_bed, h.num_bathroom, h.addr_summary, r.rating_overall from house h left join house_rating r on h.id = r.house_id where h.name like ? or h.addr_summary like ?";
 			return db.query(selectQuery, ['%' + location + '%', '%' + location + '%'], callback);
 		case 6:
 			// console.log("6")
 			// only checkin, checkout
-			var selectQuery = "select distinct h.id, h.name, h.latitude, h.longitude, h.main_image, format(h.monthly_rate, 0) as monthly_rate, h.num_guest, h.num_bedroom, h.num_bed, h.num_bathroom, h.addr_summary, hr.rating_overall from house h inner join house_rating hr on h.id = hr.house_id INNER JOIN reservation re on h.id = re.house_id where h.id not in (select re.house_id from reservation re where (re.checkin >= ? and re.checkout <= ?) or (re.checkin < ? and re.checkout >= ?) or (re.checkin <= ? and re.checkout > ?)) order by h.id asc";
+			var selectQuery = "select distinct h.id, h.name, h.latitude, h.longitude, h.main_image, format(h.monthly_rate, 0) as monthly_rate, h.num_guest, h.num_bedroom, h.num_bed, h.num_bathroom, h.addr_summary, hr.rating_overall from house h left join house_rating hr on h.id = hr.house_id left join reservation re on h.id = re.house_id where h.id not in (select re.house_id from reservation re where (re.checkin >= ? and re.checkout <= ?) or (re.checkin < ? and re.checkout >= ?) or (re.checkin <= ? and re.checkout > ?)) order by h.id asc";
 			return db.query(selectQuery, [checkin, checkout, checkout, checkout, checkin, checkin], callback);
 		case 7:
 			// console.log("7")
 			// all (location, checkin, checkout)
-			var selectQuery = "select distinct h.id, h.name, h.latitude, h.longitude, h.main_image, format(h.monthly_rate, 0) as monthly_rate, h.num_guest, h.num_bedroom, h.num_bed, h.num_bathroom, h.addr_summary, hr.rating_overall from house h inner join house_rating hr on h.id = hr.house_id INNER JOIN reservation re on h.id = re.house_id where h.id not in (select re.house_id from reservation re where (re.checkin >= ? and re.checkout <= ?) or (re.checkin < ? and re.checkout >= ?) or (re.checkin <= ? and re.checkout > ?)) and (h.name like ? or h.addr_summary like ?) order by h.id asc";
+			var selectQuery = "select distinct h.id, h.name, h.latitude, h.longitude, h.main_image, format(h.monthly_rate, 0) as monthly_rate, h.num_guest, h.num_bedroom, h.num_bed, h.num_bathroom, h.addr_summary, hr.rating_overall from house h left join house_rating hr on h.id = hr.house_id left join reservation re on h.id = re.house_id where h.id not in (select re.house_id from reservation re where (re.checkin >= ? and re.checkout <= ?) or (re.checkin < ? and re.checkout >= ?) or (re.checkin <= ? and re.checkout > ?)) and (h.name like ? or h.addr_summary like ?) order by h.id asc";
 			return db.query(selectQuery, [checkin, checkout, checkout, checkout, checkin, checkin,'%' + location + '%', '%' + location + '%'], callback);
 		default: 
 			// console.log("switch default. this is probably error")
 			break;			
 	}
 
-// EXAMPLE
-// select distinct h.id, h.name, h.main_image, h.daily_rate, h.num_guest, h.num_bedroom, h.num_bed, h.num_bathroom, h.addr_summary, hr.rating_overall from house h inner join house_rating hr on h.id = hr.house_id INNER JOIN reservation re on h.id = re.house_id where h.id not in (select re.house_id from reservation re where (re.checkin >= '2017-06-15' and re.checkout <= '2017-06-30') or (re.checkin < '2017-06-30' and re.checkout >= '2017-06-30') or (re.checkin <= '2017-06-15' and re.checkout > '2017-06-15')) order by h.id asc
-
-	// if(typeof location === 'undefined' && typeof checkin === 'undefined' && typeof checkout === 'undefined') {
-	// 	return db.query("select h.id, h.name, h.main_image, h.daily_rate, h.num_guest, h.num_bedroom, h.num_bed, h.num_bathroom, h.addr_summary, r.rating_overall from house h inner join house_rating r on h.id = r.house_id", callback);
-	// }
-
-	// else if(typeof location !== 'undefined') {
-	// 	return db.query("select h.id, h.name, h.main_image, h.daily_rate, h.num_guest, h.num_bedroom, h.num_bed, h.num_bathroom, h.addr_summary, r.rating_overall from house h inner join house_rating r on h.id = r.house_id where h.name like ? or h.addr_summary like ?", ['%' + location + '%', '%' + location + '%'], callback);
-	// }
-
-	// else if() {
-
-
-	// }
-
-	// select * from house where name like '%해방촌%'
-
-	// return db.query("select h.id, h.name, h.main_image, h.daily_rate, h.num_guest, h.num_bedroom, h.num_bed, h.num_bathroom, h.addr_summary, r.rating_overall from house h inner join house_rating r on h.id = r.house_id", callback);
-	// return db.query("select main_image from house; select monthly_rate from house; select addr_summary from house; select rating_overall from house_rating; select name from house", callback);
 }
-
-
-// GET house register page
-router.get('/register', function(req, res) {
-	if (!req.isAuthenticated()) {
-		res.redirect('login');
-	}
-
-	var context = {};
-
-	var user = req.user;
-	user['username'] = req.user.lastname + req.user.firstname;
-
-	context['user'] = user;
-	// context['noRegisterBtn'] = 1;
-
-	selectAllObjects1("amenities", context, function(err, rows) {
-		if(err) {
-			res.json(err);
-		}
-
-		else {
-			context['amenities'] = JSON.parse(JSON.stringify(rows));
-			res.render('register', context);
-		}
-	});
-});
-
-// POST register house
-router.post('/register', isLoggedIn, function(req, res) {
-
-	var house_context = {};
-
-	house_context['user_id'] = req.user.id; 
-	house_context['name'] = req.body.house_name;
-	house_context['addr_full'] = req.body.addr_full;
-	house_context['addr_summary'] = req.body.addr_summary;
-	// house_context['addr_direction'] = req.body.
-	// house_context['description'] = req.body.
-	house_context['room_type'] = req.body.house_type;
-	// house_context['num_guest'] = req.body.
-	house_context['num_bedroom'] = req.body.num_bedroom;
-	house_context['num_bed'] = req.body.num_bed;
-	house_context['num_bathroom'] = req.body.num_bathroom;
-	// house_context['daily_rate'] = req.body.
-	house_context['monthly_rate'] = req.body.monthly_rate;
-	// house_context['deposit'] = req.body.
-	// house_context['cleaning_fee'] = req.body.;
-	house_context['utility_fee'] = req.body.utility_fee;
-	// house_images 
-
-	// TODO: update this list if additional amenities gets added to the db
-	var amenitiesList = [req.body.amenities1, req.body.amenities2, req.body.amenities3, req.body.amenities4, req.body.amenities5, req.body.amenities6,
-						req.body.amenities7, req.body.amenities8, req.body.amenities9, req.body.amenities10, req.body.amenities11, req.body.amenities12,
-						req.body.amenities13, req.body.amenities14, req.body.amenities15, req.body.amenities16, req.body.amenities17, req.body.amenities18];
-
-	// save the selected amenities into list  
-	var amenities = [];
-	for(var i=0; i<amenitiesList.length; i++) {
-		if(amenitiesList[i] == "on") {
-			amenities.push(i + 1);
-		}
-	}
-	house_context['amenities'] = amenities; 
-
-	// insert into house table 
-	insertHouse(house_context, function(err, rows) {
-		if(err) 
-			console.log(err);
-
-		else {
-			console.log("register house successful");
-
-			var houseAmenities_context = {};
-
-			houseAmenities_context['house_id'] = rows.insertId;
-			houseAmenities_context['amenities'] = house_context.amenities;
-
-			// link house and its amenities 
-			insertHouseAmenities(houseAmenities_context, function(err, rows) {
-				if(err) res.json(err);
-
-				else {
-					console.log("register house amenities successful");
-					res.redirect('/');
-				}
-			});
-		}
-	});
-});
-
-// router.use(express.static(path.join(__dirname, '../react-app/build')));
-
-
-// router.get('/*', function(req, res) {
-// 	res.sendFile(path.join(__dirname, '../react-app/build/index.html'));
-// });
 
 
 
@@ -661,33 +642,6 @@ function selectAllObjects4(obj1, obj2, obj3, obj4, context, callback) {
 	return db.query("select * from ??; select * from ??; select * from ??; select * from ??", [obj1, obj2, obj3, obj4], callback);
 }
 
-// insert new house into house table 
-function insertHouse(house_context, callback) {
-	var created_at = moment().format("YYYY-MM-DD HH:MM:SS");
 
-	// main_image 
 
-	var insertQuery = "insert into house (user_id, name, addr_full, addr_summary, room_type, num_bedroom, num_bed, num_bathroom, monthly_rate, utility_fee, created) values (?,?,?,?,?,?,?,?,?,?,?)";
-	return db.query(insertQuery, [house_context.user_id, house_context.name, house_context.addr_full, house_context.addr_summary, house_context.room_type, house_context.num_bedroom, house_context.num_bed, house_context.num_bathroom, house_context.monthly_rate, house_context.utility_fee, created_at], callback); 
-}
-
-// insert(link) house and its amenities into house_amenities table  
-// 		houseAmenities_context = {house_id, amenities}
-// 		amenities = list of amenities ids [1,3,4,5]
-function insertHouseAmenities(houseAmenities_context, callback) {
-	var insertQueryTxt = "insert into house_amenities (house_id, amenities_id, created) values (?,?,?)";
-	var insertQuery= "";
-	var values = [];
-
-	var created_at = moment().format("YYYY-MM-DD HH:MM:SS");
-
-	for(var i=0; i<houseAmenities_context.amenities.length; i++) {
-		insertQuery += insertQueryTxt + ";";
-		values.push(houseAmenities_context.house_id);
-		values.push(houseAmenities_context.amenities[i]);
-		values.push(created_at);
-	}
-
-	return db.query(insertQuery, values, callback);
-}
 

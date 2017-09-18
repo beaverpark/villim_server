@@ -4,8 +4,51 @@
   <%- include('header') -%>
   <style>
 
+	section#intro .searchbar_wrapper {
+		display: flex;
+		/*padding: 0 50px;*/
+		/*justify-content: left;*/
+		height: 52px;
+	}
+
+	section#intro .searchbar_wrapper div.input-field {
+		margin:0;
+		min-width: 150px;
+		max-width: 360px;
+		width: 100%;
+	}
+
+	section#intro .searchbar_wrapper div.btn_div {
+		min-width: 120px;
+		text-align: left;
+	}
+
+	section#intro input.select-dropdown , section#intro a {
+		height: 52px;
+		width: 100%;
+		line-height: 52px; /*for vertically centering text in btn */
+		/*margin: 0 10px;*/
+	}
+
+
 
   </style>
+
+  <script>
+	$(document).ready(function() {
+		$('select').material_select();
+
+
+		// %('.btn_div button')
+
+		$('select').on('change', function() {
+			var selected_val = $(this).find(':selected').val();
+			$('.btn_div a').attr('href', '/s/' + selected_val);
+		});
+
+	});
+
+  </script>
 
 
   <body>
@@ -14,10 +57,33 @@
 
     <!-- intro section -->
     <section id="intro">
-    	<div class="row">
-    		<div class="title_txt text_thick">풀옵션 단기임대 찾을때 빌림</div>
-    		<div class="sub_txt text_thick">다양한 풀옵션 단기임대를 자신의 스케쥴에 맞게 방을 찾고 선택해보세요.</div>
- 		</div>
+    	<div class="container nav_container">
+			<div class="title_txt text_thick">품격있는 풀옵션 홈 렌탈</div>
+			<div class="sub_txt text_thick">자신의 스케줄에 맞게 방을 찾고 선택해보세요.</div>
+
+			<div class="input_wrapper">
+				<div>거주 희망 지역과 필요한 날짜에 맞춰 방을 찾아보세요.</div>
+		    	<div class="row">
+				<% if(dong_list) { %>
+	          	<!-- <form action="/locations" method="get"> -->
+					<div class="searchbar_wrapper">
+			            <div class="input-field">
+							<select name="dong">
+								<option value="" disabled selected>지역을 선택해 주세요</option>
+								<% for(i in dong_list) { %>
+								<option value="<%- dong_list[i]-%>"><%- dong_list[i]-%></option>
+								<% } %>
+							</select>
+						</div>	            
+						<div class="btn_div">
+							<a href="/" class="btn teal_btn_color">지역 검색</a>
+						</div>	            
+		            </div>
+	        	<!-- </form> -->
+				<% } %>
+		 		</div>
+			</div>
+		</div>
     </section> 
 
 	    <section id="meet_villim">
@@ -41,7 +107,7 @@
     		<div class='txt_container valign-wrapper'>
     			<div>
 			    	<div class='title_txt'>
-			    		방 검색하기
+			    		BROWSE
 			    	</div>
 			    	<div class='main_txt'>
 						<p>빌림에서 직접 방문하여 선별한 품질 좋은 방들을 찾아보세요.</p>
@@ -97,7 +163,7 @@
 			<div class='txt_container valign-wrapper'>
 				<div>
 			    	<div class='title_txt'>
-			    		COMMUNITY
+			    		COMMUNICATE
 			    	</div>
 			    	<div class='main_txt'>
 						<p>방 주변 지역 정보를 볼 수 있으며, 거주기간 동안 필요한 서비스 </p>

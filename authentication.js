@@ -3,13 +3,11 @@ module.exports = function(app, passport) {
 
 	// GET login form
 	app.get('/login', function(req, res) {
-
-		console.log(req.session)
 		if (req.isAuthenticated()) {
 			return res.redirect('/');
 		}
 
-		res.render('login', {message: req.flash('loginMessage')});
+		res.render('login', {message: req.flash('loginMessage'), user: ""});
 	});
 
 	// POST process login form
@@ -59,7 +57,7 @@ module.exports = function(app, passport) {
 		if (req.isAuthenticated()) {
 			res.redirect('/');
 		}
-		res.render('signup', { message: req.flash('signupMessage') });
+		res.render('signup', { message: req.flash('signupMessage'), user: ""});
 	});
 
 	// POST process the signup form
@@ -140,7 +138,7 @@ module.exports = function(app, passport) {
 				res.redirect('/admin');
 			}
 		}
-		res.render('login', {message: req.flash('loginMessage'), admin: true});
+		res.render('login', {message: req.flash('loginMessage'), admin: true, user: ""});
 	});
 
 	// POST process admin login form

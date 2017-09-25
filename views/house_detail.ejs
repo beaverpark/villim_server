@@ -28,184 +28,202 @@
 	.br-theme-fontawesome-stars-o .br-widget a.br-fractional:after, 
 	.br-theme-fontawesome-stars-o .br-widget a.br-selected:after 
 	{
-	  color: crimson !important;
+	  color: #2F6D81 !important;
 	}
 
-
-	@media screen and (min-width: 580px) {
-		body .swiper-container {
-			height: 400px;
-		}
-	}
-
-
-	@media screen and (min-width: 980px) {
-		body .swiper-container {
-			height: 500px;
-		}
-	}
-
-	/* TODO: 여기서 search box 위로 옮기기 */
-	@media screen and (min-width: 1320px) {
-		body .swiper-container {
-			height: 650px;
-		}
-	}
-
-  	.swiper-container {
-  		width: 100%;
-  		height: 300px;
-  	}
-
-	.container.index_container.house_container .col {
-		padding: 0;
-	}
-  /*	section#house_pics .swiper-wrapper {
-  		height: auto;
+  	section#house_pics .swiper-container {
+  		height: 400px;
   	}
 
   	section#house_pics .swiper-slide {
-  		height: auto;
-  	}*/
-
-
-  	section.detail_section {
-  		/*position: relative;*/
-  		padding: 16px 0;
-  		border-bottom: 1px solid #cdcdd1;
-  		font-size: 16px;
-  	}
-
-  	section.detail_section:after {
-/*  		position:absolute;
-		content: "";
-		display:block;
-		width: 60%;
-		border-bottom: 1px solid #cdcdd1;*/
- 	}
-
-  	section.detail_section .title {
-  		font-weight: 600;
-  	}
-
-  	section.detail_section .content p {
-  		margin: 2px 0;
-  	}
-
-/*
-  	section#house_summary, section#house_description, section#house_policy, section#house_amenities, section#house_refund_policy {
-  		width: 66%;
-  	}
-*/
-
-  	section#house_pics .swiper-slide {
-  		/*background-color: lightgray;*/
   		background-position: center;
   		background-size: cover;
   		background-repeat: no-repeat;
-  		/*width: 600px;*/
-  		/*width: auto;*/
-  		/*height: auto;*/
   	}
 
-  	section#house_intro .house_title {
-  		font-family: "nanum_myeongjo";
-  		text-align: center;
-  		/*border-bottom: 1px solid #cdcdd1;*/
+	.container.house_container section {
+		padding: 30px 0;
+		font-size: 16px;
+	}
+
+	.container.house_container .divider {
+		border-bottom: 3px solid rgba(0, 0, 0, 0.48); 
+		margin: 10px 0 26px;
+	}
+
+  	section#house_intro  {
   		padding: 30px 0;
   	}
 
-  	section#house_intro .house_title span {
-  		color: rgba(0,0,0,0.7);
-  		font-size: 34px;
-  	}
-
-  	section#house_summary .house_summary_content {
-		/*border-top: 1px solid rgb(205, 205, 209);*/
-		/*padding-top: 20px;*/
-		font-size: 16px;
-  	}
-
-
-  	section#house_summary .col {
-  		padding: 10px 0;
-
-  	}
-
-	section#house_summary .house_summary_content img {
-	  height: 20px;
+	section#house_intro .inquiry_card_container {
+		width: 85%;
+		margin: 0 auto;
 	}
 
-	section#house_summary .house_summary_content .capacity {
-		/*text-align: center;*/
-		/*float: right;*/
-	}
-
-	section#house_amenities .amenity_item {
-		padding-bottom: 20px;
-	}
-
-	section#house_amenities .amenity_item img {
-		width: 30px;
-		height: 20px;
-		vertical-align: middle;
-	}
-
-	/* duplicate */
-	.capacity_item {
-		display: inline-block;
-		width: 80px;
-		text-align: center;
-	}
-
-/* Placeholder css */
-  ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-    color: black;
-    opacity: 0.5;
-  }
-  :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-    color: black;
-    opacity: 0.5;
-  }
-  ::-moz-placeholder { /* Mozilla Firefox 19+ */
-    color: black;
-    opacity: 0.5;
-  }
-  :-ms-input-placeholder { /* Internet Explorer 10-11 */
-    color: black;
-    opacity: 0.5;
-  }
-  ::-ms-input-placeholder { /* Microsoft Edge */
-    color: black;
-    opacity: 0.5;
-  }
-
-
-	section#house_intro .card.search_bar {
-		width: 300px;
-		position:absolute;
-		top: 168px;
-		right: 0;
-		margin: 0;
-		padding: 44px 30px;
+  	section#house_intro .card.inquiry_card{
 		box-shadow: none;
   		border: 1px solid #cdcdd1;
 		border-radius: 1px;
+		margin: 0;
+		text-align: left;
+  	}
+
+ 	section#house_intro .inquiry_card .card-content{
+ 		padding: 42px 30px;
+  	}
+
+
+	section#house_intro .inquiry_card .logo img {
+ 		height: 20px;
+ 	}
+
+	section#house_intro .inquiry_card .title_txt {
+ 		font-size: 38px;
+ 		font-weight: 600;
+ 		text-align: center;
+ 	}
+
+	section#house_intro .inquiry_card .sub_title_txt {
+ 		font-size: 18px;
+ 		font-weight: 600;
+ 		text-align: center;
+ 	}
+
+	section#house_intro .inquiry_card .divider {
+		border-bottom: 1px solid #cdcdd1;
+		margin: 10px 0;
+ 	}
+
+
+ 	section#house_intro .capacity_section {
+ 		display: flex;
+ 		font-size: 14px;
+ 	}
+
+ 	section#house_intro .capacity_item {
+ 		display: flex;
+ 		flex-direction: column;
+ 		text-align: center;
+ 		flex-basis: 20%;
+  	}
+
+ 	section#house_intro .capacity_section img {
+ 		height: 24px;
+ 	}
+
+
+	section#house_intro .inquiry_card .monthly_rate {
+		background-color: #2F6D81;
+		color: white;
+		padding: 12px;
+		margin-top: 20px;
+		font-size: 17px;
+ 	}
+
+	section#house_intro  .inquiry_card .form_section .inputs {
+		display: flex;
 	}
 
-	section#house_intro .card.search_bar input {
+	section#house_intro  .inquiry_card .form_section input {
+  		border: 1px solid #cdcdd1;
+		border-radius: 1px;
 		margin: 10px 0;
-	    height: 40px;
-		padding-left: 5px;
-		margin: 10px 0;
+		/*margin: 16px 0;*/
 	}
 
-
-	section#house_intro .card.search_bar button {
+	section#house_intro  .inquiry_card .form_section button {
 		width: 100%;
-		margin: 24px 0;
+		height: auto;
+		padding: 6px;
+		margin: 16px 0;
 	}
 
+	section#house_intro  .inquiry_card .form_section .input-field {
+		width: 100%;
+		margin: 0 0 24px;
+	}
+
+	section#house_amenities .amenities_container {
+		display: flex;
+		flex-flow: row wrap;
+	}
+
+	section#house_amenities .amenity_item {
+		flex-basis: 50%;
+		display: flex;
+		padding: 10px 0;
+	}
+
+	section#house_amenities .amenity_item .img {
+		margin-right: 24px;
+	}
+
+	section#house_amenities .amenity_item img {
+		height: 40px;
+		width: 50px;
+	}
+
+	section#house_amenities .amenity_item .name {
+		line-height: 40px;
+	}
+
+	section#price .price_item {
+		padding-bottom: 12px;
+	}
+
+
+	section#direction .direction_item {
+		margin-bottom: 20px;
+	}
+
+   	section#house_review .reviwer {
+   		height: 48px;
+   		margin-bottom: 10px;
+	}
+
+   	section#house_review .rating {
+   		display: flex;
+   		justify-content: space-between;
+   		font-size: 13px;
+   		color:rgba(0, 0, 0, 0.48);
+	}
+
+	section#house_review .review_item {
+		border-bottom: 1px solid #cdcdd1;
+		padding: 20px 0;
+
+	}
+
+	section#house_review .chip {
+	    background-color: white;
+	    font-size: 20px;
+	    color: #2F6D81;
+   		line-height: 48px;
+
+	}
+
+   	section#house_review .chip >img {
+	    width: 48px;
+	    height: 48px;
+	}
+
+
+	section#house_host .host {
+		height: 64px;
+		margin-bottom: 20px;
+	}
+
+	section#house_host .chip {
+	    background-color: white;
+	    font-size: 22px;
+	    color: #2F6D81;
+   		line-height: 60px;		
+	}
+
+	section#house_host .chip > img {
+	    width: 64px;
+	    height: 64px;
+	}
 
 
   </style>
@@ -213,6 +231,11 @@
   <body>
     <!-- navbar -->
     <%- include('navbar') -%>
+
+    <!-- <div class="container nav_container"> -->
+    	<!-- breadcrumb -->
+    <!-- </div> -->
+
     <section id="house_pics" class="detail_section" style="padding: 0">
     	<div class="swiper-container">
     		<div class="swiper-wrapper">
@@ -228,172 +251,281 @@
     	</div>
     </section>
 
-	<div class="container index_container house_container" style="position:relative">
-	    <section id="house_intro" class="detail_section" >
-  			<div class="house_title">
-				<span class="text_thick"> <%- house_info.house_name -%> </span>
-				<script>
-					var rating = <%- house_info.house_rating -%>
-				</script>
-				 <select class="star_rating" id="star_rating">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                  </select>
-	  		</div>
-			<div class="card search_bar">
-				<div class="row">
-				  <form action="/checkout" method="post">
-				    <div class="input-field col s12">
-				      <input placeholder="체크인" id="checkin_date_picker" name="checkin" type="text" required>
-				    </div>
-				    <div class="input-field col s12">
-				      <input placeholder="체크아웃" id="checkout_date_picker" name="checkout" type="text" required>
-				      <div class="price">
-  			      		  <div class="total_price"></div>
-		      		  </div>
-				    </div>
-				    <div class="col s12"> 
-				      <button class="btn waves-effect waves-light red accent-2" type="submit">예약하기</button>
-				    </div>
-				    <input name="house_id" type="hidden" value="<%- house_id -%>">
-				  </form>
-				</div>
-			</div>
-	  	</section>
-	  	<section id="house_summary" class="detail_section">
-  			<div class="house_summary_content">
-			    <div class="row">
-					<div class="col s12 m6 l6">
-						<span> <%- house_info.addr_summary -%></span>
-					</div>
-					<div class="col s12 m6 l6">
-						<div class="capacity">
-							<div class= "capacity_item">
-								<img class="icons" src="/images/icons/icon_man.png">
-								<div> 인원 <%- house_info.num_guest -%>명 </div>
+
+
+    <div class="container nav_container house_container">
+	<div class="house_intro_container">
+	    <section id="house_intro">
+		    <div class="inquiry_card_container">
+				<div class="card inquiry_card">
+		            <div class="card-content">
+		            	<div class="name_section">
+<!-- 		            		<div class="logo">
+					          <img src="/images/logos/villim_logo2_black.png">
+		            		</div> -->
+
+							<div class="complex_name sub_title_txt"> <%- house_info.complex_name -%> </div>
+							<div class="name title_txt"> <%- house_info.name -%> </div>
+		            		<div style="display:flex; justify-content: space-between; margin-bottom:10px">
+			            		<div class="addr"> <%-  house_info.addr_summary -%></div>
+								 <select class="star_rating overall_rating">
+					                <option value="1">1</option>
+					                <option value="2">2</option>
+					                <option value="3">3</option>
+					                <option value="4">4</option>
+					                <option value="5">5</option>
+					              </select>
 							</div>
-							<div class= "capacity_item">
-								<img class="icons" src="/images/icons/icon_bed.png">
-								<div> 침대 <%- house_info.num_bed -%>개 </div>
+		            	</div>
+        				<div class="divider"></div>
+						<div class="capacity_section">
+							<div class="capacity_item">
+								<div class="capacity_img"><img src="/images/icons/officetel_icon.jpg"></div>
+								<div class="capacity_txt"> <%- house_info.house_type -%></div>
 							</div>
-							<div class= "capacity_item">
-								<img class="icons" src="/images/icons/icon_bath.png">
-								<div> 욕실 <%- house_info.num_bathroom -%>개 </div>
+							<div class="capacity_item">
+								<div class="capacity_img"><img src="/images/icons/icon_man.png"></div>
+								<div class="capacity_txt">인원 <%- house_info.num_guest -%>명</div>
+							</div>
+							<div class="capacity_item">
+								<div class="capacity_img"><img src="/images/icons/icon_door.png"></div>
+								<div class="capacity_txt">침실 <%- house_info.num_bedroom -%>개</div>
+							</div>
+							<div class="capacity_item">
+								<div class="capacity_img"><img src="/images/icons/icon_bed.png"></div>
+								<div class="capacity_txt">침대 <%- house_info.num_bed -%>개</div>
+							</div>
+							<div class="capacity_item">
+								<div class="capacity_img"><img src="/images/icons/icon_bath.png"></div>
+								<div class="capacity_txt">욕실 <%- house_info.num_bathroom -%>개</div>
 							</div>
 						</div>
-					</div>	
-				</div>
-			</div>
-	    </section>
+        				<div class="divider"></div>
+	            		<div class="monthly_rate"> &#8361; <%- house_info.monthly_rate_format -%> / 월</div>
+		            	<div class="form_section">
+		            		<!-- <div class="main_txt" style="padding:8px 0">방을 직접 방문하여 둘러보세요. 귀하의 정보를 기입하여 방문 요청해보세요.</div> -->
+		    				<form action="/checkout" method="post">
+		    				<div class="inputs">
+						      <input placeholder="체크인" id="checkin_date_picker" name="checkin" type="text" required>
+				   			  <input placeholder="체크아웃" id="checkout_date_picker" name="checkout" type=" text" required>
+							</div>
+		    				<div class="inputs">
+  							  <div class="input-field"> 
+								  <select id="num_guest" name="num_guest">
+									<option value="" disabled selected> 인원 </option>
+									<option value="1"> 1 </option>
+									<option value="2"> 2 </option>
+									<option value="3"> 3 </option>
+									<option value="4"> 4 </option>
+									<option value="5"> 5 </option>
+									<option value="6"> 6 </option>
+								  </select>
+							  </div>
+							</div>
+  					        <input type="hidden" name="house_id" value="<%-house_info.house_id-%>">
 
-	    <section id="house_description" class="detail_section">
-			<div class="row">
-				<div class="col s12 m3 l3">
-					<div class="title"> 기본 정보 </div>
-				</div>
-				<div class="col s12 m9 l9">
-					<div class="content">
-						<%- house_info.description -%>
-						<!-- <p class="text"></p> -->
+    	            		<div class="calculated_rate"></div>
+							<div class="button">
+								<button class="btn red_btn_color" type="submit" name="action">방문 요청하기</button>
+							</div>
+							</form>
+		            	</div>
 					</div>
 				</div>
-			</div>
+		    </div>
+	  	</section>
+  	</div>
+
+  	<div class="rest_container">
+		<section id="house_description">
+			<div class="title_txt">기본 정보</div>
+        	<div class="divider"></div>
+        	<div class="description_container">
+				<%- house_info.description -%>
+         	</div>
+		</section>
+
+
+		<section id="house_amenities">
+			<div class="title_txt">편의 및 안전</div>
+        	<div class="divider"></div>
+        	<div class="amenities_container">
+			<% for(var i=0; i< amenities_list.length;i++) { %> 
+				<div class="amenity_item">
+					<div class="img"><img class="icons" src="<%- amenities_list[i].icon_image -%>"></div>
+					<div class="name"><%- amenities_list[i].name -%></div>
+				</div>
+			<% } %>
+        	</div>
+		</section>
+
+		<section id="price">
+			<div class="title_txt">가격</div>
+        	<div class="divider"></div>
+        	<div class="price_policy">
+        		<div class="price_item">
+	        		<div>- 임대료 (일시불 선불)</div>
+	        		<div>&#8361; <%- house_info.monthly_rate_format -%> / 월 </div>
+        		</div>
+
+        		<div class="price_item">
+        			<div>- 공과금 (일시불 선불)</div>
+	        		<div>&#8361; <%- house_info.utility_fee_format -%> </div>
+        		</div>
+        		<div class="price_item">
+        			<div>- 퇴실 청소비 (일시불 선불)</div>
+	        		<div>&#8361; <%- house_info.cleaning_fee_format -%></div>
+        		</div>
+        		
+        	</div>
+		</section>
+
+		<section id="house_policy">
+			<div class="title_txt">이용 규칙</div>
+        	<div class="divider"></div>
+        	<div class="policy_container">
+				<%- house_info.house_policy -%>
+         	</div>
+		</section>
+
+	    <!-- house map -->
+<!-- 	    <section id="house_map" class="detail_section" style="width:100% !important">
+	    	<div class="title"> 주변 지역 </div>
+	    	<div id="map" style="height: 360px; width: 100%; margin: 10px 0">
+	    	</div>
 	    </section>
+
+ -->
+		<section id="direction">
+			<div class="title_txt">오시는 길</div>
+        	<div class="divider"></div>
+        	<div class="direction_item">
+				<%- house_info.addr_direction -%>
+    			<!-- 지하철: 정자역 분당선 + 신분당선 -->
+        	</div>	
+		    <div class="map_container">
+				<div id="map" style="width: 100%; height: 300px; border: 1px solid rgb(205, 205, 209)"></div>
+			</div>
+		</section>
+
+		<section id="house_review">
+			<div class="title_txt" style="display: flex;">
+				<div style="margin-right: 10px">후기 
+					<% if (house_info.house_review_count) { %>
+					(<%- house_info.house_review_count -%>) 
+					<% } %>
+				</div>
+				 <% if (house_info.house_review_count) { %>	
+				 <select class="star_rating overall_rating">
+	                <option value="1">1</option>
+	                <option value="2">2</option>
+	                <option value="3">3</option>
+	                <option value="4">4</option>
+	                <option value="5">5</option>
+	              </select>
+	              <% } %>
+			</div>
+        	<div class="divider"></div>
+        	<div class="review_container">
+        		<% if (review_list.length > 0) { %>
+				<% for(var i=0; i< review_list.length;i++) { %> 
+				<div class="review_item">
+	        		<div class="reviwer">
+		                <div class="chip">
+		                    <img src=" <%- review_list[i].profile_pic_url -%>">
+			                <span><%- review_list[i].name -%></span>
+		                </div>
+	        		</div>
+	        		<div class="rating">
+						  <select class="star_rating" id="reviewer_<%-i-%>">
+			                <option value="1">1</option>
+			                <option value="2">2</option>
+			                <option value="3">3</option>
+			                <option value="4">4</option>
+			                <option value="5">5</option>
+			              </select>
+			              <div class="created">
+			              	<%- review_list[i].created -%>
+			              </div>
+		         	</div>
+	        		<div class="comment">
+	        			<%-review_list[i].comment-%>
+	        		</div>
+        		</div>
+        		<% } } else { %>
+        			<div>아직 등록된 후기가 없습니다.</div>
+        		<% } %>
+         	</div>
+		</section>
+
+
+		<section id="house_host">
+			<div class="title_txt">호스트 정보</div>
+        	<div class="divider"></div>
+        	<div class="host_container">
+
+        		<% if(typeof host_info != 'undefined') { %>
+        		<div class="host">
+	                <div class="chip">
+	                    <img src=" <%- host_info.profile_pic_url -%>">
+		                <span><%- host_info.name -%></span>
+	                </div>
+        		</div>
+        		<div class="about">
+        			<%- host_info.about -%>
+        		</div>
+        		<% } %>
+         	</div>
+		</section>
+
+
+	    <section id="end_section" style="height: 30px">
+	    </section>
+    </div>
+	</div>
+    <!-- footer -->
+    <%- include('footer') -%>
+
 
 
 <script>
 
-	var card_top_offset = $('.card.search_bar').offset().top;
+$(window).on('load scroll resize', function(e) {
 
-	// TODO: on load, width 100% is slow. 
-	$(window).on('load scroll resize', function(e) {
-		var currentScroll = $(window).scrollTop();
-		var browserWidth = $(window).width() + 15;
+	var windowHeight = $(window).height();
+	//scroll ptr based on bottom of window
+	var currentScroll = $(window).scrollTop() + windowHeight;
 
-		if(browserWidth < 870) {
-			// console.log("hi")
-			// $('#house_intro .card.search_bar').removeAttr("style");
-			$('.card.search_bar').css({
-				position: 'static',
-				width: "100%",
-				border: "none",
-				padding: "0 60px"
-			});					
-		}
+	// console.log("window H = " + windowHeight)
+	// console.log("current sctoll = " + currentScroll)
 
-		else {
+	var card_height = $('.card.inquiry_card').height();
+	// console.log(card_height)
+	var card_left_offset = $('.card.inquiry_card').offset().left;
+	// console.log(card_left_offset)
 
-			if(currentScroll >= (card_top_offset - 130)) {
-				$('.card.search_bar').css({
-					position: 'fixed',
-					top:'150px',
-					right:$('.index_container.house_container').css("margin-right"),
-					'z-index': '1',
-					width: '300px',
-					padding: "44px 30px",
-					border: "1px solid #cdcdd1",
-					"border-radius": "1px"
-				});
-			}
+	// $('.card.inquiry_card').css({
+	// 	position: 'fixed',
+	// 	top:'100px',
+	// 	left: card_left_offset,
+	// 	'z-index': '1',
+	// 	// width: $(".map_container").width(),
+	// });
 
-			else {
-				$('.card.search_bar').css({
-					position: 'absolute',
-					top:'188px',
-					width: '300px',					
-					right:'0',
-					padding: "44px 30px",
-					border: "1px solid #cdcdd1",
-					"border-radius": "1px"
-				});
-			}	
-		}
+	var footer_top_offset = $("footer").offset().top;
 
-		// if(e.type == "resize") {
-		// 	if() {
+	// console.log(footer_top_offset)
 
-
-		// 	}
-		// }
-
-		// else if(e.type == "scroll") {
-
-			// if(currentScroll >= (card_top_offset - 130)) {
-			// 	$('.card.search_bar').css({
-			// 		position: 'fixed',
-			// 		top:'130px',
-			// 		right:$('.index_container.house_container').css("margin-right"),
-			// 		'z-index': '1'
-			// 	});
-			// }
-
-			// else {
-				// if(browserWidth < 870) {
-				// 	console.log("hi")
-				// 	$('.card.search_bar').css({
-
-				// 		// position: 'absolute',
-				// 		// top:'168px',
-				// 		// right:'0'
-				// 	});					
-				// }
-
-				// else {
-				// 	$('.card.search_bar').css({
-				// 		position: 'absolute',
-				// 		top:'168px',
-				// 		right:'0'
-				// 	});
-				// }
-			// }
-		// }
-	});
-
+	// if currentscroll reaches at the top of footer, shorten the height accordingly
+	// if(currentScroll >= footer_top_offset - 30) {
+	// 	var map_bottom_offset = currentScroll - footer_top_offset + 30;
+	// 	$('#map').height($('#map').height() - map_bottom_offset);
+	// }
+});
 
 	$(function() {
+
+	    $('select#num_guest').material_select();
 
 		console.log("loaded")
 
@@ -434,13 +566,24 @@
 					// var checkout_date_sec = dateStr;
 					var date_diff = checkout_date.diff(checkin_date, 'days')
 
-					var daily_rate = <%- house_info.daily_rate -%>;
-					var daily_rate_str = intToStringWithCommas(daily_rate);
+					var monthly_rate = "<%- house_info.monthly_rate -%>";
+					var utility_fee = "<%- house_info.utility_fee -%>";
+					var cleaning_fee = "<%- house_info.cleaning_fee -%>";
+					var daily_rate = Math.round(monthly_rate / 30);
 
-					var total_rate = daily_rate * date_diff; 
+					var total_monthly_rate = daily_rate * date_diff; 
+					var total_rate = parseInt(total_monthly_rate) + parseInt(utility_fee) + parseInt(cleaning_fee);
+
+					var utility_fee_str = intToStringWithCommas(utility_fee);
+					var cleaning_fee_str = intToStringWithCommas(cleaning_fee);
+					var total_monthly_rate_str = intToStringWithCommas(total_monthly_rate);
 					var total_rate_str = intToStringWithCommas(total_rate);
 
-					$('.price').html("&#8361;" + daily_rate_str + " x " + date_diff + " 박" + "<div style='text-align: right; padding:5px 0'><b>합계: &#8361;" + total_rate_str + "</b></div>").css({"padding": '20px 20px 0', 'float':'right'});
+					$('.calculated_rate').html(
+						"<div>임대료: " + "&#8361; " + total_monthly_rate_str +  " (" + date_diff + "일)</div>" +
+						"<div>공과금: " + "&#8361; " + utility_fee_str + "</div>" + 
+						"<div>퇴실 청소비: " + "&#8361; " + cleaning_fee_str + "</div><br>" + 
+						"<div>합계: " + "&#8361; " + total_rate_str + "</div>");
 				}
 			}
 		});
@@ -456,92 +599,6 @@ function intToStringWithCommas(num) {
 
 </script>
 
-<!-- 	    <section id="house_price" class="detail_section">
-			<div class="row">
-				<div class="col s2 m2 l2">
-					<div class="title"> 가격 정책 </div>
-				</div>
-				<div class="col s10 m10 l10">
-					<div class="content">
-						<p class="text">기본금액 (일시불 선불)</p>
-						<p class="text text_thick">입주일 수 x 월세 + 추가로 사용하는 일 수 일일 계산 </p>
-						<br>
-						<p class="text">공과금 (일시불 선불)</p>
-						<p class="text text_thick">&#8361; <%- house_info.utility_fee -%></p>
-						<br>
-						<p class="text">퇴실 청소비 (일시불 선불)</p>
-						<p class="text text_thick">&#8361; <%- house_info.cleaning_fee -%></p>
-					</div>
-				</div>
-			</div>
-	    </section>
- -->
-	    <section id="house_amenities" class="detail_section">
-			<div class="row">
-				<div class="col s12 m3 l3">
-					<div class="title"> 편의 및 안전 </div>
-				</div>
-				<div class="col s12 m9 l9">
-					<div class="content">
-						<% for(var i=0; i< amenities_list.length;i++) { %> 
-						<div class="col s6">
-							<div class="amenity_item">
-								<img class="icons" src="<%- amenities_list[i].icon_image -%>">
-								<span><%- amenities_list[i].name -%></span>
-							</div>
-						</div>
-						<% } %>
-					</div>
-					<!-- <div class="col s12 m4 l4"> -->
-					<!-- </div> -->
-				</div>
-			</div>
-	    </section>
-
-	    <section id="house_policy" class="detail_section">
-			<div class="row">
-				<div class="col s12 m3 l3">
-					<div class="title"> 이용규칙 </div>
-				</div>
-				<div class="col s12 m9 l9">
-					<div class="content">
-						<%- house_info.house_policy -%>
-
-						<!-- <p class="text">기본금액 (일시불 선불)</p> -->
-					</div>
-				</div>
-			</div>
-	    </section>
-
-	    <!-- house map -->
-	    <section id="house_map" class="detail_section" style="width:100% !important">
-	    	<div class="title"> 주변 지역 </div>
-	    	<div id="map" style="height: 360px; width: 100%; margin: 10px 0">
-
-	    	</div>
-	    </section>
-
-	    <section id="house_refund_policy" class="detail_section">
-			<div class="row">
-				<div class="col s12 m3 l3">
-					<div class="title"> 환불 정책 </div>
-				</div>
-				<div class="col s12 m9 l9">
-					<div class="content">
-						<%- house_info.cancellation_policy -%>
-
-						<!-- <p class="text">기본금액 (일시불 선불)</p> -->
-					</div>
-				</div>
-			</div>
-	    </section>
-	    <section id="end_section" style="height: 30px">
-	    </section>
-
-    </div>
-
-    <!-- footer -->
-    <%- include('footer') -%>
 
 	<script>
 	var map;
@@ -584,10 +641,10 @@ function intToStringWithCommas(num) {
 		  	pagination: '.swiper-pagination',
 		  	paginationClickable:true,
 		  	loop:true,
-		  	centeredSlides:true,
+		  	// centeredSlides:true,
 		  	initialSlide:0,
-		  	slidesPerView:3,
-		  	spaceBetween:6,
+		  	slidesPerView:1,
+		  	// spaceBetween:6,
 		  	keyboardControl:true,
 		  	nextButton: '.swiper-button-next',
 		  	prevButton: '.swiper-button-prev',
@@ -604,14 +661,21 @@ function intToStringWithCommas(num) {
 		// }
 
 		});
-
-
-
-		$('#star_rating').barrating({
+		var house_rating = "<%- house_info.house_rating -%>";
+		$('.overall_rating').barrating({
 			theme: 'fontawesome-stars-o',
-			initialRating: eval('rating'),
+			initialRating: house_rating,
 			readonly: true
 		})
+
+		var reviewer_rating_list = <%- JSON.stringify(review_list) -%>;
+		for(i in reviewer_rating_list) {
+			$('#reviewer_' + i).barrating({
+				theme: 'fontawesome-stars-o',
+				initialRating: reviewer_rating_list[i].rating_overall,
+				readonly: true
+			})
+		}
 
 	}); 
 	</script>

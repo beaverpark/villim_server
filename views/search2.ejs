@@ -51,15 +51,48 @@
   	}
 
  	#search_wrapper .complex_card .logo img {
- 		height: 20px;
+ 		height: 18px;
  	}
 
  	#search_wrapper .complex_card .title_txt {
- 		font-size: 32px;
+ 		font-size: 24px;
  	}
 
+ 	#search_wrapper .complex_card .sub_title_txt {
+ 		font-size: 14px;
+ 		font-weight: 600;
+ 	}
+
+	#search_wrapper .complex_card .name_section .name_wrapper {
+		display:flex; 
+		justify-content:space-between;
+ 	}
+
+	#search_wrapper .complex_card .name_section .type_txt {
+		font-size: 12px;
+		align-self: flex-end;
+	}
+
+ 	#search_wrapper .complex_card .capacity_section {
+ 		display: flex; 		
+ 	}
+
+ 	#search_wrapper .complex_card .capacity_item {
+ 		display: flex;
+ 		justify-content: center;
+ 		flex-basis: 25%;
+  	}
+
+ 	#search_wrapper .complex_card .capacity_section img {
+ 		height: 20px;
+ 		line-height: 20px;
+ 		padding-right: 8px;
+ 	}
+
+
  	#search_wrapper .complex_card .monthly_rate {
-		font-size: 17px;
+		font-size: 16px;
+		font-weight: 600;
  	}
 
  	#search_wrapper .complex_card .btn {
@@ -82,27 +115,55 @@
 		    <%- include('breadcrumbs') -%>
 
 		    <div class="complex_txt">
-		    	<%- dong -%> 인근 단지
+		    	<%- dong -%> 인근
 		    </div>
 		    <div class="dong_list">
-            <% for (i in complex_list) { %>
+            <% for (i in house_list) { %>
 				<div class="card complex_card">
-		            <div class="card-image" style="background-image: url(<%- complex_list[i].main_image -%>)">
+		            <div class="card-image" style="background-image: url(<%- house_list[i].main_image -%>)">
 		            </div>
 		            <div class="card-content">
 		            	<div class="name_section">
-		            		<div class="logo">
-					          <img src="/images/logos/villim_logo2_black.png">
+		            		<!-- <div class="logo"> -->
+					          <!-- <img src="/images/logos/villim_logo2_black.png"> -->
+		            		<!-- </div> -->
+		            		<div class="name_wrapper">
+			            		<div class="sub_title_txt"> 
+			            			<% if(house_list[i].complex_name) { %>
+			            			<%- house_list[i].complex_name -%>
+			            			<% } else { %>
+			            				<div style="visibility:hidden">space</div>
+			            			<% } %>
+			            		</div>
+			            		<div class="type_txt"> <%- house_list[i].house_type -%></div>
+							</div>
+
+		            		<div class="title_txt text_thick"> <%- house_list[i].name -%></div>
+		            	</div>
+		            	<div style=""><hr></div>
+		            	<div class="capacity_section">
+		            		<div class="capacity_item">
+		            			<img src="/images/icons/icon_man.png">
+		            			<div class="capacity_txt"><%- house_list[i].num_guest -%></div>
 		            		</div>
-		            		<div class="title_txt text_thick"> <%- complex_list[i].addr_complex -%></div>
-		            		<div class="main_txt"> <%- addr -%></div>
+		            		<div class="capacity_item">
+		            			<img src="/images/icons/icon_door.png">
+		            			<div class="capacity_txt"><%- house_list[i].num_bedroom -%></div>
+		            		</div>
+		            		<div class="capacity_item">
+		            			<img src="/images/icons/icon_bed.png">
+		            			<div class="capacity_txt"><%- house_list[i].num_bed -%></div>
+		            		</div>
+		            		<div class="capacity_item">
+		            			<img src="/images/icons/icon_bath.png">
+		            			<div class="capacity_txt"><%- house_list[i].num_bathroom -%></div>
+		            		</div>
 		            	</div>
-		            	<div style="padding: 14px 0"><hr></div>
+		            	<div style=""><hr></div>
 		            	<div class="price_section" style="text-align:right">
-		            		<div class="monthly_rate"> &#8361; <%- complex_list[i].monthly_rate -%> / 월 부터</div>
-		            		<div class="main_txt">타입별 비용 변동</div>
+		            		<div class="monthly_rate"> &#8361; <%- house_list[i].monthly_rate -%> / 월</div>
 		            	</div>
-	            		<a href="/s/<%- dong -%>/<%- complex_list[i].addr_complex -%>" class="btn teal_btn_color waves-effect waves-light">이 지점 둘러보기</a>
+	            		<a href="/s/<%-dong-%>/<%-house_list[i].name-%>/<%-house_list[i].id-%>" class="btn teal_btn_color waves-effect waves-light text_thick" target="_blank">집 둘러보기</a>
 		            </div>
 				</div>
 			<% } %>
@@ -127,11 +188,11 @@ var map;
 var geocoder;
 var home_icon;
 var markersArray = [];
+var infowindowArray = [];
 
 function initMap() {
 
   map = new google.maps.Map(document.getElementById('map'), {
-	center: {lat: <%- complex_list[0].latitude -%>, lng: <%- complex_list[0].longitude -%>},
 	zoom: 14,
     minZoom: 10,
     maxZoom: 16,
@@ -149,9 +210,9 @@ function initMap() {
   });
  
   home_icon = {
-    url: "/images/icons/red_home_icon.png",
+    url: "/images/icons/gold_house.png",
     scaledSize: new google.maps.Size(30,30),
-    anchor: new google.maps.Point(10, 12),
+    anchor: new google.maps.Point(15, 15),
   }
 
 	google.maps.event.addDomListener(window, "load", function() {
@@ -175,17 +236,17 @@ function initMap() {
 
 
 $(window).on('load', function(e) {
-	var complex_list = <%- JSON.stringify(complex_list) -%>;
-    // map.setCenter({lat: complex_list[0].latitude, lng: complex_list[0].longitude});
-  
-    for(i in complex_list) {
-	    var marker = new google.maps.Marker({
-	      map:map,
-	      icon: home_icon,
-	      position: {lat: complex_list[i].latitude , lng: complex_list[i].longitude}
-	    });
-	    markersArray.push(marker);
-    }
+	var house_list = <%- JSON.stringify(house_list) -%>;
+ 
+    for(i in house_list) {
+	  var infowindow = new google.maps.InfoWindow({
+	  	map:map,
+	    content: "&#8361; " + house_list[i].monthly_rate,
+	    position: {lat: house_list[i].latitude , lng: house_list[i].longitude}
+	  });
+	  infowindowArray.push(infowindow);
+	}
+
 });
 
 
@@ -215,15 +276,6 @@ $(window).on('load scroll resize', function(e) {
 	}
 });
 
-
-$(function() {
-
-	// $('.complex_card button').on('click', function() {
-
-	// 	$('.btn_div a').attr('href', '/s/' + selected_val);
-	// });
-
-});
 </script>
 
 

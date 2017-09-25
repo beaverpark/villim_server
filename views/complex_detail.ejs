@@ -176,17 +176,18 @@
     <div class="container nav_container complex_detail_container">
 		<!-- <section id="empty" style="height: 400px"></section> -->
 
-		<section id="description">
+<!-- 		<section id="description">
 			<div class="title_txt"><%- dong -%> <%- complex -%>에 대하여</div>
         	<div class="divider"></div>
-        	<div>
+        	<div> -->
         		<!-- TODO change this after textarea fixed -->
+        		<% if(false) {%>
         		<% var paragraph = house_info.description.split("  ") %>
         		<% for (i in paragraph) { %>
         			<p><%- paragraph[i] -%></p>
-        		<% } %>
-        	</div>
-		</section>
+        		<% } }%>
+<!--         	</div>
+		</section> -->
 
 		<section id="amenities">
 			<div class="title_txt">편의 및 안전</div>
@@ -257,15 +258,6 @@
 			</div>
 		</section>
 
-		<section id="manager">
-			<div class="title_txt">지역 매니저</div>
-        	<div class="divider"></div>
-        	<div class="manager_container">
-        		<div>
-
-        		</div>
-        	</div>
-		</section>
 	</div>
 
 <style >

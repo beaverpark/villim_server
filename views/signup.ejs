@@ -3,12 +3,13 @@
   <!-- head -->
   <%- include('header') -%>
 
-  <body>
-    <!-- navbar -->
+ <style>
 
-    <a href="/" class="">
-        <img class="nav_logo" src="/images/logos/villim_main_logo_lg.png">
-    </a>
+  </style>
+
+
+  <body>
+      <%- include('navbar') -%>
 
     <div class="container form_container">
         <h4 class="text_thick">  
@@ -26,19 +27,19 @@
         <% } else { %>        
           <form action="/admin/signup" method="post">          
         <% } %>
-            <div class="row row_form">
+            <div class="row row_form signup_form">
                 <% if (typeof admin === 'undefined') { %>
-                	<div class="input-field col s5">
-                      <i class="material-icons prefix">account_circle</i>
+                	<div class="col s5">
+                      <!-- <i class="material-icons prefix">account_circle</i> -->
                       <input id="lastname" name="lastname" type="text" class="validate">
                       <label for="lastname">성</label>
                     </div>
-                    <div class="input-field col s7">
+                    <div class="col s7">
                       <input id="firstname" name="firstname" type="text" class="validate">
                       <label for="firstname">이름</label>
                     </div>
                 <% } else { %>
-                    <div class="input-field col s12"> 
+                    <div class="col s12"> 
                         <i class="material-icons prefix">account_circle</i>
                         <input id="name" name="name" type="text" class="validate">
                         <label for="name">이름</label>

@@ -85,15 +85,10 @@ $(document).ready(function(){
     
             <% if(!user) { %>
               <li><a href="/login"> 로그인 </a></li>
-
             <% } else if(user.type == 'user') { %>
               <li style="text-align: center">
                 <div class="chip navbar_chip">
-                    <% if (user.profile_pic_url) { %>
                     <img style="margin: 0" src=" <%- user.profile_pic_url -%>">                  
-                    <% } else {%>
-                    <img style="margin: 0" src="/images/icons/default_profile.png">
-                    <% } %>
                 </div>
                 <div class="navbar_chip_dropdown">
                    <%- user.username -%>님
@@ -103,8 +98,7 @@ $(document).ready(function(){
               <li><a href="/dashboard">내 페이지</a></li>
               <li><a href="/logout">로그아웃</a></li>
             <% } %>
-              <li><a href="/s">방 찾기</a></li>
-              <li><a href="/be-host_kor">관리문의</a></li>
+              <li><a href="/about" class="waves-effect waves-light"> 소개 </a></li>
           </ul>
       </div>
     </div>

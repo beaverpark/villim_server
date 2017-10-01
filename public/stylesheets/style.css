@@ -302,6 +302,17 @@ nav.breadcrumbs a {
   	}*/
 }
 
+@media screen and (max-width:1200px) {
+	body .house_container .house_intro_container {
+		position: static;
+	}
+
+	body .house_container #house_intro {
+		position: static;
+	}
+}
+
+
 @media screen and (min-width:1201px) {
   	body #search_wrapper .complex_list_container {
   		width: 65%;
@@ -337,8 +348,6 @@ nav.breadcrumbs a {
 	body .house_container .rest_container {
 		width: 60%;
 	}
-
-
 }
 
 

@@ -51,8 +51,13 @@
 		margin: 10px 0 26px;
 	}
 
+	.container.house_container .house_intro_container {
+		position: relative;
+	}
+
   	section#house_intro  {
-  		padding: 30px 0;
+  		position: absolute;
+  		width: 100%;
   	}
 
 	section#house_intro .inquiry_card_container {
@@ -486,48 +491,92 @@
     <!-- footer -->
     <%- include('footer') -%>
 
+	<script>
+	$(window).on('load scroll resize', function(e) {
+		var windowHeight = $(window).height();
+		var currentScroll = $(window).scrollTop() + 100;
+		// console.log(currentScroll)
+		var card_container_top_offset = $('.house_intro_container').offset().top;
+		// console.log(card_container_top_offset)
 
+		var card_height = $('section#house_intro').outerHeight();
+		// console.log("card height = " + card_height)
 
-<script>
+		var footer_top_offset = $("footer").offset().top;
+		// console.log("footer_top_offset = " + footer_top_offset)
 
-$(window).on('load scroll resize', function(e) {
+		if(currentScroll >= card_container_top_offset) {
+			var offset = currentScroll - card_container_top_offset;
+			// console.log("offset = " + offset)
+			// console.log("currentScroll + card_height ")
+			// console.log(currentScroll + card_height)
+			if(currentScroll + card_height < footer_top_offset) {
+				// console.log("2")
+				$('section#house_intro').css({
+					top: offset,
+					bottom: 'auto'
+				});
+			}
 
-	var windowHeight = $(window).height();
-	//scroll ptr based on bottom of window
-	var currentScroll = $(window).scrollTop() + windowHeight;
+			else {
+				// console.log("1")
+				$('section#house_intro').css({
+					bottom: 0,
+					top: "auto"
+				});
+			}
+		}
 
-	// console.log("window H = " + windowHeight)
-	// console.log("current sctoll = " + currentScroll)
+		else {
+			$('section#house_intro').css({
+				top: 0,
+				bottom: "auto"
+			})	
+		}
+	});
 
-	var card_height = $('.card.inquiry_card').height();
-	// console.log(card_height)
-	var card_left_offset = $('.card.inquiry_card').offset().left;
-	// console.log(card_left_offset)
+	// convert integer to comma separated (every 1000th) string
+	// ex: 19500 --> 19,500 
+	function intToStringWithCommas(num) {
+		return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	}
 
-	// $('.card.inquiry_card').css({
-	// 	position: 'fixed',
-	// 	top:'100px',
-	// 	left: card_left_offset,
-	// 	'z-index': '1',
-	// 	// width: $(".map_container").width(),
-	// });
+	var map;
+	function initMap() {
+		map = new google.maps.Map(document.getElementById('map'), {
+			center: {lat: <%- house_info.latitude -%>, lng: <%- house_info.longitude -%>},
+			zoom: 14,
+			minZoom: 10,
+			maxZoom: 17,
+			disableDefaultUI: true
+		});
 
-	var footer_top_offset = $("footer").offset().top;
+		var home_icon = {
+			url: "/images/icons/red_home_icon.png",
+			scaledSize: new google.maps.Size(20,20),
+	        anchor: new google.maps.Point(10, 12),
+		}
 
-	// console.log(footer_top_offset)
+		var marker = new google.maps.Marker({
+			position:{lat: <%- house_info.latitude -%>, lng: <%- house_info.longitude -%>},
+			map:map,
+			icon: home_icon
+		});
 
-	// if currentscroll reaches at the top of footer, shorten the height accordingly
-	// if(currentScroll >= footer_top_offset - 30) {
-	// 	var map_bottom_offset = currentScroll - footer_top_offset + 30;
-	// 	$('#map').height($('#map').height() - map_bottom_offset);
-	// }
-});
+		var circle = new google.maps.Circle({
+	        strokeColor: 'white',
+	        strokeOpacity: 0.9,
+	        strokeWeight: 2,
+	        fillColor: 'white',
+	        fillOpacity: 0.6,
+	        map: map,
+	        center: map.center,
+	        radius: 200
+		});
+	}
 
 	$(function() {
-
 	    $('select#num_guest').material_select();
-
-		console.log("loaded")
 
 		var checkin = flatpickr("#checkin_date_picker", {
 			minDate: new Date(),
@@ -588,55 +637,7 @@ $(window).on('load scroll resize', function(e) {
 			}
 		});
 
-	});
 
-// convert integer to comma separated (every 1000th) string
-// ex: 19500 --> 19,500 
-function intToStringWithCommas(num) {
-	return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
-
-</script>
-
-
-	<script>
-	var map;
-	function initMap() {
-		map = new google.maps.Map(document.getElementById('map'), {
-			center: {lat: <%- house_info.latitude -%>, lng: <%- house_info.longitude -%>},
-			zoom: 14,
-			minZoom: 10,
-			maxZoom: 17,
-			disableDefaultUI: true
-		});
-
-		var home_icon = {
-			url: "/images/icons/red_home_icon.png",
-			scaledSize: new google.maps.Size(20,20),
-            anchor: new google.maps.Point(10, 12),
-		}
-
-		var marker = new google.maps.Marker({
-			position:{lat: <%- house_info.latitude -%>, lng: <%- house_info.longitude -%>},
-			map:map,
-			icon: home_icon
-		});
-
-
-		var circle = new google.maps.Circle({
-            strokeColor: 'white',
-            strokeOpacity: 0.9,
-            strokeWeight: 2,
-            fillColor: 'white',
-            fillOpacity: 0.6,
-            map: map,
-            center: map.center,
-            radius: 200
-		});
-	}
-
-	$(function() {
 		var swpier = new Swiper('.swiper-container', {
 		  	pagination: '.swiper-pagination',
 		  	paginationClickable:true,
@@ -648,8 +649,6 @@ function intToStringWithCommas(num) {
 		  	keyboardControl:true,
 		  	nextButton: '.swiper-button-next',
 		  	prevButton: '.swiper-button-prev',
-
-
 	  	// slidesOffsetBefore: 10,
 	// 		effect: 'coverflow',
 		// coverflow: {
@@ -659,8 +658,8 @@ function intToStringWithCommas(num) {
 		// 	modifier: 1,
 		// 	slideShadows : false,
 		// }
-
 		});
+
 		var house_rating = "<%- house_info.house_rating -%>";
 		$('.overall_rating').barrating({
 			theme: 'fontawesome-stars-o',
@@ -676,7 +675,6 @@ function intToStringWithCommas(num) {
 				readonly: true
 			})
 		}
-
 	}); 
 	</script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDIKYpr3qNxWm2lC6VlVhoIFt3r1xy8dns&callback=initMap" async defer>

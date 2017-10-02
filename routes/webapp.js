@@ -401,7 +401,7 @@ function getHostingHs(user_id, callback) {
 }
 
 function getPendingRs(user_id, callback) {
-	var selectQuery = "select r.checkin, r.checkout, format(r.price_total, 0) as price_total, r.created, h.id, h.name, h.addr_summary, h.main_image from reservation r inner join house h on r.house_id = h.id where r.status = 0 and r.user_id = ?";
+	var selectQuery = "select r.checkin, r.checkout, format(r.price_total, 0) as price_total, r.created, h.id, h.name, h.addr_dong, h.addr_summary, h.main_image from reservation r inner join house h on r.house_id = h.id where r.status = 0 and r.user_id = ?";
 	return db.query(selectQuery, [user_id], callback);
 }
 

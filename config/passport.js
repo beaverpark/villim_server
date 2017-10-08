@@ -71,10 +71,10 @@ module.exports = function(passport, connection) {
                         lastname: req.body.lastname,
                         password: bcrypt.hashSync(password, null, null)  // use the generateHash function in our user model
                     };
+                    var default_profile_pic_url = "/images/icons/default_profile.png";
+                    var insertQuery = "INSERT INTO user ( email, password, firstname, lastname, profile_pic_url, created) values (?,?,?,?,?,?)";
 
-                    var insertQuery = "INSERT INTO user ( email, password, firstname, lastname, created) values (?,?,?,?,?)";
-
-                    connection.query(insertQuery,[newUser.email, newUser.password, newUser.firstname, newUser.lastname, created_at],function(err, rows) {
+                    connection.query(insertQuery,[newUser.email, newUser.password, newUser.firstname, newUser.lastname, default_profile_pic_url, created_at],function(err, rows) {
                         newUser.id = rows.insertId;
                         console.log("user created");
                         return done(null, newUser);

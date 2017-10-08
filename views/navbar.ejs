@@ -20,6 +20,7 @@ $(document).ready(function(){
     background-color: white;
     font-size: 15px;
     color: #2F6D81;
+    margin: 0;
     /*color: rgba(0,0,0,0.7);*/
   }
 
@@ -40,6 +41,12 @@ $(document).ready(function(){
     padding-left: 140px;
   }
 
+  #dropdown .chip_container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
 </style>
 
 <div class="navbar-fixed">
@@ -52,53 +59,70 @@ $(document).ready(function(){
         <ul id="middle_content" class="nav_text">
             <!-- <li class="nav_txt"><a href="/s" class="waves-effect waves-light"> 방 찾기 </a></li> -->
             <li class="nav_txt"><a href="/about" class="waves-effect waves-light"> 소개 </a></li>
+            <li class="nav_txt"><a href="#" class="waves-effect waves-light"> 임대 관리 </a></li>
         </ul>
 
         <ul id="side_content" class="nav_text right">
           <% if(!user) { %>
-            <li class="nav_txt"><a href="/login" class="waves-effect"> 로그인 </a></li>
-          <% } else if(user.type == 'user') { %>
+            <li class="nav_txt"><a href="/login" class="waves-effect waves-light"> 로그인 </a></li>
+          <% } else { %>
             <li id="profile_drop">
               <a class="dropdown-button" href="#!" data-beloworigin="true" data-activates="profile_dropdown">
                 <div class="chip navbar_chip">
-                  <% if (user.profile_pic_url) { %>
-                  <img src=" <%- user.profile_pic_url -%>">                  
-                  <% } else {%>
-                  <img src="/images/icons/default_profile.png">
+                  <% if(user.type == 'user') { %>
+                    <img src="<%- user.profile_pic_url -%>">
+                    <%- user.username -%>님
+                  <% } else if(user.type == 'admin') { %>
+                    <%- user.name -%> 어드민님
                   <% } %>
-                  <%- user.username -%>님
                 </div>
               </a>
             </li>
-
-          <% } %>    
-
+          <% } %>
           <li id="drop" style="display:none"><a class="dropdown-button" href="#!" data-beloworigin="true" data-activates="dropdown"><i class="material-icons">menu</i></a></li>
         </ul>
 
+        <% if(user) { %>
           <ul id="profile_dropdown" class="dropdown-content">
-            <li><a href="/dashboard">내 페이지 <i class="material-icons dropdown_icons">home</i></a></li>
-            <li><a href="/logout">로그아웃 <i class="material-icons dropdown_icons">person_outline</i></a></li>
+            <% if(user.type == 'user') { %>
+              <li><a href="/dashboard">내 페이지 <i class="material-icons dropdown_icons">home</i></a></li>
+            <% } else if(user.type == 'admin') { %>
+              <li><a href="/admin">어드민 대시보드<i class="material-icons dropdown_icons">home</i></a></li>
+            <% } %>
+              <li><a href="/logout">로그아웃 <i class="material-icons dropdown_icons">person_outline</i></a></li>
           </ul>
+        <% } %>
 
           <ul id="dropdown" class="dropdown-content">
-    
             <% if(!user) { %>
-              <li><a href="/login"> 로그인 </a></li>
-            <% } else if(user.type == 'user') { %>
-              <li style="text-align: center">
-                <div class="chip navbar_chip">
-                    <img style="margin: 0" src=" <%- user.profile_pic_url -%>">                  
-                </div>
-                <div class="navbar_chip_dropdown">
-                   <%- user.username -%>님
-                </div>
-              </li>
-              <li class="divider" style="margin-top:10px"></li>
-              <li><a href="/dashboard">내 페이지</a></li>
-              <li><a href="/logout">로그아웃</a></li>
+              <li><a href="/login" class="waves-effect waves-light"> 로그인 </a></li>
+            <% } else { %>
+              <!-- <li style="text-align: center"> -->
+              <div class="chip_container">
+                <% if(user.type == 'user') { %>
+                  <div class="chip navbar_chip">
+                    <img style="margin: 0" src=" <%- user.profile_pic_url -%>">
+                  </div>
+                  <div class="navbar_chip_dropdown">
+                     <%- user.username -%>님
+                  </div>
+                <% } else if(user.type == 'admin') { %>
+                  <div class="navbar_chip_dropdown">
+                     <%- user.name -%> 어드민님
+                  </div>
+                <% } %>
+              <!-- </li> -->
+              </div>
+              <li class="divider"></li>
+                <% if(user.type == 'user') { %>
+                  <li><a href="/dashboard" class="waves-effect waves-light">내 페이지</a></li>
+                <% } else if(user.type == 'admin') { %>
+                  <li><a href="/admin" class="waves-effect waves-light">어드민 대시보드</a></li>
+                <% } %>
+                  <li><a href="/logout" class="waves-effect waves-light">로그아웃</a></li>
             <% } %>
               <li><a href="/about" class="waves-effect waves-light"> 소개 </a></li>
+              <li><a href="#" class="waves-effect waves-light"> 임대 관리 </a></li>
           </ul>
       </div>
     </div>

@@ -306,11 +306,24 @@ router.get('/about', function(req, res, next) {
 
 });
 
-router.get('/be-host_en', function(req, res, next) {
+router.get('/be-host', function(req, res, next) {
+	var user;
+	if(req.isAuthenticated()) {
+		user = req.user;
+		user['username'] = req.user.lastname + req.user.firstname;
+	}
+	var	context = {};
+	context['user'] = user; 
 
-	res.render('be-host_en');
-
+	res.render('be-host', context);
 });
+
+
+// router.get('/be-host_en', function(req, res, next) {
+
+// 	res.render('be-host_en');
+
+// });
 
 // router.get('/s', function(req, res) {
 // 	res.render('search2')

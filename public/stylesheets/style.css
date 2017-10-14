@@ -535,6 +535,18 @@ footer#index_footer ul > li > a {
 		font-size: 15px;
 	}
 	/* footer end */
+
+
+ 	body #search_wrapper .dong_list {
+  		display:flex;
+	    flex-flow: row wrap;
+	    justify-content: space-between;
+  	}
+
+	body #search_wrapper .complex_card {
+		flex-basis: 48%;
+	}
+
 }
 
 @media only screen and (min-width: 768px) {
@@ -631,6 +643,29 @@ footer#index_footer ul > li > a {
 		font-size: 15px;
 	}
 	/* footer end */
+
+
+  	body #search_wrapper .complex_list_container {
+  		width: 50%;
+  	}
+
+  	body #search_wrapper .map_container {
+  		display: block;
+  		width: 50%;
+  	}
+
+	body #search_wrapper .complex_card {
+		flex-basis: 100%;
+	}
+
+	body #search_wrapper .dong_list {
+		margin-right: 30px;
+	}
+
+  	body .container.nav_container.search_container {
+  		margin-right: 0;
+  		width: 92%;
+  	}
 }
 
 
@@ -684,7 +719,51 @@ footer#index_footer ul > li > a {
 	}
 	/* index villim_intro sections end */
 
+
+
+  	body #search_wrapper .complex_list_container {
+  		width: 60%;
+  	}
+
+  	body #search_wrapper .map_container {
+  		width: 40%;
+  	}
+
+	body #search_wrapper .dong_list {
+		margin-right: 14px;
+	}
+
+	body #search_wrapper .complex_card {
+		flex-basis: 49%;
+	}
 }
+
+@media only screen and (min-width: 1200px) {
+
+
+}
+
+
+@media only screen and (min-width: 1400px) {
+
+  	body #search_wrapper .complex_list_container {
+  		width: 65%;
+  	}
+
+  	body #search_wrapper .map_container {
+  		width: 35%;
+  	}
+
+	body #search_wrapper .dong_list {
+		margin-right: 20px;
+	}
+
+	body #search_wrapper .complex_card {
+		flex-basis: 32%;
+	}
+
+}
+
 
 
 @media only screen and (max-width: 480px) {
@@ -776,12 +855,9 @@ footer#index_footer ul > li > a {
 
 /**** 2. container, house_detail media ****/
 @media screen and (max-width: 768px) {
-  	body .container.nav_container.search_container {
-  		width: 85%;
-  		margin: 0 auto;
-  	}
 
-  	body #search_wrapper .complex_list_container {
+
+/*  	body #search_wrapper .complex_list_container {
   		width: 100%;
   	}
 
@@ -791,7 +867,7 @@ footer#index_footer ul > li > a {
 
   	body #search_wrapper .dong_list {
   		margin-right: 0;
-  	}
+  	}*/
 }
 
 @media screen and (max-width: 870px) {
@@ -844,24 +920,7 @@ footer#index_footer ul > li > a {
 
 
 @media screen and (min-width:1201px) {
-  	body #search_wrapper .complex_list_container {
-  		width: 65%;
-  	}
 
-  	body #search_wrapper .map_container {
-  		width: 35%;
-  	}
-
-  	body #search_wrapper .dong_list {
-  		display:flex;
-
-	    flex-flow: row wrap;
-  	}
-
-	body #search_wrapper .complex_card {
-		flex-basis: 48%;
-		margin-right: auto;
-	}
 
 	body section#house_pics .swiper-container {
 		height: 600px;

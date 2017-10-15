@@ -221,6 +221,98 @@ p {
 /******* login, signup end *******/
 
 
+
+/******* dashboard start *******/
+
+.dashboard_tab_nav {
+	/*height: 64px;*/
+	height: 48px;
+}
+
+.dashboard_tab_row {
+	position:fixed;
+	border-top: 2px solid #e0e0e0;
+	border-bottom: 2px solid #e0e0e0;
+	width: 100%;
+	z-index: 10;
+}
+
+.dashboard_tab_row .tabs .empty_tab > a {
+/*	width:10px;
+	height: 10px;*/
+}
+
+.dashboard_tab_row .tabs .tab {
+	flex-grow: 1;
+	/*flex-grow: 0;*/
+	padding: 0 10px;
+}
+
+.dashboard_tab_row .tabs .indicator {
+	background-color: #2F6D81;
+	height: 3px;
+}
+
+.dashboard_tab_row .tabs .tab > a {
+	color: black;
+	overflow: visible;
+	font-size: 14px;
+	/*font-size: 16px;*/
+}
+
+.dashboard_tab_row .tabs .tab > a.active, .dashboard_tab_row .tabs .tab > a:hover {
+	color: #2F6D81;
+}
+
+
+.dashboard_content {
+	padding: 30px 10px;
+}
+
+.dashboard_content .title_txt {
+	font-size: 16px;
+	padding-top:16px;
+	font-weight: 600;
+}
+
+.dashboard_content .main_txt {
+	font-size: 14px;
+}
+
+.dashboard_content .sub_txt {
+	font-size: 12px;
+	padding: 3px 0;
+}
+
+.dashboard_content#reservation .card-image {
+	width: 42%;
+	height: 140px;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+}
+
+/*.dashboard_content#reservation .card-image img {
+	height: 140px;
+	width: 140px;
+}*/
+
+.dashboard_content#reservation .card-content {
+	width: 58%;
+	flex-direction: column;
+	/*align-items: center;*/
+	padding: 10px;
+}
+
+.dashboard_content#reservation .price_total {
+	padding: 6px 0;
+	color: #D52B1E;
+}
+
+
+/******* dashboard end *******/
+
+
 /******* index3, be-host start *******/
 section#intro {
 	width: 100%;
@@ -594,6 +686,26 @@ footer#index_footer ul > li > a {
 	}
 
 	/* house detail end */
+
+	/* dashboard start */
+	.dashboard_content {
+		padding: 30px 20px;
+	}
+
+	.dashboard_content#reservation .title_txt {
+		font-size: 18px;
+	}
+
+	.dashboard_content#reservation .main_txt {
+		font-size: 15px; 
+	}
+
+	.dashboard_content#reservation .sub_txt {
+		font-size: 13px; 
+	}
+	
+	/* dashboard end */
+
 }
 
 @media only screen and (min-width: 480px) {
@@ -617,6 +729,20 @@ footer#index_footer ul > li > a {
 		height: 320px;
 	}
 	/* house detail end */
+
+
+	/* dashboard start */
+
+	.dashboard_content#reservation .card-image {
+		width: 34%;
+		height: 150px;
+	}
+
+	.dashboard_content#reservation .card-content {
+		width: 66%;
+	}
+	/* dashboard end */
+
 }
 
 
@@ -829,6 +955,45 @@ footer#index_footer ul > li > a {
 	}
 
 	/* house detail end */
+
+
+	/* dashboard start */
+
+	.dashboard_content#reservation {
+		display: flex;
+	}
+
+	.dashboard_content#reservation .pending_list, 
+	.dashboard_content#reservation .confirmed_list {
+		flex-basis:50%;
+		padding: 0 10px;
+	}
+
+	.dashboard_content#reservation .title_txt {
+		font-size: 16px;
+	}
+
+	.dashboard_content#reservation .main_txt {
+		font-size: 14px;
+	}
+
+	.dashboard_content#reservation .sub_txt {
+		font-size: 12px;
+		padding: 2px 0;
+	}
+
+	.dashboard_content#reservation .card-image {
+		width: 40%;
+		height: 130px;
+	}
+
+	.dashboard_content#reservation .card-content {
+		width: 60%;
+	}
+
+
+	/* dashboard end */
+
 }
 
 @media only screen and (min-width: 768px) {
@@ -992,6 +1157,26 @@ footer#index_footer ul > li > a {
 	/* house detail end */
 
 
+	/* dashboard start */
+
+	.dashboard_content#reservation .title_txt {
+		font-size: 18px;
+	}
+
+	.dashboard_content#reservation .main_txt {
+		font-size: 16px;
+	}
+
+	.dashboard_content#reservation .sub_txt {
+		font-size: 14px;
+		padding: 3px 0;
+	}
+
+	.dashboard_content#reservation .card-image {
+		height: 160px;
+	}
+
+	/* dashboard end */
 }
 
 
@@ -1088,6 +1273,28 @@ footer#index_footer ul > li > a {
 
 	/* house detail end */
 
+	/* dashboard start */
+
+	.dashboard_content#reservation .pending_list, 
+	.dashboard_content#reservation .confirmed_list {
+		padding: 0 16px;
+	}
+
+	.dashboard_content#reservation .title_txt {
+		font-size: 20px;
+	}
+
+	.dashboard_content#reservation .main_txt {
+		font-size: 17px;
+	}
+
+	.dashboard_content#reservation .sub_txt {
+		font-size: 15px;
+		padding: 3px 0;
+	}
+	/* dashboard end */
+
+
 }
 
 @media only screen and (min-width: 1200px) {
@@ -1107,6 +1314,18 @@ footer#index_footer ul > li > a {
 		font-size: 18px;
 	}
 
+	/* dashboard start */
+
+	.dashboard_content#reservation .pending_list, 
+	.dashboard_content#reservation .confirmed_list {
+		padding: 0 30px;
+	}
+
+	.dashboard_content#reservation .card-image {
+		height: 180px;
+	}
+
+	/* dashboard end */
 
 }
 
@@ -1257,8 +1476,6 @@ footer#index_footer ul > li > a {
 		width: 85%;
 		max-width: none;
 	}
-
-
 }
 
 @media only screen and (min-width:1030px) {
@@ -1540,54 +1757,6 @@ footer#index_footer .dropdown-content li > a {
 */
 
 
-/* dashboard css */
-
-.dashboard_row {
-	border-top: 2px solid #e0e0e0;
-	border-bottom: 2px solid #e0e0e0;
-}
-
-		.dashboard_tab_row {
-			border-top: 2px solid #e0e0e0;
-			border-bottom: 2px solid #e0e0e0;
-		}
-
-		.dashboard_tab_row li.tab > a {
-			padding: 0;
-		}
-
-		.dashboard_content {
-			width: 100%;
-			height: 500px; 
-			padding: 20px 110px;
-		}
-
-
-		.dashboard_content .title_txt {
-			font-size: 18px;
-		}
-
-		.dashboard_content .main_txt {
-			font-size: 14px; 
-		}
-
-		.dashboard_content .sub_txt {
-			font-size: 12px; 
-		}
-
-		.dashboard_content#reservation .card-content {
-			padding: 20px 10px;
-		}
-
-		.dashboard_content#my_houses .collapsible-header {
-			color:#2F6D81;
-		} 
-
-
-		.dashboard_content#my_houses .collapsible-item {
-			padding: 3px 0;
-		}
-
 
 /* general input css */
 /*body input[type=text] {
@@ -1666,17 +1835,7 @@ body .select-wrapper input.select-dropdown {
 
 
 
-/* Overwrite materialize tabs css */
-.tabs .indicator {
-	background-color: black  !important;
-	height: 3px !important;
-}
 
-.tabs .tab > a {
-	color: black !important;
-	overflow: visible !important;
-	font-size: 16px !important;
-}
 
 
 /*

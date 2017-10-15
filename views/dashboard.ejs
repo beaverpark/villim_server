@@ -1,172 +1,95 @@
 <!DOCTYPE html>
-<script>
-
-</script>
-	<style>
-/*		.dashboard_tab_row {
-			border-top: 2px solid #e0e0e0;
-			border-bottom: 2px solid #e0e0e0;
-		}
-
-		.dashboard_tab_row li.tab > a {
-			padding: 0;
-		}
-
-		.dashboard_content {
-			width: 100%;
-			height: 500px; 
-			padding: 20px 110px;
-		}
-
-
-		.dashboard_content .title_txt {
-			font-size: 18px;
-		}
-
-		.dashboard_content .main_txt {
-			font-size: 14px; 
-		}
-
-		.dashboard_content .sub_txt {
-			font-size: 12px; 
-		}
-
-		.dashboard_content#reservation .card-content {
-			padding: 20px 10px;
-		}
-
-		.dashboard_content#my_houses .collapsible-header {
-			color:#2F6D81;
-		} 
-
-
-		.dashboard_content#my_houses .collapsible-item {
-			padding: 3px 0;
-		}*/
-
-	</style>
-
 <html>
   <!-- head -->
   <%- include('header') -%>
 <body>
     <%- include('navbar') -%>
-    <div style="height:10px"></div>
-	<div class="row dashboard_tab_row">
-		<div class="col s12">
+    <div class="dashboard_tab_nav">
+		<div class="dashboard_tab_row">
 			<ul class="tabs">
-			<li class="col s1"></li>
-			<!-- <li class="tab col s1"><a href="#home" class="active">알림판</a></li> -->
-			<!-- <li class="tab col s1"><a href="#room_list">방 목록</a></li> -->
-			<li class="tab col s2"><a href="#reservation">예약 현황</a></li>
-			<!-- <li class="tab col s2"><a href="#my_houses">내 집 목록</a></li> -->
-			
-			<li class="tab col s2"><a href="#profile">프로필</a></li>
-			<li class="tab col s2"><a href="#setting">환경 설정</a></li>
+				<!-- <li class="tab col s1"><a href="#home" class="active">알림판</a></li> -->
+				<!-- <li class="tab col s1"><a href="#room_list">방 목록</a></li> -->
+				<li class="empty_tab"></li>
+				<li class="tab"><a href="#reservation">예약 현황</a></li>
+				<!-- <li class="tab col s2"><a href="#my_houses">내 집 목록</a></li> -->
+				
+				<li class="tab"><a href="#profile">프로필</a></li>
+				<li class="tab"><a href="#setting">환경 설정</a></li>
 			</ul>
 		</div>
 	</div>
+	<div id="reservation" class="dashboard_content">
+		<div class="pending_list">
+			<div class="title_txt"> 예약 요청 목록 </div>
+			<% if(typeof pendingRs !== 'undefined' && pendingRs.length > 0) { %>
+				<!-- <ul class="collapsible" data-collapsible="accordion"> -->
+				<% for(var i=0; i <pendingRs.length; i++) { %>
 
-	<div id="reservation" class="dashboard_content" style="overflow:scroll">
-		<div class='row'>
-			<div class='col s12 m6 l6'>
-				<div class="text_thick title_txt"> 예약 요청 목록 </div>
-				<div style="">
-					<% if(typeof pendingRs !== 'undefined' && pendingRs.length > 0) { %>
-						<!-- <ul class="collapsible" data-collapsible="accordion"> -->
-						<% for(var i=0; i <pendingRs.length; i++) { %>
+				  <div class="card horizontal">
+			    	<div class="card-image" style="background-image:url(<%-pendingRs[i].main_image-%>)">
+			    	</div>
+				    <div class="card-content">
+						<a href="/s/<%-pendingRs[i].addr_dong-%>/<%-pendingRs[i].name-%>/<%-pendingRs[i].id-%>">
+			    			<div class="main_txt text_thick"><%- pendingRs[i].name -%></div>
+				    	</a>
+			    		<div class="sub_txt"><%- pendingRs[i].addr_summary -%></div>
 
-						  <div class="card horizontal">
-						    	<div class="card-image">
-    								<a href="/s/<%-pendingRs[i].addr_dong-%>/<%-pendingRs[i].name-%>/<%-pendingRs[i].id-%>">
-							    		<img src='<%- pendingRs[i].main_image -%>' style="width: 140px; height: 140px">
-							    	</a>
-						    	</div>
-
-
-						    <div class="card-content">
-						    	<!-- <div class='row'> -->
-						    	<!-- <div class='col s12 m6 l4'> -->
-						    	<div>
-						    	<!-- <div class='col s12 m6 l8 main_txt' style=""> -->
-    								<a href="/s/<%-pendingRs[i].addr_dong-%>/<%-pendingRs[i].name-%>/<%-pendingRs[i].id-%>">
-						    			<div class="text_thick" style="color:#2F6D81"><%- pendingRs[i].name -%></div>
-							    	</a>
-						    		<div class="sub_txt text_thick"><%- pendingRs[i].addr_summary -%></div>
-
-						    		<div class="sub_txt">
-							    		<div class="">
-							    			체크인: <%- pendingRs[i].checkin -%>
-							    		</div>
-							    		<div class="">
-									    	체크아웃: <%- pendingRs[i].checkout -%>
-							    		</div>
-							    		<div style="color:#F14132">&#8361;<%- pendingRs[i].price_total -%></div>
-							    	</div>
-						    	</div>
-						    	<!-- </div> -->
-						    </div>
-						  </div>
-						<% } %>
-						<!-- </ul> -->
-					<% } else { %>
-						<div style="padding: 10px 0">
-							<div class="main_txt"> 현재 예약 요청된 방이 없습니다.</div>
-							<div class="main_txt text_thick"><a href="/s" style="color:#2F6D81">방 둘러보기</a></div>
-						</div>
-					<% } %>
+			    		<div class="sub_txt">
+				    		<div class="">
+				    			체크인: <%- pendingRs[i].checkin -%>
+				    		</div>
+				    		<div class="">
+						    	체크아웃: <%- pendingRs[i].checkout -%>
+				    		</div>
+				    		<div class="price_total">총 금액: &#8361;<%- pendingRs[i].price_total -%></div>
+				    	</div>
+				    </div>
+				  </div>
+				<% } %>
+			<% } else { %>
+				<div style="padding: 10px 0">
+					<div class="main_txt"> 현재 예약 요청된 방이 없습니다.</div>
+					<div class="main_txt"><a href="/" style="color:#2F6D81">방 둘러보기</a></div>
 				</div>
-			</div>
-			<div class='col s12 m6 l6'>
-				<div class="text_thick title_txt"> 예약 확정 목록 </div>
-				<div style="">
-					<% if(typeof confirmedRs !== 'undefined' && confirmedRs.length > 0) { %>
-						<!-- <ul class="collapsible" data-collapsible="accordion"> -->
-						<% for(var i=0; i <confirmedRs.length; i++) { %>
-
-						  <div class="card horizontal">
-						    	<div class="card-image">
-    								<a href="/homes/<%-confirmedRs[i].name-%>/<%-confirmedRs[i].id-%>">
-							    		<img src='<%- confirmedRs[i].main_image -%>' style="width: 140px; height: 140px">
-							    	</a>
-						    	</div>
-
-
-						    <div class="card-content">
-						    	<!-- <div class='row'> -->
-						    	<!-- <div class='col s12 m6 l4'> -->
-						    	<div>
-						    	<!-- <div class='col s12 m6 l8 main_txt' style=""> -->
-    								<a href="/homes/<%-confirmedRs[i].name-%>/<%-confirmedRs[i].id-%>">
-						    			<div class="text_thick" style="color:#2F6D81"><%- confirmedRs[i].name -%></div>
-							    	</a>
-						    		<div class="sub_txt text_thick"><%- confirmedRs[i].addr_summary -%></div>
-
-						    		<div class="sub_txt">
-							    		<div class="">
-							    			체크인: <%- confirmedRs[i].checkin -%>
-							    		</div>
-							    		<div class="">
-									    	체크아웃: <%- confirmedRs[i].checkout -%>
-							    		</div>
-							    		<div style="color:#F14132">&#8361;<%- confirmedRs[i].price_total -%></div>
-							    	</div>
-						    	</div>
-						    	<!-- </div> -->
-						    </div>
-						  </div>
-						<% } %>
-						<!-- </ul> -->
-					<% } else { %>
-						<div style="padding: 10px 0">
-							<div class="main_txt"> 현재 예약 확정된 방이 없습니다.</div>
-						</div>
-					<% } %>
-				</div>
-			</div>			
+			<% } %>
 		</div>
+		<div class="confirmed_list">
+			<div class="title_txt"> 예약 확정 목록 </div>
+			<% if(typeof confirmedRs !== 'undefined' && confirmedRs.length > 0) { %>
+				<% for(var i=0; i <confirmedRs.length; i++) { %>
 
+				  <div class="card horizontal">
+			    	<div class="card-image">
+						<a href="/homes/<%-confirmedRs[i].name-%>/<%-confirmedRs[i].id-%>">
+				    		<img src='<%- confirmedRs[i].main_image -%>' style="width: 140px; height: 140px">
+				    	</a>
+			    	</div>
+				    <div class="card-content">
+				    	<div>
+							<a href="/homes/<%-confirmedRs[i].name-%>/<%-confirmedRs[i].id-%>">
+				    			<div class="text_thick" style="color:#2F6D81"><%- confirmedRs[i].name -%></div>
+					    	</a>
+				    		<div class="sub_txt text_thick"><%- confirmedRs[i].addr_summary -%></div>
 
+				    		<div class="sub_txt">
+					    		<div class="">
+					    			체크인: <%- confirmedRs[i].checkin -%>
+					    		</div>
+					    		<div class="">
+							    	체크아웃: <%- confirmedRs[i].checkout -%>
+					    		</div>
+					    		<div style="color:#F14132">&#8361;<%- confirmedRs[i].price_total -%></div>
+					    	</div>
+				    	</div>
+				    </div>
+				  </div>
+				<% } %>
+			<% } else { %>
+				<div style="padding: 10px 0">
+					<div class="main_txt"> 현재 예약 확정된 방이 없습니다.</div>
+				</div>
+			<% } %>
+		</div>
 	</div>
 
 	<% if(false) { %>	
@@ -220,50 +143,6 @@
 	<div id="setting" class="dashboard_content">
 		<div class="title_txt"> 준비중입니다.</div>
 	</div>
-
-
-	<!-- OLD 알림판 -->
-<!-- 	<div id="home" class="dashboard_content">
-		<div>
-			<div class="text_thick dashboard_main_text"> <%- user.username -%> 님 알림판 </div>
-			<div class="text_thick dashboard_sub_text">업데이트 된 현황을 읽어보세요. </div>
-			<div class="board_frame">
-				<div class="row">
-					<div class="col s12 m4 l3 text_thick" style="font-size:16px">날짜</div>
-					<div class="col s12 m8 l9 text_thick" style="font-size:16px">내용 </div>
-				</div>
-				<div class="row">
-					<div class="col s12 m4 l3">2017/06/17</div>
-					<div class="col s12 m8 l9"> 푸르지오 911 등록 </div>
-				</div>
-				<div class="row">
-					<div class="col s12 m4 l3">2017/06/20</div>
-					<div class="col s12 m8 l9"> 푸르지오 911 박성민 님 입주 </div>
-				</div>
-			</div>
-		</div>
-	</div> -->
-
-	<!-- <div id="room_list" class="dashboard_content">
-		<div class="text_thick dashboard_main_text"> <%- user.username -%> 님 안녕하세요? </div>
-		<div class="text_thick dashboard_sub_text"><%- user.username -%>님의 현재 운영중인 방은...</div>
-		<div class="row room_frame">
-			<div class="col s12 m4 l3" style="">
-				photo
-			</div>
-			<div class="col s12 m8 l9" style="">
-				프루지오 911
-			</div>
-		</div>
-		<div class="row room_frame">
-			<div class="col s12 m4 l3" style="">
-				photo
-			</div>
-			<div class="col s12 m8 l9" style="">
-				프루지오 911
-			</div>
-		</div>
-	</div> -->
 
     <!-- footer -->
 	<%- include('footer') -%>

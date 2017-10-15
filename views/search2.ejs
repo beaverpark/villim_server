@@ -45,7 +45,8 @@
   	#search_wrapper .complex_card {
   		box-shadow: none;
   		background-color: rgba(0,0,0,0.05);
-  		margin-bottom: 30px
+  		margin-top: 24px;
+  		margin-bottom: 0;
   	}
 
  	#search_wrapper .complex_card .card-content {
@@ -189,11 +190,10 @@
 		</div>
 	</div>
 </div>    
+	<div id="map_padding" style="height:30px;position:relative;background-color:white;"></div>
+
 	<!-- footer -->
 	<%- include('footer') -%>
-
-<script>
-</script>
 
 <script>
 var map;
@@ -258,7 +258,6 @@ $(window).on('load', function(e) {
 	  });
 	  infowindowArray.push(infowindow);
 	}
-
 });
 
 
@@ -275,16 +274,21 @@ $(window).on('load scroll resize', function(e) {
 		position: 'fixed',
 		top:'100px',
 		right:0,
-		'z-index': '1',
 		width: $(".map_container").width(),
 	});
 
 	var footer_top_offset = $("footer").offset().top;
 
-	// if currentscroll reaches at the top of footer, shorten the height accordingly
+	// if currentscroll reaches at the top of footer, cover it up with footer and 'map_padding'
 	if(currentScroll >= footer_top_offset - 30) {
-		var map_bottom_offset = currentScroll - footer_top_offset + 30;
-		$('#map').height($('#map').height() - map_bottom_offset);
+		$('#index_footer').css({
+			position: 'relative',
+			'z-index': 10,
+			'background-clip': 'content-box',
+		});
+
+		$('#map_padding').css({
+		})
 	}
 });
 

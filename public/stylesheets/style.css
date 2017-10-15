@@ -160,8 +160,65 @@ p {
 	background-color: red;
 }
 
+/******* login, signup start *******/
 
+.container.auth_container {
+	margin-top: 70px;
+	margin-bottom: 70px;
+	width: 280px;
+}
 
+.auth_container .title_txt {
+	font-size: 28px;
+	font-weight: 600;
+}
+
+.auth_container .input_container {
+	padding-top: 30px;
+}
+
+.auth_container .input-field {
+	margin-top: 10px;
+	height: 56px;
+}
+
+.auth_container input {
+	margin-bottom: 0;
+}
+
+.auth_container .btn_container {
+	width: 100%;
+	text-align: center;
+}
+
+.auth_container button {
+	padding: 0 40px;
+	height: 40px;	
+}
+
+.auth_container .redirect {
+	padding-top: 30px;
+	font-size: 15px;
+}
+
+.auth_container .redirect div {
+	padding: 6px 0;
+}
+
+/* signup specific */
+.auth_container .name_field {
+	display: flex;
+}
+
+.auth_container .name_field .input-field {
+	width: 100%;
+}
+
+.auth_container .btn_container.signup {
+	padding-top: 20px;
+}
+
+/******* login, signup end *******/
 
 
 /******* index3, be-host start *******/
@@ -1186,7 +1243,7 @@ footer#index_footer ul > li > a {
 }
 
 
-@media screen and (min-width:871px) {
+@media only screen and (min-width:871px) {
 	body .container.index_container {
 		width: 840px;
 	}
@@ -1195,7 +1252,7 @@ footer#index_footer ul > li > a {
   	/*}*/
 }
 
-@media screen and (min-width:993px) {
+@media only screen and (min-width:993px) {
 	body .container.nav_container {
 		width: 85%;
 		max-width: none;
@@ -1204,7 +1261,7 @@ footer#index_footer ul > li > a {
 
 }
 
-@media screen and (min-width:1030px) {
+@media only screen and (min-width:1030px) {
 	body .container.index_container {
 		width: 960px;
 	}
@@ -1227,6 +1284,15 @@ footer#index_footer ul > li > a {
 
 /* TODO */
 
+
+@media only screen and (min-width:600px) {
+	/* login,signup start */
+	.container.auth_container {
+		width: 400px
+	}
+	/* login,signup end */
+}
+
 @media only screen and (min-width:768px) {
 
 	body .house_container {
@@ -1244,13 +1310,23 @@ footer#index_footer ul > li > a {
 		padding-left: 10px;
 	}
 
-
+	/* login,signup start */
+	.container.auth_container {
+		width: 500px;
+	}
+	/* login,signup end */
 }
 
 @media only screen and (min-width:1024px) {
 	body .house_container {
 		width: 85%;
 	}
+
+	/* login,signup start */
+	.container.auth_container {
+		width: 600px;
+	}
+	/* login,signup end */
 }
 
 /*section#intro .card {
@@ -1602,16 +1678,6 @@ body .select-wrapper input.select-dropdown {
 	font-size: 16px !important;
 }
 
-/* Form css */
-.container.form_container {
-	margin-top: 100px;
-	margin-bottom: 100px;
-	width: 50%;
-}
-
-.row_form {
-	margin: 40px;
-}
 
 /*
 .caret {

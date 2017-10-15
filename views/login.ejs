@@ -5,10 +5,10 @@
 
   <body>
       <%- include('navbar') -%>
-    <div class="container form_container">
-        <h4 class="text_thick"> 
+    <div class="container auth_container">
+        <div class="title_txt"> 
           <% if (typeof admin !== 'undefined') { %> 관리자 <% } %> 로그인
-        </h4>
+        </div>
 
         <!-- show any messages that come back with authentication -->
         <% if (message.length > 0) { %>
@@ -21,32 +21,34 @@
         <% } else { %>        
           <form action="/admin/login" method="post">          
         <% } %>
-            <div class="row row_form">
-                <div class="input-field col s12"> 
+            <div class="input_container">
+                <div class="input-field"> 
                     <i class="material-icons prefix">email</i>
                     <input id="email" name="email" type="email" class="validate">
                     <label for="email" data-error="이메일 주소가 올바르지 않습니다">이메일</label>
                 </div>
-                <div class="input-field col s12">
+                <div class="input-field">
                     <i class="material-icons prefix">lock</i>
                     <input id="password" name="password" type="password" class="validate">
                     <label for="password">비밀번호</label>
                 </div>
-                <div class="input-field col s12">
+                <div class="input-field">
                     <input id="remember" name="remember" type="checkbox">
                     <label for="remember">로그인 상태 유지 </label>
                 </div>
             </div>
-            <div class="center-align">
-                <button type="submit" class="btn waves-effect waves-light card_btn red accent-2">로그인 </button>
+            <div class="btn_container">
+                <button type="submit" class="btn waves-effect waves-light red_btn_color">로그인</button>
             </div>
         </form>
-
-        <p><a href="/">홈으로 돌아가기</a></p>
-        <p>아직 회원이 아니신가요? <a href="/signup">회원가입</a>하기</p>
+        <div class="redirect">        
+            <div><a href="/">홈으로 돌아가기</a></div>
+            <div>아직 회원이 아니신가요? <a href="/signup">회원가입</a>하기</div>
+        </div>
     </div>
 
     <!-- footer -->
     <%- include('footer') -%>
+
   </body>
 </html>

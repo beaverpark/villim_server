@@ -19,50 +19,45 @@
   <!-- Moment js -->
   <script src="/moment/moment.min.js"></script> 
 
+  <!-- Mobile detect js -->
+  <script src="/mobile_detect/mobile-detect.min.js"></script>
+
+  <script>
+      var md = new MobileDetect(window.navigator.userAgent);
+      var device = "desktop"; 
+      if(md.mobile()) {
+      	device = "mobile";
+      }
+  </script>
+
   <style>
   </style>
 
 
   <style>
-  	/* duplicate */
-	.br-theme-fontawesome-stars-o .br-widget a.br-fractional:after, 
-	.br-theme-fontawesome-stars-o .br-widget a.br-selected:after 
-	{
-	  color: #2F6D81 !important;
+	section#house_pics {
+		background-color: rgba(42, 39, 48, 1);
+		padding: 0;
 	}
 
   	section#house_pics .swiper-container {
-  		height: 400px;
+  		height: 240px;
   	}
 
   	section#house_pics .swiper-slide {
   		background-position: center;
-  		background-size: cover;
+  		background-size: contain;
   		background-repeat: no-repeat;
   	}
 
-	.container.house_container section {
-		padding: 30px 0;
-		font-size: 16px;
-	}
-
-	.container.house_container .divider {
-		border-bottom: 3px solid rgba(0, 0, 0, 0.48); 
-		margin: 10px 0 26px;
-	}
-
-	.container.house_container .house_intro_container {
-		position: relative;
-	}
-
   	section#house_intro  {
-  		position: absolute;
+  		/*position: absolute;*/
   		width: 100%;
   	}
 
 	section#house_intro .inquiry_card_container {
-		width: 85%;
-		margin: 0 auto;
+		width: 100%;
+		/*margin: 0 auto;*/
 	}
 
   	section#house_intro .card.inquiry_card{
@@ -74,35 +69,65 @@
   	}
 
  	section#house_intro .inquiry_card .card-content{
- 		padding: 42px 30px;
+ 		/*padding: 42px 30px;*/
+ 		padding: 20px;
   	}
 
 
-	section#house_intro .inquiry_card .logo img {
+/*	section#house_intro .inquiry_card .logo img {
  		height: 20px;
- 	}
+ 	}*/
 
 	section#house_intro .inquiry_card .title_txt {
- 		font-size: 38px;
+ 		/*font-size: 38px;*/
+ 		font-size: 21px;
  		font-weight: 600;
  		text-align: center;
  	}
 
 	section#house_intro .inquiry_card .sub_title_txt {
- 		font-size: 18px;
+ 		font-size: 14px;
  		font-weight: 600;
  		text-align: center;
  	}
 
+	section#house_intro .inquiry_card .addr_rating {
+		text-align: center;
+		/*display:flex;*/
+		/*justify-content: space-between; */
+		/*margin-bottom:10px;*/
+	}
+
+	section#house_intro .inquiry_card .addr {
+		font-size: 11px;
+		color: rgb(143, 143, 143);
+	}
+
+	.br-theme-fontawesome-stars-o .br-widget a.br-fractional:after, 
+	.br-theme-fontawesome-stars-o .br-widget a.br-selected:after 
+	{
+	  color: #2F6D81;
+	}
+
+	section#house_intro .inquiry_card .br-theme-fontawesome-stars-o .br-widget {
+		height: auto;
+		padding-top: 6px;
+	}
+
+	section#house_intro .inquiry_card .br-theme-fontawesome-stars-o .br-widget a,
+	section#house_review .br-theme-fontawesome-stars-o .br-widget a
+	 {
+		font-size: 15px;
+	}
+
 	section#house_intro .inquiry_card .divider {
 		border-bottom: 1px solid #cdcdd1;
-		margin: 10px 0;
+		margin: 6px 0;
  	}
-
 
  	section#house_intro .capacity_section {
  		display: flex;
- 		font-size: 14px;
+ 		font-size: 9px;
  	}
 
  	section#house_intro .capacity_item {
@@ -113,39 +138,74 @@
   	}
 
  	section#house_intro .capacity_section img {
- 		height: 24px;
+ 		height: 16px;
  	}
-
 
 	section#house_intro .inquiry_card .monthly_rate {
 		background-color: #2F6D81;
 		color: white;
-		padding: 12px;
-		margin-top: 20px;
-		font-size: 17px;
+		padding: 8px;
+		margin: 10px 0;
+		font-size: 12px;
  	}
 
-	section#house_intro  .inquiry_card .form_section .inputs {
-		display: flex;
+	section#house_intro .inquiry_card .form_section .inputs {
+		display:flex;
+
+		/*display: flex;*/
+		/*flex-direction: column;*/
 	}
 
-	section#house_intro  .inquiry_card .form_section input {
+	section#house_intro .inquiry_card .form_section input {
   		border: 1px solid #cdcdd1;
 		border-radius: 1px;
-		margin: 10px 0;
+		margin: 2px 0;
+		height: 30px;
+		font-size: 11px;
+		min-width: 1px;	/* for firefox */
 		/*margin: 16px 0;*/
 	}
 
-	section#house_intro  .inquiry_card .form_section button {
-		width: 100%;
-		height: auto;
-		padding: 6px;
-		margin: 16px 0;
+	section#house_intro .inquiry_card .calculated_rate {
+		font-size: 13px;
 	}
 
-	section#house_intro  .inquiry_card .form_section .input-field {
+	section#house_intro .inquiry_card .form_section button {
+		width: 100%;
+		height: 40px;
+		margin-top: 10px;
+		font-size: 12px;
+		line-height: 12px;
+	}
+
+	section#house_intro .inquiry_card .form_section .input-field {
 		width: 100%;
 		margin: 0 0 24px;
+	}
+
+
+	.house_container section {
+		padding: 30px 0;
+		/*font-size: 16px;*/
+	}
+
+	.house_container .house_intro_container {
+		position: relative;
+	}
+
+	.house_container .rest_container {
+		font-size: 14px;
+		font-weight: 200;
+  	}	
+
+  	.house_container .rest_container .title_txt {
+  		font-size: 20px;
+  		font-weight: 600;
+  	}
+
+	.house_container .rest_container .divider {
+		border-bottom: 1px solid rgba(0, 0, 0, 0.48); 
+		margin: 4px 0 14px;
 	}
 
 	section#house_amenities .amenities_container {
@@ -160,16 +220,16 @@
 	}
 
 	section#house_amenities .amenity_item .img {
-		margin-right: 24px;
+		margin-right: 12px;
 	}
 
 	section#house_amenities .amenity_item img {
-		height: 40px;
-		width: 50px;
+		height: 24px;
+		width: 30px;
 	}
 
 	section#house_amenities .amenity_item .name {
-		line-height: 40px;
+		line-height: 24px;
 	}
 
 	section#price .price_item {
@@ -201,15 +261,17 @@
 
 	section#house_review .chip {
 	    background-color: white;
-	    font-size: 20px;
+	    font-size: 16px;
 	    color: #2F6D81;
-   		line-height: 48px;
-
+   		/*line-height: 48px;*/
+   		line-height: 36px;
 	}
 
    	section#house_review .chip >img {
-	    width: 48px;
-	    height: 48px;
+/*	    width: 48px;
+	    height: 48px;*/
+	    width: 36px;
+	    height: 36px;
 	}
 
 
@@ -220,16 +282,32 @@
 
 	section#house_host .chip {
 	    background-color: white;
-	    font-size: 22px;
+	    font-size: 18px;
 	    color: #2F6D81;
-   		line-height: 60px;		
+   		/*line-height: 60px;*/
+   		line-height:48px;
 	}
 
 	section#house_host .chip > img {
-	    width: 64px;
-	    height: 64px;
+/*	    width: 64px;
+	    height: 64px;*/
+	    width: 48px;
+	    height: 48px;
 	}
 
+	/* general input css */
+	body input[type=text] {
+	  background-color: white;
+	  border: 1px solid rgb(80, 87, 95);
+	  border-radius: 1px;
+	  padding: 0 10px;
+	  box-sizing: border-box;
+	}
+
+	input[type=text]:focus {
+		border: 1px solid rgb(80, 87, 95) !important;
+		box-shadow: none !important;
+	}
 
   </style>
 
@@ -241,7 +319,7 @@
     	<!-- breadcrumb -->
     <!-- </div> -->
 
-    <section id="house_pics" class="detail_section" style="padding: 0">
+    <section id="house_pics">
     	<div class="swiper-container">
     		<div class="swiper-wrapper">
     			<% for(var i = 0; i < house_pics_list.length; i++) { %>
@@ -258,7 +336,7 @@
 
 
 
-    <div class="container nav_container house_container">
+    <div class="container house_container">
 	<div class="house_intro_container">
 	    <section id="house_intro">
 		    <div class="inquiry_card_container">
@@ -271,7 +349,7 @@
 
 							<div class="complex_name sub_title_txt"> <%- house_info.complex_name -%> </div>
 							<div class="name title_txt"> <%- house_info.name -%> </div>
-		            		<div style="display:flex; justify-content: space-between; margin-bottom:10px">
+		            		<div class="addr_rating">
 			            		<div class="addr"> <%-  house_info.addr_summary -%></div>
 								 <select class="star_rating overall_rating">
 					                <option value="1">1</option>
@@ -311,19 +389,19 @@
 		            		<!-- <div class="main_txt" style="padding:8px 0">방을 직접 방문하여 둘러보세요. 귀하의 정보를 기입하여 방문 요청해보세요.</div> -->
 		    				<form action="/checkout" method="post">
 		    				<div class="inputs">
-						      <input placeholder="체크인" id="checkin_date_picker" name="checkin" type="text" required>
-				   			  <input placeholder="체크아웃" id="checkout_date_picker" name="checkout" type=" text" required>
+						      <input placeholder="체크인" id="checkin_date_picker" name="checkin" type="text" required disabled>
+				   			  <input placeholder="체크아웃" id="checkout_date_picker" name="checkout" type="text" required disabled>
 							</div>
 		    				<div class="inputs">
   							  <div class="input-field"> 
-								  <select id="num_guest" name="num_guest">
+								  <select id="num_guest" name="num_guest" disabled>
 									<option value="" disabled selected> 인원 </option>
-									<option value="1"> 1 </option>
-									<option value="2"> 2 </option>
-									<option value="3"> 3 </option>
-									<option value="4"> 4 </option>
-									<option value="5"> 5 </option>
-									<option value="6"> 6 </option>
+									<option value="1"> 1명 </option>
+									<option value="2"> 2명 </option>
+									<option value="3"> 3명 </option>
+									<option value="4"> 4명 </option>
+									<option value="5"> 5명 </option>
+									<option value="6"> 6명 </option>
 								  </select>
 							  </div>
 							</div>
@@ -331,9 +409,11 @@
 
     	            		<div class="calculated_rate"></div>
 							<div class="button">
-								<button class="btn red_btn_color" type="submit" name="action">방문 요청하기</button>
+								<button id="reserve_btn" class="btn red_btn_color" type="submit" name="action">방문 요청하기</button>
 							</div>
 							</form>
+							<div class="mobile" style="display:none;color:red">*방문요청은 빌림 앱을 이용해주시기 바랍니다.</div>
+							<a class="mobile btn red_btn_color" style="display:none" href="#">빌림 앱 다운 받으러가기</a>
 		            	</div>
 					</div>
 				</div>
@@ -493,45 +573,42 @@
 
 	<script>
 	$(window).on('load scroll resize', function(e) {
-		var windowHeight = $(window).height();
 		var currentScroll = $(window).scrollTop() + 100;
-		// console.log(currentScroll)
 		var card_container_top_offset = $('.house_intro_container').offset().top;
-		// console.log(card_container_top_offset)
+
+		var windowWidth = $(window).width();
+
+		var container_width = $('.house_intro_container').width();
 
 		var card_height = $('section#house_intro').outerHeight();
-		// console.log("card height = " + card_height)
 
 		var footer_top_offset = $("footer").offset().top;
-		// console.log("footer_top_offset = " + footer_top_offset)
 
-		if(currentScroll >= card_container_top_offset) {
-			var offset = currentScroll - card_container_top_offset;
-			// console.log("offset = " + offset)
-			// console.log("currentScroll + card_height ")
-			// console.log(currentScroll + card_height)
+		var max = $('.house_intro_container').height() - card_height;
+
+		$('#house_intro').css({
+			width: container_width,
+		});
+
+		if(windowWidth >= 768 && currentScroll >= card_container_top_offset) {
 			if(currentScroll + card_height < footer_top_offset) {
-				// console.log("2")
-				$('section#house_intro').css({
-					top: offset,
-					bottom: 'auto'
-				});
+				$('#house_intro').css({
+					position:'fixed',
+					top: 100
+				})
 			}
 
 			else {
-				// console.log("1")
-				$('section#house_intro').css({
-					bottom: 0,
-					top: "auto"
-				});
+				$('#house_intro').css({
+					position:'relative',
+					top: max
+				})
 			}
 		}
-
 		else {
-			$('section#house_intro').css({
-				top: 0,
-				bottom: "auto"
-			})	
+			$('#house_intro').css({
+				position:'static'
+			});
 		}
 	});
 
@@ -578,65 +655,85 @@
 	$(function() {
 	    $('select#num_guest').material_select();
 
-		var checkin = flatpickr("#checkin_date_picker", {
-			minDate: new Date(),
-			// mode: "range", 
-			// dateFormat: 'U',
-			// altInput: true,
-			// altFormat: 'Y-m-d',
-			allowInput: true,
-			onReady: function() {
-			},
-			onValueUpdate: function(dateObj, dateStr) {
-				if(checkout) {
-			        checkout.open();
+	    // only allow datepicker and select when device is not mobile
+	    if(device != "mobile") {
+	    	$('input#checkin_date_picker').prop("disabled", false);
+	    	$('input#checkout_date_picker').prop("disabled", false);
+	    	$('select#num_guest').prop("disabled", false);
+		    $('select#num_guest').material_select();
+
+			var checkin = flatpickr("#checkin_date_picker", {
+				minDate: new Date(),
+				disableMobile: true,
+				// mode: "range", 
+				// dateFormat: 'U',
+				// altInput: true,
+				// altFormat: 'Y-m-d',
+				allowInput: true,
+				onReady: function() {
+				},
+				onValueUpdate: function(dateObj, dateStr) {
+					if(checkout) {
+				        checkout.open();
+					}
 				}
-			}
-		});
+			});
 
-		var checkout = flatpickr("#checkout_date_picker", {
-			minDate: new Date(),
-			// dateFormat: 'U',
-			// altInput: true,
-			// altFormat: 'Y-m-d',
-			allowInput: true, 
-			onOpen: function() {
-				var checkinDate = moment(checkin.input.value);
+			var checkout = flatpickr("#checkout_date_picker", {
+				minDate: new Date(),
+				disableMobile: true,
+				// dateFormat: 'U',
+				// altInput: true,
+				// altFormat: 'Y-m-d',
+				allowInput: true, 
+				onOpen: function() {
+					var checkinDate = moment(checkin.input.value);
 
-				var checkout_min = checkinDate.add(1, 'd').format("YYYY-MM-DD");
-				this.set("minDate", checkout_min);
-			},
-			onValueUpdate: function(dateObj, dateStr) {
-				// TODO: on input value gone, remove the price div 
-				if(checkin.input.value) {
-					var checkin_date = moment(checkin.input.value);
-					var checkout_date = moment(this.input.value);
+					var checkout_min = checkinDate.add(1, 'd').format("YYYY-MM-DD");
+					this.set("minDate", checkout_min);
+				},
+				onValueUpdate: function(dateObj, dateStr) {
+					// TODO: on input value gone, remove the price div 
+					if(checkin.input.value) {
+						var checkin_date = moment(checkin.input.value);
+						var checkout_date = moment(this.input.value);
 
-					// var checkout_date_sec = dateStr;
-					var date_diff = checkout_date.diff(checkin_date, 'days')
+						// var checkout_date_sec = dateStr;
+						var date_diff = checkout_date.diff(checkin_date, 'days')
 
-					var monthly_rate = "<%- house_info.monthly_rate -%>";
-					var utility_fee = "<%- house_info.utility_fee -%>";
-					var cleaning_fee = "<%- house_info.cleaning_fee -%>";
-					var daily_rate = Math.round(monthly_rate / 30);
+						var monthly_rate = "<%- house_info.monthly_rate -%>";
+						var utility_fee = "<%- house_info.utility_fee -%>";
+						var cleaning_fee = "<%- house_info.cleaning_fee -%>";
+						var daily_rate = Math.round(monthly_rate / 30);
 
-					var total_monthly_rate = daily_rate * date_diff; 
-					var total_rate = parseInt(total_monthly_rate) + parseInt(utility_fee) + parseInt(cleaning_fee);
+						var total_monthly_rate = daily_rate * date_diff; 
+						var total_rate = parseInt(total_monthly_rate) + parseInt(utility_fee) + parseInt(cleaning_fee);
 
-					var utility_fee_str = intToStringWithCommas(utility_fee);
-					var cleaning_fee_str = intToStringWithCommas(cleaning_fee);
-					var total_monthly_rate_str = intToStringWithCommas(total_monthly_rate);
-					var total_rate_str = intToStringWithCommas(total_rate);
+						var utility_fee_str = intToStringWithCommas(utility_fee);
+						var cleaning_fee_str = intToStringWithCommas(cleaning_fee);
+						var total_monthly_rate_str = intToStringWithCommas(total_monthly_rate);
+						var total_rate_str = intToStringWithCommas(total_rate);
 
-					$('.calculated_rate').html(
-						"<div>임대료: " + "&#8361; " + total_monthly_rate_str +  " (" + date_diff + "일)</div>" +
-						"<div>공과금: " + "&#8361; " + utility_fee_str + "</div>" + 
-						"<div>퇴실 청소비: " + "&#8361; " + cleaning_fee_str + "</div><br>" + 
-						"<div>합계: " + "&#8361; " + total_rate_str + "</div>");
+						$('.calculated_rate').html(
+							"<div>임대료: " + "&#8361; " + total_monthly_rate_str +  " (" + date_diff + "일)</div>" +
+							"<div>공과금: " + "&#8361; " + utility_fee_str + "</div>" + 
+							"<div>퇴실 청소비: " + "&#8361; " + cleaning_fee_str + "</div><br>" + 
+							"<div>합계: " + "&#8361; " + total_rate_str + "</div>");
+					}
 				}
-			}
-		});
+			});
+	    }
 
+	    // if device is mobile, show link to download app
+	    else {
+		    $('#reserve_btn').css({
+		    	display: 'none'
+		    });
+		    $('.mobile').css({
+		    	display: 'block',
+		    	'font-size': '12px'
+		    });
+	    }
 
 		var swpier = new Swiper('.swiper-container', {
 		  	pagination: '.swiper-pagination',

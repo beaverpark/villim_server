@@ -5,8 +5,11 @@
 	<script src="/jquery_validate/jquery.form-validator.min.js"></script>
 	<script>
 
+	$(function() {
+		$('select').material_select();
+	});
+
 	window.onload = function() {
-		// $('select').material_select();
 
 		// $('.select-wrapper').
 
@@ -94,7 +97,7 @@
 
 	#register_form .input-field {
 		margin-top: 0;
-		margin-bottom: 35px;
+		margin-bottom: 10px;
 	}
 
 	.register_file_wrapper {
@@ -128,11 +131,11 @@
 	}
 	
 
-	.register_content select {
+/*	.register_content select {
 		display: block;
 		height: 40px;
 		border: 1px solid black;
-	}
+	}*/
 
 
 /*	.register_content input[type=text][readonly="readonly"] {
@@ -166,27 +169,57 @@
    		<div class="col s12 register_form_content">
    			<div class="text_thick register_main_text"> 어드민님 안녕하세요? </div>
 			<div class="text_thick register_sub_text"> 회원님의 임대주택 등록을 도와드리겠습니다. </div>
+			<div class="text_thick" style="color:red"> * 표시항목은 필수항목입니다. </div>
 
 			<!-- error message here -->
 			<br>
 			<!-- register form -->
 			<form action="register" method="post" id="register_form">
-			<div class="row row_form">
-				<div class="register_form_label"> 주택 종류 </div>
+			<div class="row">
+				<div class="register_form_label"> 호스트가 될 사람 유저 아이디* </div>
+                <div class="input-field col s12">
+	                <input placeholder="ex) 3" name="host_id" type="text">
+                </div>
+
+				<div class="register_form_label" > 오피스텔/레지던스 이름</div>
+                <div class="input-field col s12">
+	                <input placeholder="ex) 푸르지오시티 3차" name="complex_name" type="text">
+                </div>
+
+				<div class="register_form_label" > 주택명*</div>
+                <div class="input-field col s12">
+	                <input placeholder="ex) 스튜디오 1" name="name" type="text" data-validation="required" data-validation-error-msg="필수항목 입니다.">
+                </div>
+
+
+				<div class="register_form_label"> 집 종류*</div>
 				<div class="input-field col s12"> 
-					<!-- <select name="house_type" data-validation="required" data-validation-error-msg="필수항목 입니다."> -->
-					<select name="house_type">
+					<select name="house_type" data-validation="required" data-validation-error-msg="필수항목 입니다.">
+					<!-- <select name="house_type"> -->
  						<option value="" disabled selected> 하나를 선택해주세요. </option>
-						<option value="0"> 집 전체 </option>
-						<option value="1"> 개인실 </option>
-						<option value="2"> 다인실 </option>
+						<option value="0"> 일반주택(빌라 포함) </option>
+						<option value="1"> 오피스텔 </option>
+						<option value="2"> 레지던스 </option>
 					</select>
                 </div>
 
-				<div class="register_form_label"> 숙박 가능 인원 </div>
+				<div class="register_form_label"> 방 종류*</div>
 				<div class="input-field col s12"> 
-					<!-- <select name="num_bedroom" data-validation="required" data-validation-error-msg="필수항목 입니다.">  -->
-						<select name="num_guest">
+					<select name="room_type" data-validation="required" data-validation-error-msg="필수항목 입니다.">
+					<!-- <select name="room_type"> -->
+ 						<option value="" disabled selected> 하나를 선택해주세요. </option>
+						<option value="0"> 원룸 </option>
+						<!-- <option value="1"> 투룸 </option> -->
+						<!-- <option value="2"> ... </option> -->
+					</select>
+                </div>
+
+
+
+				<div class="register_form_label"> 숙박 가능 인원* </div>
+				<div class="input-field col s12"> 
+					<select name="num_guest" data-validation="required" data-validation-error-msg="필수항목 입니다."> 
+						<!-- <select name="num_guest"> -->
  						<option value="" disabled selected> 하나를 선택해주세요. </option>
 						<option value="1"> 1 </option><option value="2"> 2 </option><option value="3"> 3 </option>
 						<option value="4"> 4 </option><option value="5"> 5 </option><option value="6"> 6 </option>
@@ -198,10 +231,10 @@
                 </div>
 
 
-				<div class="register_form_label"> 침실 수 </div>
+				<div class="register_form_label"> 침실 수* </div>
 				<div class="input-field col s12"> 
-					<!-- <select name="num_bedroom" data-validation="required" data-validation-error-msg="필수항목 입니다.">  -->
-						<select name="num_bedroom">
+					<select name="num_bedroom" data-validation="required" data-validation-error-msg="필수항목 입니다."> 
+						<!-- <select name="num_bedroom"> -->
  						<option value="" disabled selected> 하나를 선택해주세요. </option>
 						<option value="1"> 1 </option><option value="2"> 2 </option><option value="3"> 3 </option>
 						<option value="4"> 4 </option><option value="5"> 5 </option><option value="6"> 6 </option>
@@ -212,24 +245,24 @@
 					</select>
                 </div>
 
-				<div class="register_form_label"> 침대 수 </div>
+				<div class="register_form_label"> 침대 수* </div>
                 <div class="input-field col s12"> 
-					<!-- <select name="num_bed" data-validation="required" data-validation-error-msg="필수항목 입니다."> -->
-						<select name="num_bed">
+					<select name="num_bed" data-validation="required" data-validation-error-msg="필수항목 입니다.">
+						<!-- <select name="num_bed"> -->
  						<option value="" disabled selected> 하나를 선택해주세요. </option>
 						<option value="1"> 1 </option><option value="2"> 2 </option><option value="3"> 3 </option>
 						<option value="4"> 4 </option><option value="5"> 5 </option><option value="6"> 6 </option>
 						<option value="7"> 7 </option><option value="8"> 8 </option><option value="9"> 9 </option>
-						<option value="10"> 10 </option><option value="11"> 11 </option><option value="12"> 12 </option>
-						<option value="13"> 13 </option><option value="14"> 14 </option><option value="15"> 15 </option>
+						<!-- <option value="10"> 10 </option><option value="11"> 11 </option><option value="12"> 12 </option> -->
+						<!-- <option value="13"> 13 </option><option value="14"> 14 </option><option value="15"> 15 </option> -->
 						<!-- <option value="16"> 16 </option><option value="17"> 17 </option><option value="18"> 18 </option> -->
 					</select>
                 </div>
 
-				<div class="register_form_label"> 욕실 수 </div>
+				<div class="register_form_label"> 욕실 수* </div>
                 <div class="input-field col s12"> 
-					<!-- <select name="num_bathroom" data-validation="required" data-validation-error-msg="필수항목 입니다."> -->
-					<select name="num_bathroom">
+					<select name="num_bathroom" data-validation="required" data-validation-error-msg="필수항목 입니다.">
+					<!-- <select name="num_bathroom"> -->
  						<option value="" disabled selected> 하나를 선택해주세요. </option>
 						<option value="1"> 1 </option><option value="2"> 2 </option><option value="3"> 3 </option>
 						<option value="4"> 4 </option><option value="5"> 5 </option><option value="6"> 6 </option>
@@ -252,24 +285,53 @@
 				</div>
 
 
-				<div class="register_form_label"> 위치 </div>
+				<!-- <div class="register_form_label"> 위치 </div> -->
 <!-- 				<div style="padding-left:10px">
 	       			<a href="#" class="btn waves-effect waves-light white nav_btn" style="color:black"> 우편번호 찾기 </a>
             	</div> -->
 <!--                 <div class="input-field col s12" style="margin-bottom:0">
 	                <input disabled name="zip_code" type="text">
                 </div> -->
-                <div class="input-field col s12">
+<!--                 <div class="input-field col s12">
 	                <input placeholder="상세주소를 입력해 주세요." name="addr_full" type="text" data-validation="required" data-validation-error-msg="필수항목 입니다.">
                 </div>
                 <div class="input-field col s12">
 	                <input placeholder="짧은 주소: (시 구 동)" name="addr_summary" type="text" data-validation="required" data-validation-error-msg="필수항목 입니다.">
+                </div> -->
+				<div class="register_form_label"> 주소 (광역시, 도) </div>
+                <div class="input-field col s12">
+	                <input placeholder="ex) 서울특별시 / 경기도" name="addr_province" type="text">
+                </div>
+
+				<div class="register_form_label"> 주소 (시) </div>
+                <div class="input-field col s12">
+	                <input placeholder="ex) 성남시" name="addr_city" type="text">
+                </div>
+
+				<div class="register_form_label"> 주소 (구) </div>
+                <div class="input-field col s12">
+	                <input placeholder="ex) 강남구 / 분당구" name="addr_district" type="text">
+                </div>
+
+				<div class="register_form_label"> 주소 (동,읍,면) </div>
+                <div class="input-field col s12">
+	                <input placeholder="ex) 정자동" name="addr_dong" type="text">
+                </div>
+
+				<div class="register_form_label"> 주소 (도로명) </div>
+                <div class="input-field col s12">
+	                <input placeholder="ex) 서초대로73길 62" name="addr_road" type="text">
+                </div>
+
+				<div class="register_form_label"> 오시는 길 </div>
+                <div class="input-field col s12">
+	                <input placeholder="ex) 정자역에서 5분거리" name="addr_direction" type="text">
                 </div>
 
 
-				<div class="register_form_label" > 주택명 </div>
+				<div class="register_form_label"> 집 상세 설명 </div>
                 <div class="input-field col s12">
-	                <input placeholder="주택명을 정해주세요." name="house_name" type="text" data-validation="required" data-validation-error-msg="필수항목 입니다.">
+	                <input placeholder="ex) 럭셔리 1인실입니다." name="description" type="text">
                 </div>
 
 <!-- 				<div class="register_form_label"> 사진 </div>
@@ -286,25 +348,31 @@
 				</div> -->
 
 
-				<div class="register_form_label" style="padding-top: 30px; inline-block"> 희망 월세 가격 (&#8361;)</div> 
+				<div class="register_form_label"> 희망 월세 가격 (&#8361;)*</div> 
                 <div class="input-field col s12">
-	                <input placeholder="예) 1,500,000 " name="monthly_rate" type="text" data-validation="required" data-validation-error-msg="필수항목 입니다.">
+	                <input placeholder="예) 1500000 " name="monthly_rate" type="text" data-validation="required" data-validation-error-msg="필수항목 입니다.">
                 </div>
 
 				<div class="register_form_label" style="padding-top: 30px; inline-block"> 보증금 (&#8361;)</div> 
                 <div class="input-field col s12">
-	                <input placeholder="예) 300,000 " name="deposit" type="text">
+	                <input placeholder="예) 300000 " name="deposit" type="text">
                 </div>
 
 				<div class="register_form_label" style="padding-top: 30px; inline-block"> 청소비 (&#8361;)</div> 
                 <div class="input-field col s12">
-	                <input placeholder="예) 300,000 " name="cleaning_fee" type="text">
+	                <input placeholder="예) 30000 " name="cleaning_fee" type="text">
                 </div>
 
 				<div class="register_form_label" style="padding-top: 30px; inline-block"> 공과금/관리비 (&#8361;)</div> 
                 <div class="input-field col s12">
-	                <input placeholder="예) 300,000 " name="utility_fee" type="text">
+	                <input placeholder="예) 30000 " name="utility_fee" type="text">
                 </div>                
+
+				<div class="register_form_label" style="padding-top: 30px; inline-block"> 숙소 이용 규칙 </div> 
+                <div class="input-field col s12">
+	                <input placeholder="예) 실내 흡연금지." name="house_policy" type="text">
+                </div>                
+
 
 
                 <div class="col s12" style="margin-bottom: 20px">
@@ -325,7 +393,5 @@
    	</div>
    	</div>
 
-    <!-- footer -->
-    <!-- TODO: include footer here later if needed -->
 </body>
 </html>

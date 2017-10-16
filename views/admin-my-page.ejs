@@ -29,8 +29,7 @@
 		padding-bottom: 20px;
 	}
 
-
-
+/* duplicate */
 	#toast-container {
 	  top: 10% !important;
 	  right: auto !important;
@@ -38,6 +37,12 @@
 	  left: 40% !important;
 	}
 
+	.dashboard_tab_row .title_txt {
+		font-size: 18px;
+		font-weight: 600;
+		text-align: center;
+		padding: 12px 0;
+	}
 
 </style>
 
@@ -56,11 +61,12 @@
 
 <div class="row dashboard_tab_row">
 	<div class="col s12">
-		<ul class="tabs">
-			<li class="col s1"></li>
-			<li class="tab col s4"><a href="#house_list">집 목록</a></li>
-			<li class="tab col s4"><a href="#profile">empty</a></li>		
-		</ul>
+		<div class="title_txt">집 목록</div>
+		<!-- <ul class="tabs"> -->
+			<!-- <li class="col s1"></li> -->
+			<!-- <li class="tab col s4"><a href="#house_list">집 목록</a></li> -->
+			<!-- <li class="tab col s4"><a href="#profile">empty</a></li>		 -->
+		<!-- </ul> -->
 		<!-- <input type="button" value="refresh" onClick="window.location.reload()"> -->
 	</div>
 </div>
@@ -70,7 +76,7 @@
 		<ul class="collapsible" data-collapsible="accordion">
 			<% for(var i=0; i <house_list.length; i++) { %>
 		    <li>
-		      	<div class="collapsible-header" id="<%- house_list[i].id -%>"><i class="material-icons">home</i> [<%- house_list[i].id -%>] <%- house_list[i].name -%></div>
+		      	<div class="collapsible-header" id="<%-i-%>_<%- house_list[i].id -%>"><i class="material-icons">home</i> [<%- house_list[i].id -%>] <%- house_list[i].complex_name -%> <%- house_list[i].name -%></div>
 		      	<div class="collapsible-body">
 		      		<div class='collapsible_item' style="margin-bottom: 20px;">
 						<a href="/homes/<%-house_list[i].name-%>/<%-house_list[i].id-%>" target="_blank">집 포스팅 링크 </a>
@@ -89,15 +95,34 @@
 					<form class="edit_form" method="post" enctype="multipart/form-data">
 						<input type="hidden" name="id" value="<%-house_list[i].id-%>" />
 					<div class="row">
-						<div class="col s12">
+						<div class="col s12 m6 l6">
+			    		<div class='collapsible_item txt'><span class="complex_name">오피스텔/레지던스 이름:</span> <span class="value"><%-house_list[i].complex_name-%></span></div>
+				    	</div>
+						<div class="col s12 m6 l6">
 			    		<div class='collapsible_item txt'><span class="name">집 이름:</span> <span class="value"><%-house_list[i].name-%></span></div>
 				    	</div>
 				    	<hr>
 						<div class="col s12 m6 l6">
-			    		<div class='collapsible_item txt'><span class="addr_summary">주소:</span> <span class="value"><%-house_list[i].addr_summary-%></span></div>
+			    		<div class='collapsible_item sel'><span class="house_type">집 타입:</span> <span class="value"><%-house_types[i].house_type_string-%></span></div>
 				    	</div>
 						<div class="col s12 m6 l6">
-				    	<div class='collapsible_item txt'><span class="addr_full">상세 주소:</span> <span class="value"><%-house_list[i].addr_full-%></span></div>
+			    		<div class='collapsible_item sel'><span class="room_type">방 타입:</span> <span class="value"><%-house_types[i].room_type_string-%></span></div>
+				    	</div>
+				    	<hr>
+						<div class="col s12 m6 l6">
+			    		<div class='collapsible_item txt'><span class="addr_province">주소(광역시,도):</span> <span class="value"><%-house_list[i].addr_province-%></span></div>
+				    	</div>
+						<div class="col s12 m6 l6">
+			    		<div class='collapsible_item txt'><span class="addr_city">주소(시):</span> <span class="value"><%-house_list[i].addr_city-%></span></div>
+				    	</div>
+						<div class="col s12 m6 l6">
+			    		<div class='collapsible_item txt'><span class="addr_district">주소(구):</span> <span class="value"><%-house_list[i].addr_district-%></span></div>
+				    	</div>
+						<div class="col s12 m6 l6">
+			    		<div class='collapsible_item txt'><span class="addr_dong">주소(동,읍,면):</span> <span class="value"><%-house_list[i].addr_dong-%></span></div>
+				    	</div>
+						<div class="col s12">
+			    		<div class='collapsible_item txt'><span class="addr_road">주소(도로명):</span> <span class="value"><%-house_list[i].addr_road-%></span></div>
 				    	</div>
 				    	<hr>
 						<div class="col s12">
@@ -145,12 +170,12 @@
 							<div class="collapsible_item checkbox">
 			                <% for (var k=0; k<amenities.length; k++) { %>
 				                <div class="input-field col s6 m4 l3 xl2"> 
-									<input disabled class="collapsible_input" type="checkbox" name="amenities<%- k+1 -%>" id="check<%- k+1 -%>"
+									<input disabled class="collapsible_input" type="checkbox" name="amenities" id="check_<%-house_list[i].id-%>_<%-k+1-%>" value="<%-k+1-%>"
 						    			<% if(house_amenities[house_list[i].id].indexOf((k+1).toString()) >= 0) { %>
 						    				checked
 						    			<% } %>
 						    		/>
-				   					<label for="check<%- k+1 -%>"> <%- amenities[k].name -%> </label>
+				   					<label for="check_<%-house_list[i].id-%>_<%- k+1 -%>"> <%- amenities[k].name -%> </label>
 								</div>
 							<% } %>
 							</div>
@@ -220,24 +245,39 @@ input.collapsible_input {
 </style>
 
 <script>
-
-// form values list
-var data_json = {};
+var house_type_options = {0: '일반주택', 1:'오피스텔',2:'레지던스'};
+var room_type_options = {0: '원룸'};
 
 $(document).ready(function() {
+	// original data for all houses 
+	var original_house_data = <%- JSON.stringify(house_list) -%>;
+	var original_house_type_data = <%- JSON.stringify(house_types) -%>;
+
 	$("div.collapsible-header").click(function(event) {
 		if(!$(this).hasClass("active")) {
 			var header_div = $(this);
-			var house_id = header_div.attr('id');
 
+			// currently selected div id & house_id
+			var ids = header_div.attr('id').split("_");
+			var div_id = ids[0]; // header div id 
+			var house_id = ids[1]; // house id 
+
+			// data for currently selected house
+			var house_info = original_house_data[div_id];
+			var house_types = original_house_type_data[div_id];
+
+			// item for text, select, image, checkbox fields 
 			var txt_item = header_div.next().find(".collapsible_item.txt span.value");
+			var select_item = header_div.next().find(".collapsible_item.sel span.value")
 			var main_img_item = header_div.next().find(".collapsible_item.img .main_img_container");
 			var other_img_item = header_div.next().find(".collapsible_item.img .other_img_container");
 			var checkbox_item = header_div.next().find(".collapsible_item.checkbox");
 			var checked_list = [];
 
+			// buttons
 			var edit_btn = header_div.next().find("button.edit");
 			var save_btn = header_div.next().find("button.save");
+
 			var form = header_div.next().find("form.edit_form");
 
 			// on click edit button, toggle creating input fields & undo-ing
@@ -246,28 +286,67 @@ $(document).ready(function() {
 
 				var i2 = $(this).data('i2') || 1; 
 				switch(i2) {
-
 					// create input field mode
 					case 1:
-						// var img_item = header_div.next().find(".collapsible_item.img img");
 
-						// for each data value, create input field around it
-						var data_list = [];
+ 					// ============= TEXT =============
+						// for each text item, create input field
 						txt_item.each(function(i) {
-							data_list.push($(this).html()); // put each form values to the list 
 							$(this).html('<input class="collapsible_input" type="text" name="'+ $(this).prev().attr('class') + '" value="' + $(this).html() + '"/>');
 						});
 
-						data_json[house_id] = data_list;
+ 					// ============= SELECT =============
+						// for each select item, create select field
+						select_item.each(function(i) {
+							$(this).html('<select class="collapsible_input" name="' + $(this).prev().attr('class') + '"></select>');
+						});
 
+						// for house_type select field, attach house_type options 
+						house_type_select =	select_item.find('select[name="house_type"]');
+						var optionString = "";
+						for(key in house_type_options) {
+							// mark selected for current house's house_type option
+							if(house_types.house_type == key) {
+								optionString += '<option selected="selected" value="' + key + '">' + house_type_options[key] + '</option>';
+							}
+
+							else {
+								optionString += '<option value="' + key + '">' + house_type_options[key] + '</option>';
+							}
+						}
+						house_type_select.append(optionString);
+
+						// for room_type select field, attach room_type options 
+						room_type_select = select_item.find('select[name="room_type"]');
+						var optionString = "";
+						for(key in room_type_options) {
+							// mark selected for current house's room_type option
+							if(house_types.room_type == key) {
+								optionString += '<option selected="selected" value="' + key + '">' + room_type_options[key] + '</option>';
+							}
+
+							else {
+								optionString += '<option value="' + key + '">' + room_type_options[key] + '</option>';
+							}
+						}
+						room_type_select.append(optionString);
+
+						// initialize select fields
+						$('select').material_select();
+
+
+ 					// ============= IMAGE =============
+						// create file input field
 						main_img_item.append('<div class="file-field input-field"><div class="btn upload_btn">업로드<input class="collapsible_input" type="file" name="main_image"/></div><div class="file-path-wrapper"><input class="file-path validate" type="text" placeholder=""></div></div>');
 
-
+						// create multiple input field
 						other_img_item.append('<div class="file-field input-field"><div class="btn upload_btn">추가<input class="collapsible_input" type="file" name="other_images" multiple /></div><div class="file-path-wrapper"><input class="file-path validate" type="text" placeholder="파일 선택시 원하시는 파일들을 한꺼번에 선택해주세요."></div></div>');
      
-
+ 					// ============= CHECKBOX =============
+						// enable checkboxes
 						checkbox_item.find("input").prop('disabled', false);
 
+ 					// ============= MISC. =============
 						// hide hr 
 						var hrs = header_div.next().find("hr");
 						hrs.hide();
@@ -276,22 +355,40 @@ $(document).ready(function() {
 
 					// undo mode
 					case 2:
-						// for each data value, remove input, restore original value
-						var data_list = data_json[house_id];
+
+ 					// ============= TEXT =============
+						// for each text item, remove input & restore original value
 						txt_item.each(function(i) {
-							var values = data_list[i];
-							$(this).html(values);
+							var field_name = $(this).prev().attr('class');
+							$(this).html(house_info[field_name]);
 						});
 
+ 					// ============= SELECT =============
+ 						// destroy select fields 
+						$('select').material_select('destroy');
 
+						// restore select original values
+						select_item.each(function(i) {
+							var field_name = $(this).prev().attr('class');
+							field_name += "_string";
+							$(this).html(house_types[field_name]);
+						});
+
+ 					// ============= IMAGE =============
+ 						// remove input file fields
 						main_img_item.find(".file-field.input-field").remove();
 						other_img_item.find(".file-field.input-field").remove();
 
+ 					// ============= CHECKBOX =============
+ 						// disable checkbox
 						checkbox_item.find("input").prop('disabled', true);
 
+ 					// ============= MISC. =============
 						// show hr
 						var hrs = header_div.next().find("hr");
 						hrs.show();
+
+						// disable save btn
 						save_btn.prop("disabled", true); // make save button back to disabled
 
 						break;
@@ -302,8 +399,8 @@ $(document).ready(function() {
 				if(i2>2) i2=1;
 				$(this).data('i2',i2);
 
-				// on text input, re-able save button
-				$("input.collapsible_input").on('input change', function() {
+				// on text/select/file/checkbox input, re-able save button
+				$("input.collapsible_input, select").on('input change', function() {
 					save_btn.prop("disabled", false);
 				});
 			});
@@ -311,25 +408,8 @@ $(document).ready(function() {
 			// save button onclick -> ajax update house
 			save_btn.off('click');
 			save_btn.click(function() {
-				// var data = {};
-
-				// data['house_id'] = house_id;
-				// txt_item.each(function(i) {
-				// 	var values = $(this).find("input").val();
-				// 	data[i] = values;
-				// });
-
-				// var main_img_file = main_img_item.find("input.main_img").prop('files');
-				// console.log(main_img_file)
 
 				var form_data = new FormData(form[0]);
-
-				// var form = $("form#" + house_id + ".edit_form");
-				// console.log(form);
-
-				// var formData = new FormData(form);
-
-				// console.log(formData)
 
 				$.ajax({
 					type: 'POST',

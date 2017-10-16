@@ -6,6 +6,7 @@ moment.tz.setDefault("Asia/Seoul");
 var multer  = require('multer');
 var fs = require('fs');
 
+var defs = require('../data/defs');
 
 
 var storage = multer.diskStorage({
@@ -89,7 +90,11 @@ router.get('/my-page', isAdmin, function(req, res) {
 		// 4. amenities objects
 		context['amenities'] = JSON.parse(JSON.stringify(rows))[3];
 
-		console.log(context)
+		// 5. replace house_type, room_type (tinyint) with actual names 
+		context['house_types'] = JSON.parse(JSON.stringify(rows))[4];
+
+
+		// console.log(context)
 		res.render('admin-my-page', context);
 	});
 });
@@ -98,7 +103,9 @@ function getHouseList(callback) {
 	var selectQuery = "select * from house;";
 	selectQuery += "select house_id, group_concat(image) as images from house_images group by house_id;";
 	selectQuery += "select house_id, group_concat(amenities_id) as amenities from house_amenities group by house_id;"
-	selectQuery += "select * from amenities";
+	selectQuery += "select * from amenities;";
+	selectQuery += "select id, house_type, room_type, (case when house_type = 0 then '일반주택' when house_type = 1 then '오피스텔' when house_type = 2 then '레지던스' end) as house_type_string, (case when room_type = 0 then '원룸' end) as room_type_string from house";
+
 
 	return db.query(selectQuery, callback);
 }
@@ -177,33 +184,15 @@ function updateCol(table, id, col, new_val, callback) {
 
 // AJAX POST update house 
 router.post('/updateHouse', isAdmin, upload.fields([{name:'main_image', maxCount:1},{name:'other_images', maxCount:30}]), function(req, res) {
-	console.log("update house")
+	var amenities_list = req.body.amenities; // list of selected amenities 
+	delete req.body.amenities;
 
 	var txt_data = req.body;
 	var house_id = txt_data.id;
-	// console.log(req.files)
 
-	delete txt_data.id;
-	delete txt_data.amenities1; delete txt_data.amenities2; delete txt_data.amenities3; delete txt_data.amenities4;
-	delete txt_data.amenities5; delete txt_data.amenities6; delete txt_data.amenities7; delete txt_data.amenities8;
-	delete txt_data.amenities9; delete txt_data.amenities10; delete txt_data.amenities11; delete txt_data.amenities12;
-	delete txt_data.amenities13; delete txt_data.amenities14; delete txt_data.amenities15; delete txt_data.amenities16;
-	delete txt_data.amenities17; delete txt_data.amenities18; 
+	console.log("update house " + house_id)
 
-	// TODO: update this list if additional amenities gets added to the db
-	var amenitiesList = [req.body.amenities1, req.body.amenities2, req.body.amenities3, req.body.amenities4, req.body.amenities5, req.body.amenities6,
-						req.body.amenities7, req.body.amenities8, req.body.amenities9, req.body.amenities10, req.body.amenities11, req.body.amenities12,
-						req.body.amenities13, req.body.amenities14, req.body.amenities15, req.body.amenities16, req.body.amenities17, req.body.amenities18];
-
-	// save the selected amenities into list  
-	var house_amenities_list = [];
-	for(var i=0; i<amenitiesList.length; i++) {
-		if(amenitiesList[i] == "on") {
-			house_amenities_list.push(i + 1);
-		}
-	}
-	
-
+	// get the main image
 	var main_image_url = "";
 	var main_image = req.files['main_image'];
 	if(typeof main_image !== 'undefined') {
@@ -219,7 +208,8 @@ router.post('/updateHouse', isAdmin, upload.fields([{name:'main_image', maxCount
 		txt_data['main_image'] = main_image_url;
 	}
 
-	var house_images_list = [];
+	// get other house images
+	var images_list = [];
 	var other_images = req.files['other_images'];
 	if(typeof other_images !== 'undefined') {
 		for(var img in other_images) {
@@ -229,26 +219,103 @@ router.post('/updateHouse', isAdmin, upload.fields([{name:'main_image', maxCount
 		 	// var path = 'http://175.207.29.19/uploads/house_pics/' + req.body.id;
 
 		 	// local ver                                uploads/house_pics/1
-	 		house_images_list.push('http://localhost:3000/' + other_images[img].path.substring(7));
+	 		images_list.push('http://localhost:3000/' + other_images[img].path.substring(7));
 		}
 	}
-	// console.log(house_images_list);
-	// console.log(txt_data)
 
-	updateHouse(house_id, txt_data, house_images_list, house_amenities_list, function(err, rows) {
+	updateHouseById(house_id, txt_data, images_list, function(err, rows) {
 		if(err) {
-			console.log("update err: " + err) 
+			console.log("update house err: " + err) 
 			res.status(400).json(err);
 		}
 
 		else {
-			console.log("update success");
-			res.status(200).json("success");
+			console.log("update 1 success");
+
+			var original_amenities_list = JSON.parse(JSON.stringify(rows))[1];
+
+			// create json of original amenity ids
+			var original_json = {};
+			for(var i in original_amenities_list) {
+				var	a_id = original_amenities_list[i].amenities_id;
+				original_json[a_id] = '';
+			}
+
+			// create json of new amenity ids 
+			var new_json = {};
+			for(var i in amenities_list) {
+				var a_id = amenities_list[i];
+				new_json[a_id] = '';
+			}
+			
+			var insert_list = [];
+			var delete_list = [];
+			// for each existing amenity id, check both arrays
+			// and create insert_list and delete_list
+			for(var i = 1; i <= defs.num_amenities; i++) {
+				// if original has it but new one doesn't
+				// add it to delete_list
+				if(i in original_json && !(i in new_json)) {
+					delete_list.push(i);
+				}
+
+				// if new one has it but original doesn't
+				// add it to insert_list 
+				else if(i in new_json && !(i in original_json)) {
+					insert_list.push(i);
+				}
+				// otherwise, no need to do anything
+			}
+
+			var created = moment().format("YYYY-MM-DD HH:MM:SS");
+
+			updateAmenities(house_id, insert_list, delete_list, created, function(err, rows) {
+				if(err) {
+					console.log("update amenities err: " + err) 
+					res.status(400).json(err);
+				}
+
+				else {
+					console.log("update 2 success");
+					res.status(200).json("success");
+				}
+			});
 		}
 	});
 });
 
-function updateHouse(id, txt_data, house_images_list, house_amenities_list, callback) {
+function updateAmenities(house_id, insert_list, delete_list, created, callback) {
+
+	var insertQuery = "";
+	if(insert_list.length > 0) {
+		insertQuery = "insert into house_amenities (house_id, amenities_id, created) values ";
+		for(var i in insert_list) {
+			insertQuery += "("+ house_id +","+ insert_list[i] +",'"+ created +"'),";
+		}
+		insertQuery = insertQuery.slice(0,-1) + ";";
+	}
+
+	var deleteQuery = "";
+	if(delete_list.length > 0) {
+		deleteQuery = "delete from house_amenities where (house_id, amenities_id) in (";
+		for(var i in delete_list) {
+			deleteQuery += "("+ house_id +","+ delete_list[i] +"),";
+		}
+		deleteQuery = deleteQuery.slice(0,-1) + ");";		
+	}
+
+	var query = insertQuery + deleteQuery;
+
+	if(query == "") {
+		callback();
+	}
+	else {
+		return db.query(query, callback);
+	}
+}
+
+
+function updateHouseById(id, txt_data, images_list, callback) {
 
 	var updateQuery = "update house set ";
 	for(var key in txt_data) {
@@ -258,9 +325,11 @@ function updateHouse(id, txt_data, house_images_list, house_amenities_list, call
 	updateQuery += " where id = " + id + ";"; 
 
 	var insertQuery = "";
-	for(var i in house_images_list) {
-		insertQuery += "insert into house_images (house_id, image) values (" + id + ",'" + house_images_list[i] + "');";
+	for(var i in images_list) {
+		insertQuery += "insert into house_images (house_id, image) values (" + id + ",'" + images_list[i] + "');";
 	}
+
+	var selectQuery = "select amenities_id from house_amenities where house_id = ?";
 
 	// TODO: deal with update / insert 
 	// for(var j in house_amenities_list) {
@@ -268,7 +337,7 @@ function updateHouse(id, txt_data, house_images_list, house_amenities_list, call
 	// }
 
 
-	return db.query(updateQuery + insertQuery, callback);
+	return db.query(updateQuery + insertQuery + selectQuery, [id], callback);
 }
 
 
@@ -302,25 +371,35 @@ function selectAmenities(callback) {
 // POST register house
 router.post('/register', isAdmin, function(req, res) {
 
-	console.log(req.body)
 	var house_context = {};
 
-	house_context['user_id'] = req.user.id; 
-	house_context['name'] = req.body.house_name;
-	house_context['addr_full'] = req.body.addr_full;
-	house_context['addr_summary'] = req.body.addr_summary;
-	// house_context['addr_direction'] = req.body.
-	// house_context['description'] = req.body.
-	house_context['room_type'] = req.body.house_type;
+	house_context['host_id'] = req.body.host_id; 
+	house_context['complex_name'] = req.body.complex_name;
+	house_context['name'] = req.body.name;
+
+	house_context['house_type'] = req.body.house_type;
+	house_context['room_type'] = req.body.room_type;
+
 	house_context['num_guest'] = req.body.num_guest;
 	house_context['num_bedroom'] = req.body.num_bedroom;
 	house_context['num_bed'] = req.body.num_bed;
 	house_context['num_bathroom'] = req.body.num_bathroom;
-	// house_context['daily_rate'] = req.body.
+
+	house_context['addr_province'] = req.body.addr_province;
+	house_context['addr_city'] = req.body.addr_city;
+	house_context['addr_district'] = req.body.addr_district;
+	house_context['addr_dong'] = req.body.addr_dong;
+	house_context['addr_road'] = req.body.addr_road;
+
+	house_context['addr_direction'] = req.body.addr_direction;
+	house_context['description'] = req.body.description;
+
 	house_context['monthly_rate'] = req.body.monthly_rate;
 	house_context['deposit'] = req.body.deposit;
 	house_context['cleaning_fee'] = req.body.cleaning_fee;
 	house_context['utility_fee'] = req.body.utility_fee;
+	house_context['house_policy'] = req.body.house_policy;
+
 	house_context['created'] = moment().format("YYYY-MM-DD HH:MM:SS");
 
 	// house_images 
@@ -339,6 +418,7 @@ router.post('/register', isAdmin, function(req, res) {
 	}
 	house_context['amenities'] = amenities; 
 
+	console.log(house_context)
 	// insert into house table 
 	insertHouse(house_context, function(err, rows) {
 		if(err) console.log(err);
@@ -363,8 +443,8 @@ router.post('/register', isAdmin, function(req, res) {
 
 // insert new house into house table 
 function insertHouse(h, callback) {
-	var insertQuery = "insert into house (admin_id, name, addr_full, addr_summary, type, num_guest, num_bedroom, num_bed, num_bathroom, monthly_rate, deposit, cleaning_fee, utility_fee, created) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-	return db.query(insertQuery, [h.user_id, h.name, h.addr_full, h.addr_summary, h.room_type, h.num_guest, h.num_bedroom, h.num_bed, h.num_bathroom, h.monthly_rate, h.deposit, h.cleaning_fee, h.utility_fee, h.created], callback); 
+	var insertQuery = "insert into house (user_id, complex_name, name, house_type, room_type, num_guest, num_bedroom, num_bed, num_bathroom, addr_province, addr_city, addr_district, addr_dong, addr_road, addr_direction, description, monthly_rate, deposit, cleaning_fee, utility_fee, created) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	return db.query(insertQuery, [h.host_id, h.complex_name, h.name, h.house_type, h.room_type, h.num_guest, h.num_bedroom, h.num_bed, h.num_bathroom, h.addr_province, h.addr_city, h.addr_district, h.addr_dong, h.addr_road, h.addr_direction, h.description, h.monthly_rate, h.deposit, h.cleaning_fee, h.utility_fee, h.created], callback); 
 }
 
 // insert(link) house and its amenities into house_amenities table  

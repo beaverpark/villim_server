@@ -328,7 +328,7 @@ function selectHousePics(house_id, callback) {
 router.get('/user-info', function(req, res) {	
 	// console.time("test");
 	if (!req.isAuthenticated()) {
-		return res.json({success: false , message: "user not logged in.", user_info: null});
+		return res.json({success: false , message: "문제가 발생했습니다. 다시 로그인 해주세요.", user_info: null});
 	}
 
 	// get user's full info 
@@ -345,7 +345,7 @@ router.get('/user-info', function(req, res) {
 // 4. 프로필 변경하기 (POST) - update user's profile 
 router.post('/update-profile', upload.single('profile_pic'), function(req, res) {
 	if (!req.isAuthenticated()) {
-		return res.json({success: false, message: "user not logged in."});
+		return res.json({success: false, message: "문제가 발생했습니다. 다시 로그인 해주세요."});
 	}
 	var new_profile = {};
 
@@ -422,7 +422,7 @@ router.get('/host-info', function(req, res) {
 // 6. 유저의 집 화면(현재 사용하는 집 or 가장 가까운 예약 컨펌된 집) - get user's current house or confirmed house (w/ closest check-in date)
 router.get('/my-house', function(req, res) {
 	if (!req.isAuthenticated()) {
-		return res.json({success: false , message: "user not logged in."});
+		return res.json({success: false , message: "문제가 발생했습니다. 다시 로그인 해주세요."});
 	}
 
 	// if user has never made any reservations or is not currently "reservation active", don't need to query
@@ -488,7 +488,7 @@ function selectUserClosestConfirmedReservation(user_id, callback) {
 	return db.query(selectQuery, [user_id], callback);
 };
 
-
+// NEED TO FIX
 // 7. 집 리스트 화면 - get list of all registered houses
 router.get('/featured-houses', function(req, res) {
 
@@ -724,7 +724,7 @@ function selectAllReviewsByHouseId(house_id, callback) {
 // 10. 리뷰 남기기 (POST) - post a review to selected house
 router.post('/post-review', function(req, res) {
 	if (!req.isAuthenticated()) {
-		return res.json({success: false, message: "user not logged in."});
+		return res.json({success: false, message: "문제가 발생했습니다. 다시 로그인 해주세요."});
 	}
 	
 	// if house_id = -1, err 
@@ -813,7 +813,7 @@ function postReview(house_id, user_id, reservation_id, review_info, created, cal
 // 11. 방문 목록 화면 - get user's confirmed visits 
 router.get('/visit-list', function(req, res) {
 	if (!req.isAuthenticated()) {
-		return res.json({success: false, message: "user not logged in."});
+		return res.json({success: false, message: "문제가 발생했습니다. 다시 로그인 해주세요."});
 	}	
 
 	var pref_currency = req.params.preferred_currency;
@@ -877,7 +877,7 @@ function selectPendingVisits(user_id, callback) {
 // 12. 방문 상세 화면 - get visit info about selected visit 
 router.get('/visit-info', function(req, res) {
 	if (!req.isAuthenticated()) {
-		return res.json({success: false, message: "user not logged in."});
+		return res.json({success: false, message: "문제가 발생했습니다. 다시 로그인 해주세요."});
 	}	
 
 	var visit_id = req.query.visit_id;
@@ -971,7 +971,7 @@ function selectVisit(visit_id, callback) {
 // 13. 방문 신청하기 (POST) - make a visit request
 router.post('/visit-request', function(req, res) {
 	if (!req.isAuthenticated()) {
-		return res.json({success: false, message: "user not logged in."});
+		return res.json({success: false, message: "문제가 발생했습니다. 다시 로그인 해주세요."});
 	}
 
 	var user_id = req.user.id;
@@ -1032,7 +1032,7 @@ router.get('/open-doorlock', function(req, res) {
 	// TODO
 	// JUST FOR NOWWW
 			// if (!req.isAuthenticated()) {
-			// 	return res.json({open_authorized: false, message: "user not logged in."});
+			// 	return res.json({open_authorized: false, message: "문제가 발생했습니다. 다시 로그인 해주세요."});
 			// }
 
 			// // if user is not currently staying at house

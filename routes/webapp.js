@@ -15,6 +15,29 @@ var googleMaps = require("@google/maps").createClient({
 	key: "AIzaSyDIKYpr3qNxWm2lC6VlVhoIFt3r1xy8dns"
 });
 
+var multer  = require('multer');
+var fs = require('fs');
+
+var defs = require('../data/defs');
+
+
+var storage = multer.diskStorage({
+ destination: function (req, file, cb) {
+
+ 	var relative_path = './public/uploads/profile_pics/' + req.user.id;
+ 	// if directory doesn't exist, create it
+ 	if(!fs.existsSync(relative_path)) {
+ 		fs.mkdirSync(relative_path);
+ 	}
+
+    cb(null, relative_path);
+  },
+  filename: function (req, file, cb) {
+    cb(null,  file.originalname)
+  }
+});
+var upload = multer({storage:storage});
+
 
 
 
@@ -319,6 +342,39 @@ router.get('/be-host', function(req, res, next) {
 });
 
 
+router.post('/edit-profile', upload.single('user_profile_pic'), function(req, res, next) {
+	if(!req.isAuthenticated()) {
+		return res.redirect('/');
+	}
+
+	// deal with profile pic 
+	var user_id = req.user.id;
+	var user_info = req.body;
+
+	updateUser(user_id, user_info, function(err, rows) {
+		if(err) {
+			console.log("update user profile err: " + err) 
+			res.status(400).json(err);
+		}
+
+		else {
+			console.log("update user profile success");
+			res.status(200).json("success");
+		}
+	});
+});
+
+function updateUser(user_id, user_info, callback) {
+	var updateQuery = "update user set ";
+	for(var key in user_info) {
+		updateQuery += key + " = '" + user_info[key] + "',";
+	}
+	updateQuery = updateQuery.slice(0, -1); // get rid of last comma
+	updateQuery += " where id = " + user_id + ";"; 
+
+	return db.query(updateQuery, callback);
+}
+
 // router.get('/be-host_en', function(req, res, next) {
 
 // 	res.render('be-host_en');
@@ -348,7 +404,7 @@ router.get('/dashboard', isLoggedIn, function(req, res) {
 	var user = req.user;
 	user['username'] = req.user.lastname + req.user.firstname;
 
-	console.log(user)
+	// console.log(user)
 
 	context = {};
 	context['user'] = user;
@@ -370,7 +426,7 @@ router.get('/dashboard', isLoggedIn, function(req, res) {
 		getPendingRs(user.id, function(err, rows) {
 			if(err) console.log(err);
 
-			console.log('2')
+			// console.log('2')
 			context['pendingRs'] = JSON.parse(JSON.stringify(rows));
 			callback();
 		});
@@ -380,7 +436,7 @@ router.get('/dashboard', isLoggedIn, function(req, res) {
 		getConfirmedRs(user.id, function(err, rows) {
 			if(err) console.log(err);
 
-			console.log('3')
+			// console.log('3')
 			context['confirmedRs'] = JSON.parse(JSON.stringify(rows));
 			callback();
 		});
@@ -403,7 +459,7 @@ router.get('/dashboard', isLoggedIn, function(req, res) {
 	async.parallel(tasks, function(err) {
 		if(err) console.log(err);
 
-		console.log(context)		
+		// console.log(context)		
 		return res.render('dashboard', context);
 	});
 });

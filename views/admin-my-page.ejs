@@ -59,16 +59,16 @@
 </div>
 
 
-<div class="row dashboard_tab_row">
-	<div class="col s12">
-		<div class="title_txt">집 목록</div>
+<div class="">
+	<!-- <div class="col s12"> -->
+		<div class="title_txt" style="text-align:center">집 목록</div>
 		<!-- <ul class="tabs"> -->
 			<!-- <li class="col s1"></li> -->
 			<!-- <li class="tab col s4"><a href="#house_list">집 목록</a></li> -->
 			<!-- <li class="tab col s4"><a href="#profile">empty</a></li>		 -->
 		<!-- </ul> -->
 		<!-- <input type="button" value="refresh" onClick="window.location.reload()"> -->
-	</div>
+	<!-- </div> -->
 </div>
 
 <div id="house_list" class="dashboard_content admin_dashboard_content" style="overflow:scroll">
@@ -417,7 +417,7 @@ $(document).ready(function() {
 					contentType: false,
 					processData: false,
 					// TODO: change this to actual URL
-					url: 'http://localhost:3000/admin/updateHouse',
+					url: 'http://175.207.29.19/admin/updateHouse',
 					success: function() {
 						Materialize.toast('성공적으로 업데이트 되었습니다.', 2000, 'blue rounded');
 

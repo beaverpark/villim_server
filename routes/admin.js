@@ -199,11 +199,13 @@ router.post('/updateHouse', isAdmin, upload.fields([{name:'main_image', maxCount
 	 	// relative_path is sth like 'public/uploads/house_pics/1'
 
 	 	// TODO
-	 	// server ver
-	 	// var path = 'http://175.207.29.19/uploads/house_pics/' + req.body.id;
 
 	 	// local ver                                uploads/house_pics/1
-	 	main_image_url = 'http://localhost:3000/' + main_image[0].path.substring(7);
+	 	// main_image_url = 'http://localhost:3000/' + main_image[0].path.substring(7);
+
+	 	// server ver
+	 	main_image_url = 'http://175.207.29.19/' + main_image[0].path.substring(7);
+
 
 		txt_data['main_image'] = main_image_url;
 	}
@@ -215,11 +217,13 @@ router.post('/updateHouse', isAdmin, upload.fields([{name:'main_image', maxCount
 		for(var img in other_images) {
 
 		 	// TODO
-		 	// server ver
-		 	// var path = 'http://175.207.29.19/uploads/house_pics/' + req.body.id;
 
 		 	// local ver                                uploads/house_pics/1
-	 		images_list.push('http://localhost:3000/' + other_images[img].path.substring(7));
+	 		// images_list.push('http://localhost:3000/' + other_images[img].path.substring(7));
+
+		 	// server ver
+	 		images_list.push('http://175.207.29.19/' + other_images[img].path.substring(7));
+
 		}
 	}
 

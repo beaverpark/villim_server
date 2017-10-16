@@ -652,8 +652,6 @@ function intToStringWithCommas(num) {
 }
 
 
-
-
 // ajax
 router.get('/s_houses', function(req, res) {
 	var	context = {};

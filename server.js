@@ -55,6 +55,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 /*** npm downloaded css, js scripts ***/
 /**************************************/
 app.use('/js', express.static(__dirname + '/node_modules/materialize-css/dist/js'));
+app.use('/font', express.static(__dirname + '/node_modules/materialize-css/dist/fonts'));
 app.use('/css', express.static(__dirname + '/node_modules/materialize-css/dist/css'));
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist'));
 app.use('/jquery_validate', express.static(__dirname + '/node_modules/jquery-form-validator/form-validator/'));
@@ -63,6 +64,7 @@ app.use('/flat_pickr', express.static(__dirname + '/node_modules/flatpickr/dist'
 app.use('/swiper', express.static(__dirname + '/node_modules/swiper/dist'));
 app.use('/moment', express.static(__dirname + '/node_modules/moment/min'));
 app.use('/materialize_stepper', express.static(__dirname + '/node_modules/materialize-stepper'));
+app.use('/mobile_detect', express.static(__dirname + '/node_modules/mobile-detect'));
 
 
 /**************************************/

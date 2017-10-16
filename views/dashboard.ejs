@@ -10,11 +10,13 @@
 				<!-- <li class="tab col s1"><a href="#home" class="active">알림판</a></li> -->
 				<!-- <li class="tab col s1"><a href="#room_list">방 목록</a></li> -->
 				<li class="empty_tab"></li>
+
+				<li class="tab"><a href="#profile">프로필</a></li>
+
 				<li class="tab"><a href="#reservation">예약 현황</a></li>
 				<!-- <li class="tab col s2"><a href="#my_houses">내 집 목록</a></li> -->
 				
-				<li class="tab"><a href="#profile">프로필</a></li>
-				<li class="tab"><a href="#setting">환경 설정</a></li>
+				<!-- <li class="tab"><a href="#setting">환경 설정</a></li> -->
 			</ul>
 		</div>
 	</div>
@@ -49,7 +51,7 @@
 			<% } else { %>
 				<div style="padding: 10px 0">
 					<div class="main_txt"> 현재 예약 요청된 방이 없습니다.</div>
-					<div class="main_txt"><a href="/" style="color:#2F6D81">방 둘러보기</a></div>
+					<div class="main_txt"><a href="/">방 둘러보기</a></div>
 				</div>
 			<% } %>
 		</div>
@@ -137,12 +139,224 @@
 	<% } %>
 
 	<div id="profile" class="dashboard_content">
-		<div class="title_txt"> 준비중입니다.</div>
+		<div class="title_txt title_container">
+			<div>내 프로필</div>
+			<div>
+				<button id="profile_edit_btn" class="btn teal_btn_color">수정</button>
+				<button id="profile_save_btn" class="btn red_btn_color">저장</button>
+			</div>
+		</div>
+		<form id="edit_profile_form" method="post" enctype="multipart/form-data">
+
+    		<div class="basic_info">
+                <div class="chip">
+                    <img src=" <%- user.profile_pic_url -%>">
+                    <div id="lastname" class="editable"><%- user.lastname-%></div>
+                    <div id="firstname" class="editable"><%- user.firstname-%></div>
+                </div>
+    		</div>
+            <div class="other_info">
+            	<div class="info_item">
+            		<div class="info_title">이메일</div>
+                	<div id="email" class="editable"><%- user.email-%></div>
+            	</div>	
+            	<div class="info_item">
+            		<div class="info_title">핸드폰 번호</div>
+                		<% if(user.phone_number) { %>
+		                	<div id="phone_number" class="editable"><%- user.phone_number-%></div>
+		                <% 	} else {%>
+		                	<div id="phone_number" class="editable"></div>
+	                	<% } %>
+            	</div>	
+            	<div class="info_item">
+            		<div class="info_title">자기 소개</div>
+                	<div id="about" class="editable"><%- user.about-%></div>
+            	</div>	
+<!--             	<div class="info_item">
+            		<div class="info_title">핸드폰 번호</div>
+                	<div class="editable"> <%- user.phone_number-%> </div>
+            	</div>	 -->
+
+            </div>
+  		</form>
 	</div>
 
-	<div id="setting" class="dashboard_content">
+<!-- 	<div id="setting" class="dashboard_content">
 		<div class="title_txt"> 준비중입니다.</div>
-	</div>
+	</div> -->
+
+	<style type="text/css">
+		.dashboard_content#profile input.profile_input {
+		  background-color: ghostwhite;
+		  border: 1px solid black;
+		  border-radius: 1px;
+		  margin: 0;
+		  padding: 0;
+		  box-sizing: border-box;
+		  /*font-size: 18px;*/
+		}
+
+		.dashboard_content#profile input.profile_input:focus {
+			border: 1px solid rgb(80, 87, 95) !important;
+			box-shadow: none !important;
+		}
+
+		#toast-container {
+		  top: 10% !important;
+		  right: auto !important;
+		  bottom: auto !important;
+		  left: 40% !important;
+		}
+
+	</style>	
+
+	<script>
+
+	$(document).ready(function() {
+		var save_btn = $('#profile_save_btn');
+		var edit_btn = $('#profile_edit_btn');
+		var form = $('#edit_profile_form');
+
+		var user_data = <%- JSON.stringify(user) -%>;
+
+		save_btn.css({
+			display:'none'
+		});
+
+		edit_btn.click(function(event) {
+
+			var i2 = $(this).data('i2') || 1; 
+			switch(i2) {
+				// create input field mode
+				case 1:
+					console.log(1)
+					$(".editable").each(function(i) {
+						$(this).html('<input class="profile_input" type="text" style="width:'+ $(this).width() +'px; font-size:'+ $(this).css('font-size') +'" name ="'+ $(this).attr('id') +'" value="' + $(this).html() + '"/>');
+					})
+				break;
+
+				// undo mode
+				case 2:
+					console.log(2)
+
+					$(".editable").each(function(i) {
+						var field_name = $(this).attr('id');
+						$(this).html(user_data[field_name]);
+					});
+
+
+					save_btn.css({
+						display:'none'
+					});
+
+				break;
+			}
+
+			// to toggle edit button click
+			i2++;
+			if(i2>2) i2=1;
+			$(this).data('i2',i2);
+
+			// on text/select/file/checkbox input, re-able save button
+			$(".profile_input").on('input change', function() {
+				save_btn.css({
+					display:'inline-block'
+				});
+			});
+		});
+
+		// save button onclick -> ajax update house
+		save_btn.off('click');
+		save_btn.click(function() {
+			var form_data = new FormData(form[0]);
+			console.log(form)
+			$.ajax({
+				type: 'POST',
+				data: form_data,
+				contentType: false,
+				processData: false,
+				// TODO: change this to actual URL
+				url: 'http://localhost:3000/edit-profile',
+				success: function() {
+					Materialize.toast('성공적으로 업데이트 되었습니다.', 2000, 'blue rounded');
+
+					save_btn.prop("disabled", true);
+					setTimeout(function() {
+						window.location.reload();
+					}, 1000);
+				},
+				error: function(err) {
+					console.log(err);
+					Materialize.toast('업데이트에 문제가 생겼습니다. 잠시후 다시 시도해주세요.', 2000, 'red rounded');
+					setTimeout(function() {
+						window.location.reload();
+					}, 1000);					
+				}
+			});
+		});
+	});
+
+		// $(document).ready(function() {
+		// 	$(".editable").not("[id*='id']").click(function(event) {
+		// 		if($(event.target).attr('class')!="profile_input") {
+		// 			var currElem = $(this);
+		// 			var val = $(this).html();
+		// 			var width = $(this).width();
+		// 			var fontsize = $(this).css('font-size');
+		// 			var id = (currElem.attr('id'));
+		// 		    updateVal(currElem, width, fontsize, val, id);
+		// 		}
+		// 	});
+		// 	// $("table td [id*='id']").off('dblclick');
+		// });
+
+		// function updateVal(currElem, width, fontsize, val, id) {
+		// 	$(document).off('click');
+
+		// 	console.log(val)
+
+		// 	// create input box with original value and focus on it
+		// 	$(currElem).html('<input class="profile_input" type="text" style="width:'+ width +'px; font-size:'+ fontsize +'"/>');
+		// 	$(currElem).find('input').val(val);
+
+		// 	$(".profile_input").focus();
+
+	    //   	$(document).click(function () { 
+	    //   		// proceed when user clicks outside of the table cell
+	    //   		if($(event.target).attr('class')!="newInput") {
+	    //   			// if the value has changed, call ajax to update given table
+	    //   			if($(".newInput").val() != val) {
+
+	    //   				var data = {};
+	    //   				data.new_val = $(".newInput").val();
+	    //   				data.id = id; 
+	    //   				$.ajax({
+	    //   					type: 'POST',
+	    //   					data: JSON.stringify(data),
+	    //   					contentType : 'application/json',
+	    //   					url: 'http://localhost:3000/admin/updateTable',
+	    //   					success: function() {
+	    //   						console.log('update success');
+	    //   					},
+	    //   					error: function(err) {
+	    //   						console.log("ajax error")
+
+	    //   						// var snackbarContainer = document.querySelector('#admin_toast');
+	    //   						// var data = {message: '입력 포맷이 잘못되었습니다. 다시 시도해 주세요.'}
+     //  						 //    snackbarContainer.MaterialSnackbar.showSnackbar(data);
+	    //   						alert("입력 포맷이 잘못되었습니다. 다른 예시들을 참고해주세요.\n날짜면 0000-00-00, true/false는 그대로 true 혹은 false를 입력해주시기 바랍니다.");
+	    //   						location.reload();
+	    //   					}
+	    //   				});
+	    //   			}
+	    //   			// remove input box and any white spaces
+	    //   			$(currElem).html($(".newInput").val().trim());
+	    //     		$(document).off('click');
+	    //   		}
+		  	// });
+		// }
+
+	</script>
 
     <!-- footer -->
 	<%- include('footer') -%>
